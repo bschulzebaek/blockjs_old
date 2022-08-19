@@ -7,7 +7,15 @@
         <title>BlockJS</title>
     </head>
     <body>
-        <div id="app"></div>
+        <div class="info-fullscreen">
+            <div class="center-absolute">
+                <p>Please click the button below to enter fullscreen</p>
+
+                <button onclick="window.gameManager.getCanvas().requestFullscreen();">Start</button>
+            </div>
+        </div>
+
+        <canvas width="100vw" height="100vh"></canvas>
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>
