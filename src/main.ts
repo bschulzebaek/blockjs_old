@@ -1,10 +1,7 @@
-import './styles/index.css';
-import GameManager from './framework/GameManager';
+import Client from './client/Client';
+import Container from './framework/Container';
 
-declare global {
-    interface Window {
-        gameManager: GameManager;
-    }
-}
+new Client(document.getElementById('app')!);
 
-window.gameManager = new GameManager(document.querySelector('canvas'));
+// @ts-ignore
+window.$container = Container;

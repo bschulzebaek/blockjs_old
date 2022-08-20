@@ -1,0 +1,22 @@
+input {
+    -webkit-appearance: none;
+    outline: unset;
+    border: unset;
+    font-size: 0.8em;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, .3);
+    color: #fff;
+    padding: 0.625rem 1rem;
+    text-shadow: 2px 2px #000a;
+    border: 1px solid transparent;
+    transition: border-color .15s ease;
+}
+
+input:hover {
+    border-color: rgba(255, 255, 255, 3);
+}
+
+::-webkit-input-placeholder {
+    color: #999;
+}

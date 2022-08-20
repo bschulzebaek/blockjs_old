@@ -1,0 +1,5 @@
+@keyframes fadeInOpacity {
+    to {
+        opacity: 1;
+    }
+}

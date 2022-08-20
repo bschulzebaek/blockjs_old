@@ -1,0 +1,16 @@
+.menu-grid {
+    display: grid;
+    width: 432px;
+    max-width: 100%;
+}
+
+.menu-grid > .row {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: space-between;
+}
+
+.menu-grid > .row > * {
+    margin: 0.25rem;
+    width: 100%;
+}

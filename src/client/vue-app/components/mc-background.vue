@@ -1,0 +1,30 @@
+<template>
+    <img
+        :src="$getAssetUrl('main_menu_background.jpg')"
+        alt=""
+        draggable="false"
+    >
+</template>
+
+<script lang="ts">
+export default {
+    inject: ['$getAssetUrl'],
+}
+
+</script>
+
+<style scoped>
+img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(5px);
+    opacity: 0.7;
+    z-index: -1;
+}
+</style>
