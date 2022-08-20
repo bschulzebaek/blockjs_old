@@ -11,15 +11,10 @@ export type SceneEntity = CameraInterface | SkyboxInterface;
 // export type SceneEntities = ModelInterface | CursorInterface | CameraInterface | SkyboxInterface | WorldInterface | PlayerInterface;
 
 export default class Scene implements SceneInterface {
-
-    public context: WebGL2RenderingContext;
-    public canvas: HTMLCanvasElement;
-
     private entities: SceneEntity[] = [];
 
-    constructor(context: WebGL2RenderingContext) {
-        this.canvas = context.canvas;
-        this.context = context;
+    constructor() {
+
     }
 
     public addEntity(entity: SceneEntity): void {
@@ -35,7 +30,6 @@ export default class Scene implements SceneInterface {
     }
 
     public update(delta: number): void {
-        // this.context.flush();
 
         this.getEntities().forEach((entity) => {
             entity.update(delta);

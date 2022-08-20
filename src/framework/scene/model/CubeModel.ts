@@ -51,12 +51,12 @@ const CubeVertices = (width: number, height: number, depth: number, x: number, y
 
 export default class CubeModel {
 
-    public static create(context: WebGL2RenderingContext, name = 'Cube', w?: number, h?: number, d?: number, x?: number, y?: number, z?: number): Model {
-        return new Model(CubeModel.createMesh(context, name, w, h, d, x, y, z));
+    public static create(name = 'Cube', w?: number, h?: number, d?: number, x?: number, y?: number, z?: number): Model {
+        return new Model(CubeModel.createMesh(name, w, h, d, x, y, z));
     }
 
-    public static createMesh(context: WebGL2RenderingContext, name: string, width = 1, height = 1, depth = 1, x = 0, y = 0, z = 0): Mesh {
-        const mesh = new Mesh(context, name, CubeIndices, CubeVertices(width, height, depth, x, y, z), CubeNormals, CubeUvs);
+    public static createMesh(name: string, width = 1, height = 1, depth = 1, x = 0, y = 0, z = 0): Mesh {
+        const mesh = new Mesh(name, CubeIndices, CubeVertices(width, height, depth, x, y, z), CubeNormals, CubeUvs);
 
         mesh.noCulling = true;
 

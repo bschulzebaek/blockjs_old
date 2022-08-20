@@ -13,7 +13,7 @@ export default class SceneService implements ServiceInterface {
 
     private scene?: Scene;
 
-    private context!: WebGL2RenderingContext;
+    private world?: World;
 
     constructor(adapter: StorageAdapter) {
 
@@ -23,41 +23,25 @@ export default class SceneService implements ServiceInterface {
 
     }
 
-    public createSceneEntities(canvas: HTMLCanvasElement): void {
-        const context = canvas.getContext('webgl2')!,
-              width = window.innerWidth,
-              height = window.innerHeight;
-
-        this.context = context;
-
-        canvas.width = width;
-        canvas.height = height;
-
-        context.viewport(0, 0, window.innerWidth, window.innerHeight);
-
-        context.clearColor(0, 0, 0, 1.0);
-        context.enable(context.DEPTH_TEST);
-        context.enable(context.CULL_FACE);
-        context.depthFunc(context.LEQUAL);
-        context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
-
-        const scene   = new Scene(context),
-              camera  = new ControlledCamera(context, 70, 0.05, 300.0),
-              skybox  = new Skybox(context, camera),
-              world   = new World(context, camera),
-              cursor  = new Cursor(context, camera, world);
+    public createSceneEntities(): void {
+        const scene   = new Scene(),
+              camera  = new ControlledCamera(70, 0.05, 300.0),
+              skybox  = new Skybox(camera),
+              world   = new World(camera),
+              cursor  = new Cursor(camera, world);
 
         // player
         // inventory
 
         createDebugWorld(world);
 
-        camera.setPosition(new Vector3(8, 4, 12));
+        camera.setPosition(new Vector3(-2, 6, -2));
         camera.transform.rotation.y = 0;
 
         scene.addEntities(camera, skybox, world, cursor);
 
         this.scene = scene;
+        this.world = world;
 
         Container.getService(ServiceName.RENDERER).setScene(scene);
     }
@@ -70,7 +54,11 @@ export default class SceneService implements ServiceInterface {
         return this.scene;
     }
 
-    public getContext() {
-        return this.context;
+    public getPlayer() {
+
+    }
+
+    public getWorld() {
+
     }
 }

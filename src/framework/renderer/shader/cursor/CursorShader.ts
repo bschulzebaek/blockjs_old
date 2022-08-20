@@ -7,6 +7,7 @@ import createShaderProgram from '../utility/create-program';
 import getShaderUniforms from '../utility/get-uniforms';
 import ModelInterface from '../../../scene/model/ModelInterface';
 import { Matrix4 } from '../../../../math';
+import Container from '../../../Container';
 
 export default class CursorShader {
 
@@ -19,17 +20,17 @@ export default class CursorShader {
     private program: WebGLProgram;
     private uniforms: Record<string, AttributeInterface>;
 
-    constructor(context: WebGL2RenderingContext, camera: CameraInterface, cursor: CursorInterface) {
-        this.context = context;
-        this.program = createShaderProgram(context, vss, fss);
-        this.uniforms = getShaderUniforms(context, this.program);
+    constructor(camera: CameraInterface, cursor: CursorInterface) {
+        this.context = Container.getContext();
+        this.program = createShaderProgram(vss, fss);
+        this.uniforms = getShaderUniforms(this.program);
         this.context.useProgram(this.program);
 
         this.camera = camera;
         this.cursor = cursor;
 
-        context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
-        context.uniform4fv(this.uniforms['color'].loc, CursorShader.COLOR);
+        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
+        this.context.uniform4fv(this.uniforms['color'].loc, CursorShader.COLOR);
     }
 
     public run(): void {

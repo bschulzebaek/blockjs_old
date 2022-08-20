@@ -1,3 +1,5 @@
+import Container from '../../../Container';
+
 function compileShader(context: WebGL2RenderingContext, src: string, type: number): WebGLShader {
     const shader = context.createShader(type) as WebGLShader;
 
@@ -11,8 +13,9 @@ function compileShader(context: WebGL2RenderingContext, src: string, type: numbe
     return shader;
 }
 
-export default function createShaderProgram(context: WebGL2RenderingContext, vss: string, fss: string): WebGLProgram {
-    const program = context.createProgram() as WebGLProgram,
+export default function createShaderProgram(vss: string, fss: string): WebGLProgram {
+    const context = Container.getContext(),
+          program = context.createProgram() as WebGLProgram,
           vs = compileShader(context, vss, context.VERTEX_SHADER),
           fs = compileShader(context, fss, context.FRAGMENT_SHADER);
 

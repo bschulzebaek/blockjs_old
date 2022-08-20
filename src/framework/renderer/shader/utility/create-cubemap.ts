@@ -1,4 +1,5 @@
 import getAssetUrl from '../../../../utility/get-asset-url';
+import Container from '../../../Container';
 
 const width = 1;
 const height = 1;
@@ -15,7 +16,9 @@ function loadTextureAsync(url: string, callback: (img: HTMLImageElement) => void
     image.src = url;
 }
 
-export default function createCubemap(context: WebGL2RenderingContext, faces: string[]): WebGLTexture {
+export default function createCubemap(faces: string[]): WebGLTexture {
+    const context = Container.getContext();
+
     const {
         TEXTURE_CUBE_MAP, TEXTURE_CUBE_MAP_POSITIVE_X, RGBA, UNSIGNED_BYTE, TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER,
         LINEAR, TEXTURE_WRAP_S, TEXTURE_WRAP_T, TEXTURE_WRAP_R, CLAMP_TO_EDGE

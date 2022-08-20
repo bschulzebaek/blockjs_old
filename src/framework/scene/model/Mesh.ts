@@ -1,3 +1,5 @@
+import Container from '../../Container';
+
 enum ATTRIBUTE_LOCATIONS {
     POSITION = 0,
     NORMAL = 1,
@@ -23,7 +25,9 @@ export default class Mesh {
     public doBlending = true;
     public transparent = false;
 
-    constructor(context: WebGL2RenderingContext, name: string, indices: number[], vertices: number[], normals: number[], uvs: number[]) {
+    constructor(name: string, indices: number[], vertices: number[], normals: number[], uvs: number[]) {
+        const context = Container.getContext();
+
         this.name = name;
         this.drawMode = context.TRIANGLES;
         this.vao = context.createVertexArray();

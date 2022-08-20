@@ -27,9 +27,7 @@ export default {
 
         Fullscreen.enter();
 
-        this.$container.services.rendererService.setCanvas(this.canvas);
-        this.$container.services.sceneService.createSceneEntities(this.canvas);
-        this.$container.services.rendererService.start();
+        this.$container.play(this.canvas);
     },
     beforeUnmount() {
         this.discardEventListener();

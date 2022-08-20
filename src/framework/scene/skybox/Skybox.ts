@@ -12,9 +12,9 @@ export default class Skybox implements SkyboxInterface {
     private model: any;
     private shader: SkyboxShader;
 
-    constructor(context: WebGL2RenderingContext, camera: CameraInterface) {
-        this.shader = new SkyboxShader(context, camera);
-        this.model = CubeModel.create(context, Skybox.MESH_NAME, Skybox.MESH_HEIGHT, Skybox.MESH_WIDTH, Skybox.MESH_LENGTH);
+    constructor(camera: CameraInterface) {
+        this.shader = new SkyboxShader(camera);
+        this.model = CubeModel.create(Skybox.MESH_NAME, Skybox.MESH_HEIGHT, Skybox.MESH_WIDTH, Skybox.MESH_LENGTH);
     }
 
     public update() {

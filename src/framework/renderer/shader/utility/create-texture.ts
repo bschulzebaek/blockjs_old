@@ -1,4 +1,5 @@
 import getAssetUrl from '../../../../utility/get-asset-url';
+import Container from '../../../Container';
 
 const width = 1;
 const height = 1;
@@ -17,10 +18,13 @@ function loadTextureAsync(url: string, callback: (img: HTMLImageElement) => void
     image.src = url;
 }
 
-export default function createTexture(context: WebGL2RenderingContext, assetPath: string): WebGLTexture {
-    if (REGISTRY[assetPath]) {
-        return REGISTRY[assetPath];
-    }
+export default function createTexture(assetPath: string): WebGLTexture {
+    // TODO: This approach will lead to a loose texture object after leaving a game!
+    // if (REGISTRY[assetPath]) {
+    //     return REGISTRY[assetPath];
+    // }
+
+    const context = Container.getContext();
 
     const {
         TEXTURE_2D, RGBA, UNSIGNED_BYTE, TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER, NEAREST,

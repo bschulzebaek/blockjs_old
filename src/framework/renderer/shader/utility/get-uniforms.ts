@@ -1,6 +1,9 @@
+import Container from '../../../Container';
 import AttributeInterface from '../AttributeInterface';
 
-export default function getShaderUniforms(context: WebGL2RenderingContext, program: WebGLProgram): Record<string, AttributeInterface> {
+export default function getShaderUniforms(program: WebGLProgram): Record<string, AttributeInterface> {
+    const context = Container.getContext();
+
     return [...Array(context.getProgramParameter(program, context.ACTIVE_UNIFORMS))].map((_, i) => {
         const { size, type, name } = (context.getActiveUniform(program, i) as WebGLActiveInfo),
                 loc = context.getUniformLocation(program, name);

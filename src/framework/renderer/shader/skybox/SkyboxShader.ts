@@ -9,6 +9,7 @@ import createShaderProgram from '../utility/create-program';
 import getShaderUniforms from '../utility/get-uniforms';
 import createCubemap from '../utility/create-cubemap';
 import ModelInterface from '../../../scene/model/ModelInterface';
+import Container from '../../../Container';
 
 export default class SkyboxShader implements ShaderInterface {
     static TEXTURE = [ 'skybox/mc_rt.png', 'skybox/mc_lf.png', 'skybox/mc_up.png', 'skybox/mc_dn.png', 'skybox/mc_bk.png', 'skybox/mc_ft.png' ];
@@ -19,15 +20,15 @@ export default class SkyboxShader implements ShaderInterface {
     private uniforms: Record<string, AttributeInterface>;
     private texture: WebGLTexture;
 
-    constructor(context: WebGL2RenderingContext, camera: CameraInterface) {
-        this.context = context;
+    constructor(camera: CameraInterface) {
+        this.context = Container.getContext();
         this.camera = camera;
-        this.program = createShaderProgram(context, vss, fss);
-        this.uniforms = getShaderUniforms(context, this.program);
-        this.texture = createCubemap(context, SkyboxShader.TEXTURE);
+        this.program = createShaderProgram(vss, fss);
+        this.uniforms = getShaderUniforms(this.program);
+        this.texture = createCubemap(SkyboxShader.TEXTURE);
 
         this.context.useProgram(this.program);
-        context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
+        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
     }
 
     public run(model: ModelInterface): void {

@@ -6,14 +6,11 @@ export default class RendererService implements ServiceInterface {
     private renderer!: Renderer;
 
     constructor() {
-
+        this.renderer = new Renderer();
     }
 
-    public setCanvas(canvas: HTMLCanvasElement) {
-        this.renderer = new Renderer();
-        // this.renderer.runFrame();
-
-        // prepare canvas
+    public isRunning() {
+        return !this.renderer.getPaused();
     }
 
     public setScene(scene: SceneInterface) {

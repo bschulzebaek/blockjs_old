@@ -21,8 +21,6 @@ export default class Renderer implements RendererInterface {
         }
 
         this.paused = paused;
-
-        console.log(`[Renderer] ${paused ? 'Stop' : 'Start'}`);
     }
 
     public getPaused() {

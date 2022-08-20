@@ -9,16 +9,16 @@ import ChunkModel, { ChunkModelType } from '../../model/ChunkModel/ChunkModel';
 export interface ChunkRawInterface {
     id: string;
     blocks: number[];
-    x: number;
-    z: number;
+    worldX: number;
+    worldZ: number;
 }
 
 export default class Chunk extends StoreClass implements ChunkInterface {
     static STORAGE_FIELDS = [
         'id',
         'blocks',
-        'x',
-        'z',
+        'worldX',
+        'worldZ',
     ];
     static WIDTH = 16;
     static LENGTH = 16;
@@ -26,31 +26,32 @@ export default class Chunk extends StoreClass implements ChunkInterface {
 
     private id: string;
     private blocks: BlockID[];
-    private x: number;
-    private z: number;
+    private worldX: number;
+    private worldZ: number;
 
-    private voxelShaderModel!: ModelInterface;
-    private glassShaderModel!: ModelInterface;
+    private solidModel!: ModelInterface;
+    private glassModel!: ModelInterface;
 
-    constructor(relativeX: number, relativeZ: number, blocks: BlockID[] = Chunk.getEmptyBlocks()) {
-        const id = Chunk.getId(relativeX, relativeZ);
+    constructor(chunkX: number, chunkZ: number, blocks: BlockID[] = Chunk.getEmptyBlocks()) {
+        const id = Chunk.getId(chunkX, chunkZ);
 
         super(id, Chunk.STORAGE_FIELDS);
 
         this.id = id;
         this.blocks = blocks;
-        this.x = relativeX * Chunk.WIDTH;
-        this.z = relativeZ * Chunk.LENGTH;
+        this.worldX = chunkX * Chunk.WIDTH;
+        this.worldZ = chunkZ * Chunk.LENGTH;
 
-        this.rebuildModel();
+        this.rebuildSolidModel();
+        this.rebuildGlassModel();
     }
 
     public getX() {
-        return this.x;
+        return this.worldX;
     }
 
     public getZ() {
-        return this.z;
+        return this.worldZ;
     }
 
     public getId() {
@@ -66,14 +67,26 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     }
 
     public setBlockId(x: number, y: number, z: number, blockId: BlockID) {
-        const currentBlockId = this.getBlockId(x, y, z);
-        this.blocks[this.getBlockIndex(x, y, z)] = blockId;
+        const blockIndex = this.getBlockIndex(x, y, z),
+              previousId = this.getBlockId(x, y, z);
+
+        this.blocks[blockIndex] = blockId;
+
+        console.log('[CHUNK] Improve ChunkModel updates!');
+
+        // TODO: Only rebuild faces for changed block !
+        // 1) Get index
+        // 2) Extract ChunkModel algo from block iteration
+
+        // ChunkModel.replaceBlock(this.glassModel, 'glass', this.getBlockIndex(x, y, z));
+        // ChunkModel.replaceBlock(this.solidModel, 'solid', this.getBlockIndex(x, y, z));
 
         // TODO: Add a proper map for BlockID -> Shader assignment
-        [ currentBlockId, blockId, ...this.getFacingBlockIds(x, y, z) ].forEach((blockId: BlockID) => {
+        [ previousId, blockId, ...this.getFacingBlockIds(x, y, z) ].forEach((blockId: BlockID) => {
             switch (blockId) {
                 case BlockID.GLASS:
                     this.rebuildGlassModel();
+
                 default:
                     this.rebuildSolidModel();
             }
@@ -110,7 +123,7 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     }
 
     private getBlockIndex(x: number, y: number, z: number): number {
-        return x + z * Chunk.WIDTH * y * Chunk.WIDTH * Chunk.LENGTH;
+        return x + (z * Chunk.WIDTH) + (y * Chunk.WIDTH * Chunk.LENGTH);
     }
 
     public isOutOfBounds(x: number, y: number, z: number): boolean {
@@ -125,32 +138,30 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     }
 
     public getGlassModel(): ModelInterface {
-        return this.glassShaderModel;
+        return this.glassModel;
     }
 
-    public getVoxelModel(): ModelInterface {
-        return this.voxelShaderModel;
+    public getSolidModel(): ModelInterface {
+        return this.solidModel;
     }
 
-    public rebuildModel(): void {
-        this.rebuildSolidModel();
-        this.rebuildGlassModel();
+    private rebuildSolidModel() {
+        this.solidModel = ChunkModel.create(this, ChunkModelType.SOLID);
     }
 
-    private async rebuildSolidModel(): Promise<void> {
-        this.voxelShaderModel = ChunkModel.buildModel(this, ChunkModelType.SOLID);
-    }
-
-    private async rebuildGlassModel(): Promise<void> {
-        this.glassShaderModel = ChunkModel.buildModel(this, ChunkModelType.GLASS);
+    private rebuildGlassModel() {
+        this.glassModel = ChunkModel.create(this, ChunkModelType.GLASS);
     }
 
     static createFromRaw(raw: ChunkRawInterface) {
-        return new Chunk(raw.x, raw.z, raw.blocks);
+        return new Chunk(raw.worldX, raw.worldZ, raw.blocks);
     }
 
     static getId(x: number, z: number): string {
-        return `${x}:${z}`;
+        const chunkX = Math.floor(x / Chunk.WIDTH),
+              chunkZ = Math.floor(z / Chunk.LENGTH);
+
+        return `${chunkX}:${chunkZ}`;
     }
 
     static getEmptyBlocks(): BlockID.AIR[] {

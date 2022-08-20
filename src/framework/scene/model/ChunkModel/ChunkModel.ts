@@ -1,4 +1,4 @@
-import Container, { ServiceName } from '../../../Container';
+import Container from '../../../Container';
 import Mesh from '../Mesh';
 import Model from '../Model';
 import Chunk from '../../world/chunk/Chunk';
@@ -15,21 +15,23 @@ export enum ChunkModelType {
 
 export default class ChunkModel {
 
-    static buildModel(chunk: Chunk, type: ChunkModelType): Model {
-        const context = Container.getService(ServiceName.SCENE).getContext();
-
+    static create(chunk: Chunk, type: ChunkModelType): Model {
         const faces: number[] = [],
               arrayObject: number[] = [],
-              model = new Model(ChunkModel.buildMesh(context, chunk, getFaceFn(type), [], [], [], [], faces, arrayObject));
+              model = new Model(ChunkModel.buildMesh(chunk, getFaceFn(type), [], [], [], [], faces, arrayObject));
 
         model.position.set(chunk.getX(), 0, chunk.getZ());
 
-        ChunkModel.bindToContext(context, model, faces, arrayObject);
+        ChunkModel.bindToContext(model, faces, arrayObject);
+
+        model.update();
 
         return model;
     }
 
-    static bindToContext(context: WebGL2RenderingContext, model: Model, faces: number[], arrayObject: number[]) {
+    static bindToContext(model: Model, faces: number[], arrayObject: number[]) {
+        const context = Container.getContext();
+
         context.bindVertexArray(model.mesh.vao);
 
         model.mesh.faces = context.createBuffer() as WebGLBuffer;
@@ -45,7 +47,7 @@ export default class ChunkModel {
         context.vertexAttribPointer(4, 1, context.FLOAT, false, 0, 0);
     }
 
-    static buildMesh(context: WebGL2RenderingContext, chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): Mesh {
+    static buildMesh(chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): Mesh {
         const size = Chunk.WIDTH * Chunk.HEIGHT * Chunk.LENGTH;
 
         for (let index = 0; index < size; index++) {
@@ -71,6 +73,6 @@ export default class ChunkModel {
             }
         }
 
-        return new Mesh(context, 'chunk', inds, verts, normals, uvs);
+        return new Mesh('chunk', inds, verts, normals, uvs);
     }
 }

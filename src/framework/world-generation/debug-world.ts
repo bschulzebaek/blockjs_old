@@ -31,6 +31,9 @@ export default function createDebugWorld(world: WorldInterface) {
     blocks[CHUNK_LAYER_SIZE * 3 - 1] = BlockID.LOG;
 
     world.pushChunk(new Chunk(0, 0, blocks));
+    world.pushChunk(new Chunk(-1, 0, [...blocks]));
+    world.pushChunk(new Chunk(0, -1, [...blocks]));
+    world.pushChunk(new Chunk(-1, -1, [...blocks]));
 
     printStats(world, start);
 }

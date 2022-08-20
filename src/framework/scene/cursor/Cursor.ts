@@ -9,20 +9,20 @@ import CursorInterface from './CursorInterface';
 
 export default class Cursor implements CursorInterface {
 
+    static OFFSET = 0.5;
+
     public model?: Model;
 
-    private context: WebGL2RenderingContext;
     private camera: CameraInterface;
-    private world: WorldInterface | null = null;
+    private world: WorldInterface;
     private shader: CursorShader;
 
-    constructor(context: WebGL2RenderingContext, camera: CameraInterface, world: WorldInterface) {
-        this.context = context;
+    constructor(camera: CameraInterface, world: WorldInterface) {
         this.camera = camera;
         this.world = world;
 
-        this.model = this.createModel(context);
-        this.shader = new CursorShader(context, camera, this);
+        this.model = this.createModel();
+        this.shader = new CursorShader(camera, this);
     }
 
     public setCamera(camera: CameraInterface): void {
@@ -38,26 +38,45 @@ export default class Cursor implements CursorInterface {
             throw new Error('[Scene:Cursor] Missing required property "World"!');
         }
 
-        const { camera, world, model, context } = this,
+        const { camera, world, model } = this,
               ray = camera.ray.fromScreen(),
               block = getCellFromRay(world, camera.transform.position, ray.ray);
 
-        if (block?.blockId > 0) {
-            if (!model) {
-                this.model = this.createModel(context);
-            }
-
-            this.model?.position.set(block.x, block.y, block.z);
-            this.model?.position.add(0.5, 0.5, 0.5);
-            this.model?.update();
-            this.shader.run();
-        } else {
-            delete this.model;
+        if (!block || block.blockId < 1) {
+            return this.remove();
         }
+
+        if (!model) {
+            this.model = this.createModel();
+        }
+
+        this.updatePosition(block);
+        this.shader.run();
     }
 
-    private createModel(context: WebGL2RenderingContext): Model {
-        const model = CubeModel.create(context);
+    private updatePosition(block: any) {
+        if (!this.isNewPosition(block)) {
+            return;
+        }
+
+        console.log(`[CURSOR] Position ${block.x}:${block.y}:${block.z} (x:y:z)`)
+        console.log('[CURSOR] BlockID: ' + this.world.getBlockId(block.x, block.y, block.z))
+
+        this.model?.position.set(block.x, block.y, block.z);
+        this.model?.position.add(Cursor.OFFSET, Cursor.OFFSET, Cursor.OFFSET);
+        this.model?.update();
+    }
+
+    private isNewPosition(block: any): boolean {
+        return (
+            this.model?.position.x !== block.x + Cursor.OFFSET ||
+            this.model?.position.y !== block.y + Cursor.OFFSET ||
+            this.model?.position.z !== block.z + Cursor.OFFSET
+        );
+    }
+
+    private createModel(): Model {
+        const model = CubeModel.create();
         model.scale.set(1.001, 1.001, 1.001);
 
         return model;

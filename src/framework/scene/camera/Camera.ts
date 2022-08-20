@@ -1,4 +1,5 @@
 import { Transform, degree2Radians, Matrix4, Ray, Vector3 } from '../../../math';
+import Container from '../../Container';
 import CameraInterface from './CameraInterface';
 
 export default class Camera implements CameraInterface {
@@ -13,7 +14,9 @@ export default class Camera implements CameraInterface {
 
     public ray: Ray;
 
-    constructor(context: WebGL2RenderingContext, fov = 70, near = 0.1, far = 300.0) {
+    constructor(fov = 70, near = 0.1, far = 300.0) {
+        const context = Container.getContext();
+
         this.fov = fov;
         this.aspectRatio = context.canvas.width / context.canvas.height;
         this.near = near;
