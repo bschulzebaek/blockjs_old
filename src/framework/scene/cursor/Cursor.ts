@@ -1,4 +1,3 @@
-import getCellFromRay from '../../../utility/get-cell-from-ray';
 import CursorShader from '../../renderer/shader/cursor/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import CubeModel from '../model/CubeModel';
@@ -7,6 +6,7 @@ import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
 import Container, { ServiceName } from '../../Container';
 import SceneObject from '../SceneObject';
+import getBlockFromRay from '../../../utility/get-block-from-ray';
 
 export default class Cursor extends SceneObject {
 
@@ -42,7 +42,7 @@ export default class Cursor extends SceneObject {
         }
 
         const { model, camera } = this,
-              block = getCellFromRay(camera.transform.position, camera.ray.fromScreen().ray);
+              block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);
 
         if (!block || block.blockId < 1) {
             return this.remove();

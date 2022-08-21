@@ -1,4 +1,4 @@
-import getBlockFromRay from '../../utility/get-cell-from-ray';
+import getBlockFromRay from '../../utility/get-block-from-ray';
 import Container, { ServiceName } from '../Container';
 import BlockID from '../data/block-id';
 import { ChunkFaces } from '../data/chunk-faces';
