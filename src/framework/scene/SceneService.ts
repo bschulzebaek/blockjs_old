@@ -36,7 +36,7 @@ export default class SceneService implements ServiceInterface {
     }
 
     public async discard(): Promise<void> {
-
+        this.controller.beforeDestroy();
     }
 
     public addEntity(sceneEntity: SceneEntity) {
