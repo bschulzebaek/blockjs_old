@@ -8,6 +8,7 @@ import generateSeed from '../utility/generate-seed';
 import SceneService from './scene/SceneService';
 import RendererService from './renderer/RendererService';
 import prepareCanvas from '../utility/prepare-canvas';
+// import PlayerService from './player/PlayerService';
 
 interface SetupInterface {
     id?: string;
@@ -22,6 +23,7 @@ export enum ServiceName {
     ENTITY = 'entity',
     SCENE = 'scene',
     RENDERER = 'renderer',
+    PLAYER = 'player',
 }
 
 class Container {
@@ -33,11 +35,13 @@ class Container {
         entityService?: EntityService,
         sceneService?: SceneService,
         rendererService?: RendererService,
+        // playerService?: PlayerService,
     } = {
         gameConfigService: undefined,
         entityService: undefined,
         sceneService: undefined,
         rendererService: undefined,
+        // playerService: undefined,
     };
 
     public getContext(): WebGL2RenderingContext {
@@ -60,6 +64,7 @@ class Container {
         prepareCanvas(canvas);
 
         this.getService(ServiceName.SCENE).createSceneEntities();
+        // this.getService(ServiceName.PLAYER).createController();
         this.getService(ServiceName.RENDERER).start();
     }
 
@@ -95,6 +100,7 @@ class Container {
             this.services.rendererService?.discard(),
             this.services.sceneService?.discard(),
             this.services.entityService?.discard(),
+            // this.services.playerService?.discard(),
         ]);
 
         this.services = {};
@@ -140,12 +146,14 @@ class Container {
         this.services.sceneService = new SceneService(this.storageAdapter);
         this.services.entityService = new EntityService(this.storageAdapter);
         this.services.rendererService = new RendererService();
+        // this.services.playerService = new PlayerService();
     }
 
     getService(name: ServiceName.ENTITY): EntityService
     getService(name: ServiceName.GAME_CONFIG): GameConfigService
     getService(name: ServiceName.SCENE): SceneService
     getService(name: ServiceName.RENDERER): RendererService
+    // getService(name: ServiceName.PLAYER): PlayerService
     getService(name: ServiceName) {
         switch (name) {
             case ServiceName.ENTITY:
@@ -156,6 +164,8 @@ class Container {
                 return this.services.rendererService;
             case ServiceName.SCENE:
                 return this.services.sceneService;
+            // case ServiceName.PLAYER:
+            //     return this.services.playerService;
         }
     }
 }

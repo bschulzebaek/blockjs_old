@@ -6,7 +6,7 @@ import BlockID from '../../../data/block-id';
 import BlockUV from '../../../data/block-model';
 import { ChunkFaces } from '../../../data/chunk-faces';
 import buildFaces from './build-faces';
-import getFaceFn from './add-face-fn';
+import { getFaceFn, getSkipFn} from './add-face-fn';
 
 export enum ChunkModelType {
     SOLID = 'solid',
@@ -18,7 +18,7 @@ export default class ChunkModel {
     static create(chunk: Chunk, type: ChunkModelType): Model {
         const faces: number[] = [],
               arrayObject: number[] = [],
-              model = new Model(ChunkModel.buildMesh(chunk, getFaceFn(type), [], [], [], [], faces, arrayObject));
+              model = new Model(ChunkModel.buildMesh(chunk, getFaceFn(type), getSkipFn(type), [], [], [], [], faces, arrayObject));
 
         model.position.set(chunk.getX(), 0, chunk.getZ());
 
@@ -47,13 +47,13 @@ export default class ChunkModel {
         context.vertexAttribPointer(4, 1, context.FLOAT, false, 0, 0);
     }
 
-    static buildMesh(chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): Mesh {
+    static buildMesh(chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, skipBlockFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): Mesh {
         const size = Chunk.WIDTH * Chunk.HEIGHT * Chunk.LENGTH;
 
         for (let index = 0; index < size; index++) {
             const blockId = chunk.getBlock(index);
 
-            if (blockId === BlockID.AIR || blockId === BlockID.GLASS) {
+            if (skipBlockFn(blockId)) {
                 continue;
             }
 

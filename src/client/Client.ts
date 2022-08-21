@@ -5,8 +5,6 @@ import { Views } from './vue-app/router/routes';
 import Container from '../framework/Container';
 
 export default class Client {
-    // private isFullscreen: boolean = this.getCurrentState();
-
     private app: App;
 
     private router: Router;
@@ -28,16 +26,4 @@ export default class Client {
     public setView(name: Views): void {
         this.router.push({ name });
     }
-
-    // public setIsFullscreen(state: boolean): void {
-    //     this.isFullscreen = state;
-    // }
-
-    // public getIsFullscreen(): boolean {
-    //     return this.isFullscreen;
-    // }
-
-    // private getCurrentState(): boolean {
-    //     return !!document.fullscreenElement;
-    // }
 }

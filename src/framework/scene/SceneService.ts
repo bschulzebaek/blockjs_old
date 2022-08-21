@@ -8,12 +8,18 @@ import World from './world/World';
 import createDebugWorld from '../world-generation/debug-world';
 import Vector3 from '../../math/Vector3';
 import Cursor from './cursor/Cursor';
+import CameraInterface from './camera/CameraInterface';
+import PlayerController from '../player/PlayerController';
 
 export default class SceneService implements ServiceInterface {
 
     private scene?: Scene;
-
+    private camera?: CameraInterface;
     private world?: World;
+    private cursor?: Cursor;
+    private skybox?: Skybox;
+
+    private controller?: PlayerController;
 
     constructor(adapter: StorageAdapter) {
 
@@ -30,18 +36,22 @@ export default class SceneService implements ServiceInterface {
               world   = new World(camera),
               cursor  = new Cursor(camera, world);
 
-        // player
-        // inventory
-
         createDebugWorld(world);
-
-        camera.setPosition(new Vector3(-2, 6, -2));
-        camera.transform.rotation.y = 0;
 
         scene.addEntities(camera, skybox, world, cursor);
 
+        this.skybox = skybox;
         this.scene = scene;
+        this.camera = camera;
         this.world = world;
+        this.cursor = cursor;
+
+        const playerEntity = Container.getService(ServiceName.ENTITY).getPlayer()!;
+        this.controller = new PlayerController(camera, playerEntity, world);
+
+        scene.addEntity(this.controller);
+
+        playerEntity.setPosition(new Vector3(-2, 7, -2));
 
         Container.getService(ServiceName.RENDERER).setScene(scene);
     }
@@ -54,11 +64,23 @@ export default class SceneService implements ServiceInterface {
         return this.scene;
     }
 
-    public getPlayer() {
-
+    public getWorld() {
+        return this.world;
     }
 
-    public getWorld() {
+    public getCamera() {
+        return this.camera;
+    }
 
+    public getCursor() {
+        return this.cursor;
+    }
+
+    public getSkybox() {
+        return this.skybox;
+    }
+
+    public getController() {
+        return this.controller;
     }
 }

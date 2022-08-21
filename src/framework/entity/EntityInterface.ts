@@ -1,8 +1,9 @@
+import Vector3 from '../../math/Vector3';
 export default interface EntityInterface {
     getId(): string;
 
-    getPosition(): string;
-    setPosition(position: string): void;
+    getPosition(): Vector3;
+    setPosition(position: Vector3): void;
 
     getRotation(): any;
     setRotation(rotation: any): void;

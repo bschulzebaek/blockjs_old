@@ -6,9 +6,11 @@
 
         <div
             v-if="isLoading"
-            class="row"
+            class="row center-text"
         >
-            Loading saved worlds...
+            <p class="center-text">
+                Loading saved worlds...
+            </p>
         </div>
         <div
             v-else-if="!saves.length"
@@ -134,7 +136,6 @@ export default {
 }
 
 .game-load:hover {
-    transform: translate(0, 2px);
     background-color: rgba(0, 0, 0, .5);
 }
 

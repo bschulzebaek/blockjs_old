@@ -1,3 +1,4 @@
+import BlockID from '../../data/block-id';
 import ChunkInterface from './chunk/ChunkInterface';
 
 export default interface WorldInterface {

@@ -5,6 +5,8 @@ import CubeModel from '../model/CubeModel';
 import Model from '../model/Model';
 import WorldInterface from '../world/WorldInterface';
 import CursorInterface from './CursorInterface';
+import BlockNames from '../../data/block-name';
+import BlockID from '../../data/block-id';
 
 
 export default class Cursor implements CursorInterface {
@@ -38,9 +40,8 @@ export default class Cursor implements CursorInterface {
             throw new Error('[Scene:Cursor] Missing required property "World"!');
         }
 
-        const { camera, world, model } = this,
-              ray = camera.ray.fromScreen(),
-              block = getCellFromRay(world, camera.transform.position, ray.ray);
+        const { camera, model } = this,
+              block = getCellFromRay(camera.transform.position, camera.ray.fromScreen().ray);
 
         if (!block || block.blockId < 1) {
             return this.remove();
@@ -59,8 +60,7 @@ export default class Cursor implements CursorInterface {
             return;
         }
 
-        console.log(`[CURSOR] Position ${block.x}:${block.y}:${block.z} (x:y:z)`)
-        console.log('[CURSOR] BlockID: ' + this.world.getBlockId(block.x, block.y, block.z))
+        this.debugCursor(block);
 
         this.model?.position.set(block.x, block.y, block.z);
         this.model?.position.add(Cursor.OFFSET, Cursor.OFFSET, Cursor.OFFSET);
@@ -84,5 +84,30 @@ export default class Cursor implements CursorInterface {
 
     public remove(): void {
         delete this.model;
+
+        const el = document.querySelector('.cursor-container');
+
+        if (!el) {
+            return;
+        }
+
+        el.innerHTML = '';
+    }
+
+    private debugCursor(block: any) {
+        const el = document.querySelector('.cursor-container');
+
+        if (!el) {
+            return;
+        }
+
+        if (!block) {
+            el.innerHTML = '';
+        } else {
+            const { x, y, z, blockId } = block;
+            const blockName = BlockNames[blockId as BlockID];
+
+            el.innerHTML = `Looking at ${blockName} (${x}:${y}:${z})`;
+        }
     }
 }

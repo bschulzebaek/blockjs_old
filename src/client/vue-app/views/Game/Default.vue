@@ -1,6 +1,10 @@
 <template>
-  <div class="fps-container">60</div>
-  <span>x</span>
+    <div class="debug-container">
+        <div class="fps-container"></div>
+        <div class="position-container"></div>
+        <div class="cursor-container"></div>
+    </div>
+    <span>x</span>
 </template>
 
 <script lang="ts">
@@ -25,7 +29,7 @@ export default {
 </script>
 
 <style scoped>
-.fps-container {
+.debug-container {
   position: absolute;
   top: 0;
   left: 0;

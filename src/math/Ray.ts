@@ -1,11 +1,10 @@
-import type Camera from '../core/scene/camera/Camera';
-
 import { Matrix4, transformVector, multiply, Vector4, Vector3 } from '.';
+import CameraInterface from '../framework/scene/camera/CameraInterface';
 
 export default class Ray {
-    public camera: Camera;
+    public camera: CameraInterface;
 
-    constructor(camera: Camera) {
+    constructor(camera: CameraInterface) {
         this.camera = camera;
     }
 
@@ -37,12 +36,16 @@ export default class Ray {
         const rayClip = new Vector4(x, y, 1, 1);
         const rayEye = transformVector(invPers, rayClip);
 
-        rayEye[2] = -1; // Reset z (needed? Always seems -1 after invPers)
-        rayEye[3] = 0; // Reset 0 (needed: sometimes very low value.)
+        rayEye[2] = -1;
+        rayEye[3] = 0;
         const rayWorld = transformVector(invView, rayEye);
         const ray = new Vector3(rayWorld[0], rayWorld[1], rayWorld[2]);
         ray.normalize();
 
-        return { near, far, ray };
+        return {
+            near,
+            far,
+            ray
+        }
     }
 }

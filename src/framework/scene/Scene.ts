@@ -6,8 +6,9 @@ import SceneInterface from './SceneInterface';
 import SkyboxInterface from './skybox/SkyboxInterface';
 // import WorldInterface from '../world/WorldInterface';
 // import PlayerInterface from './player/PlayerInterface';
+import PlayerController from '../player/PlayerController';
 
-export type SceneEntity = CameraInterface | SkyboxInterface;
+export type SceneEntity = CameraInterface | SkyboxInterface | PlayerController;
 // export type SceneEntities = ModelInterface | CursorInterface | CameraInterface | SkyboxInterface | WorldInterface | PlayerInterface;
 
 export default class Scene implements SceneInterface {

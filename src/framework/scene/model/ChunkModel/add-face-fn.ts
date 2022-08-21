@@ -9,10 +9,31 @@ function addGlassFace(facing: BlockID): boolean {
     return facing !== BlockID.GLASS;
 }
 
-export default function getFaceFn(type: ChunkModelType) {
+function skipGlass(blockId: BlockID) {
+    return blockId !== BlockID.GLASS;
+}
+
+function skipSolid(blockId: BlockID) {
+    return blockId === BlockID.AIR || blockId === BlockID.GLASS;
+}
+
+function getSkipFn(type: ChunkModelType) {
+    if (type === ChunkModelType.GLASS) {
+        return skipGlass;
+    } else {
+        return skipSolid;
+    }
+}
+
+function getFaceFn(type: ChunkModelType) {
     if (type === ChunkModelType.GLASS) {
         return addGlassFace;
     } else {
         return addSolidFace;
     }
+}
+
+export {
+    getSkipFn,
+    getFaceFn
 }

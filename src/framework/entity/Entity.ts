@@ -1,26 +1,31 @@
 import EntityInterface from './EntityInterface';
 import StoreClass from '../storage/StoreClass';
+import Vector3 from '../../math/Vector3';
 
 export interface EntityRawInterface {
     id: string;
-    position: string;
+    x: number;
+    y: number;
+    z: number;
     inventoryId: string;
 }
 
 export default class Entity extends StoreClass implements EntityInterface {
     static STORAGE_FIELDS  = [
         'id',
-        'position',
+        'x',
+        'y',
+        'z',
         'inventoryId',
     ];
 
     private id: string;
-    private position: string;
+    private position: Vector3;
     private rotation: any;
     private model: any;
     private inventoryId: string;
 
-    constructor(id: string, position: string, inventoryId: string = '') {
+    constructor(id: string, position: Vector3, inventoryId: string = '') {
         super(id, Entity.STORAGE_FIELDS);
 
         this.id = id;
@@ -36,7 +41,7 @@ export default class Entity extends StoreClass implements EntityInterface {
         return this.position;
     }
 
-    public setPosition(position: string) {
+    public setPosition(position: Vector3) {
         this.position = position;
     }
 
@@ -64,7 +69,20 @@ export default class Entity extends StoreClass implements EntityInterface {
         return this.inventoryId;
     }
 
+
+    public getRaw() {
+        return {
+            id: this.id,
+            inventoryId: this.inventoryId,
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z
+        }
+    }
+
     static createFromRaw(entityRaw: EntityRawInterface): Entity {
-        return new Entity(entityRaw.id, entityRaw.position, entityRaw.inventoryId);
+        const { id, x, y, z, inventoryId } = entityRaw;
+
+        return new Entity(id, new Vector3(x, y, z), inventoryId);
     }
 }

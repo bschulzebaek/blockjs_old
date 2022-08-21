@@ -66,31 +66,13 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         return this.blocks[index];
     }
 
-    public setBlockId(x: number, y: number, z: number, blockId: BlockID) {
+    public setBlockId(x: number, y: number, z: number, newId: BlockID) {
         const blockIndex = this.getBlockIndex(x, y, z),
               previousId = this.getBlockId(x, y, z);
 
-        this.blocks[blockIndex] = blockId;
+        this.blocks[blockIndex] = newId;
 
-        console.log('[CHUNK] Improve ChunkModel updates!');
-
-        // TODO: Only rebuild faces for changed block !
-        // 1) Get index
-        // 2) Extract ChunkModel algo from block iteration
-
-        // ChunkModel.replaceBlock(this.glassModel, 'glass', this.getBlockIndex(x, y, z));
-        // ChunkModel.replaceBlock(this.solidModel, 'solid', this.getBlockIndex(x, y, z));
-
-        // TODO: Add a proper map for BlockID -> Shader assignment
-        [ previousId, blockId, ...this.getFacingBlockIds(x, y, z) ].forEach((blockId: BlockID) => {
-            switch (blockId) {
-                case BlockID.GLASS:
-                    this.rebuildGlassModel();
-
-                default:
-                    this.rebuildSolidModel();
-            }
-        });
+        this.updateModel(newId, previousId, blockIndex);
     }
 
     public getBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {
@@ -166,5 +148,18 @@ export default class Chunk extends StoreClass implements ChunkInterface {
 
     static getEmptyBlocks(): BlockID.AIR[] {
         return Array(Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH).fill(BlockID.AIR);
+    }
+
+    private updateModel(newId: BlockID, previousId: BlockID, blockIndex: number) {
+        // Get shader of both ids and rebuild
+
+        if (newId === BlockID.GLASS) {
+            this.rebuildGlassModel();
+        } if (newId === BlockID.AIR) {
+            this.rebuildGlassModel();
+            this.rebuildSolidModel();
+        } else {
+            this.rebuildSolidModel();
+        }
     }
 }

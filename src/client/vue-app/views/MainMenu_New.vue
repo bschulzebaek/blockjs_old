@@ -7,11 +7,10 @@
         <div class="row">
             <input
                 type="text"
-                placeholder="World name"
+                placeholder="New World"
                 v-model="name"
-                name="World Name"
+                name="World"
                 maxlength="16"
-                @blur="onBlurName"
             >
         </div>
 
@@ -47,11 +46,6 @@ export default {
             const { name, seed } = this;
 
             this.$router.push({ name: Views.GAME_SETUP, query: { name, seed } })
-        },
-        onBlurName() {
-            if (!this.name.length) {
-                this.name = DEFAULT_NAME;
-            }
         },
     }
 }

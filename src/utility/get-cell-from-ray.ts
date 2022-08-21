@@ -1,11 +1,13 @@
+import Container from '../framework/Container';
 import { ChunkDirections } from '../framework/data/chunk-faces';
-import WorldInterface from '../framework/scene/world/WorldInterface';
+import { ServiceName } from '../framework/Container';
+import Vector3 from '../math/Vector3';
 
 function frac(dir: any, a: number) {
     return dir > 0 ? (1 - a % 1) : (a % 1);
 }
 
-export default function(world: WorldInterface, point: any, direction: any): any {
+export default function getBlockFromRay(point: Vector3, direction: Vector3, maxDistances = 20): any {
     const { x: px, y: py, z: pz } = point,
           { x: dirX, y: dirY, z: dirZ } = direction;
 
@@ -29,10 +31,9 @@ export default function(world: WorldInterface, point: any, direction: any): any 
     toZ *= dtZ;
 
     let found = false,
-        maxDist = 20,
         face;
 
-    while (!found && maxDist-- > 0) {
+    while (!found && maxDistances-- > 0) {
         if (toX < toY) {
             if (toX < toZ) {
                 x += stepX;
@@ -54,7 +55,8 @@ export default function(world: WorldInterface, point: any, direction: any): any 
                 face = stepZ > 0 ? ChunkDirections.NORTH : ChunkDirections.SOUTH;
             }
         }
-        const blockId = world.getBlockId(x, y, z);
+
+        const blockId = Container.getService(ServiceName.SCENE).getWorld()!.getBlockId(x, y, z);
 
         if (blockId) {
             return { x, y, z, face, blockId };
