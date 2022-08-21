@@ -6,15 +6,12 @@ import CameraInterface from '../../../scene/camera/CameraInterface';
 import Container, { ServiceName } from '../../../Container';
 import { Matrix4 } from '../../../../math';
 import ModelInterface from '../../../scene/model/ModelInterface';
-import ChunkInterface from '../../../world/chunk/ChunkInterface';
-import WorldInterface from '../../../world/WorldInterface';
 
 export default class BaseShader {
     static TEXTURE = 'textures.png';
 
-    private context: WebGL2RenderingContext;
+    protected context: WebGL2RenderingContext;
     private camera: CameraInterface;
-    private world: WorldInterface;
     private uniforms: Record<string, AttributeInterface>;
     private texture: WebGLTexture;
     private program: WebGLProgram;
@@ -26,13 +23,12 @@ export default class BaseShader {
 
         this.context.useProgram(this.program);
         this.camera = Container.getService(ServiceName.SCENE).getCamera();
-        this.world = Container.getService(ServiceName.WORLD).getWorld();
 
         this.texture = createTexture(BaseShader.TEXTURE);
         this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, this.camera.projectionMatrix);
     }
 
-    public run(): void {
+    public run(model: ModelInterface): void {
         this.context.useProgram(this.program);
         this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.view);
         this.context.activeTexture(this.context['TEXTURE0']);
@@ -40,23 +36,10 @@ export default class BaseShader {
         this.context.uniform1i(this.uniforms['tex0'].loc, 0);
 
         this.preRender();
-        this.render();
+        this.render(model);
     }
 
-    private render(): void {
-        const { context } = this;
-
-        context.enable(context.DEPTH_TEST);
-        context.depthMask(true);
-        context.enable(context.BLEND);
-        context.enable(context.CULL_FACE);
-
-        this.world.getChunks().forEach(this.renderChunk);
-    }
-
-    private renderChunk = (chunk: ChunkInterface) => {
-        const model = this.getChunkModel(chunk);
-
+    private render(model: ModelInterface): void {
         const { context } = this;
         const { mesh, view } = model;
 
@@ -66,11 +49,6 @@ export default class BaseShader {
     }
 
     protected preRender() {
-        throw new Error('Must be implemented!');
-    }
-
-    // @ts-ignore
-    protected getChunkModel(chunk: ChunkInterface): ModelInterface {
         throw new Error('Must be implemented!');
     }
 }

@@ -20,8 +20,10 @@ export default class World implements WorldInterface {
     }
 
     public update(): void {
-        this.solidShader.run();
-        this.glassShader.run();
+        this.map.forEach((chunk) => {
+            this.solidShader.run(chunk.getSolidModel());
+            this.glassShader.run(chunk.getGlassModel());
+        });
     }
 
     public chunkExists(x: number, z: number): boolean {

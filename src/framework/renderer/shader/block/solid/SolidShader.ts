@@ -1,7 +1,6 @@
 import vss from './vss';
 import fss from './fss';
 import BaseShader from '../BaseShader';
-import ChunkInterface from '../../../../world/chunk/ChunkInterface';
 
 export default class SolidShader extends BaseShader {
 
@@ -16,9 +15,5 @@ export default class SolidShader extends BaseShader {
         context.depthMask(true);
         context.enable(context.BLEND);
         context.enable(context.CULL_FACE);
-    }
-
-    protected getChunkModel(chunk: ChunkInterface) {
-        return chunk.getSolidModel();
     }
 }
