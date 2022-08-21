@@ -1,7 +1,7 @@
 import Container, { ServiceName } from '../Container';
 import ServiceInterface from '../ServiceInterface';
 import StorageAdapter from '../storage/StorageAdapter';
-import { createDebugChunk } from '../world-generation/debug-world';
+import { createDebugChunk } from './generation/debug-world';
 import ChunkRepository from './chunk/ChunkRepository';
 import World from './World';
 import Vector3 from '../../math/Vector3';
