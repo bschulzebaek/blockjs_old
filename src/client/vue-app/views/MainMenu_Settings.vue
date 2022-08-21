@@ -5,10 +5,6 @@
         <h1>Options</h1>
 
         <div class="row">
-            Use LocalStorage
-        </div>
-
-        <div class="row">
             Foo
         </div>
 

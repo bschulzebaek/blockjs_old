@@ -1,7 +1,7 @@
 import Container from '../../../Container';
 import Mesh from '../Mesh';
 import Model from '../Model';
-import Chunk from '../../world/chunk/Chunk';
+import Chunk from '../../../world/chunk/Chunk';
 import BlockID from '../../../data/block-id';
 import BlockUV from '../../../data/block-model';
 import { ChunkFaces } from '../../../data/chunk-faces';

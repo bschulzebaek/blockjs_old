@@ -7,6 +7,7 @@ import WorldInterface from '../world/WorldInterface';
 import CursorInterface from './CursorInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
+import Container, { ServiceName } from '../../Container';
 
 
 export default class Cursor implements CursorInterface {
@@ -19,9 +20,9 @@ export default class Cursor implements CursorInterface {
     private world: WorldInterface;
     private shader: CursorShader;
 
-    constructor(camera: CameraInterface, world: WorldInterface) {
+    constructor(camera: CameraInterface) {
         this.camera = camera;
-        this.world = world;
+        this.world = Container.getService(ServiceName.WORLD).getWorld();
 
         this.model = this.createModel();
         this.shader = new CursorShader(camera, this);

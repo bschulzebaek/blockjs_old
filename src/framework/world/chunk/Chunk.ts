@@ -1,10 +1,10 @@
-import StoreClass from '../../../storage/StoreClass';
+import StoreClass from '../../storage/StoreClass';
 import ChunkInterface from './ChunkInterface';
 
-import BlockID from '../../../data/block-id';
-import { ChunkFaces } from '../../../data/chunk-faces';
-import ModelInterface from '../../model/ModelInterface';
-import ChunkModel, { ChunkModelType } from '../../model/ChunkModel/ChunkModel';
+import BlockID from '../../data/block-id';
+import { ChunkFaces } from '../../data/chunk-faces';
+import ModelInterface from '../../scene/model/ModelInterface';
+import ChunkModel, { ChunkModelType } from '../../scene/model/ChunkModel/ChunkModel';
 
 export interface ChunkRawInterface {
     id: string;
@@ -41,9 +41,6 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         this.blocks = blocks;
         this.worldX = chunkX * Chunk.WIDTH;
         this.worldZ = chunkZ * Chunk.LENGTH;
-
-        this.rebuildSolidModel();
-        this.rebuildGlassModel();
     }
 
     public getX() {
@@ -127,6 +124,11 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         return this.solidModel;
     }
 
+    public buildModel() {
+        this.rebuildGlassModel();
+        this.rebuildSolidModel();
+    }
+
     private rebuildSolidModel() {
         this.solidModel = ChunkModel.create(this, ChunkModelType.SOLID);
     }
@@ -136,7 +138,10 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     }
 
     static createFromRaw(raw: ChunkRawInterface) {
-        return new Chunk(raw.worldX, raw.worldZ, raw.blocks);
+        const chunkX = Math.floor(raw.worldX / Chunk.WIDTH),
+              chunkZ = Math.floor(raw.worldZ / Chunk.LENGTH);
+
+        return new Chunk(chunkX, chunkZ, raw.blocks);
     }
 
     static getId(x: number, z: number): string {

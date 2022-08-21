@@ -1,15 +1,11 @@
-// import SceneInterface from './SceneInterface';
-// import ModelInterface from './utility/ModelInterface';
-// import CursorInterface from './cursor/CursorInterface';
+import CursorInterface from './cursor/CursorInterface';
 import CameraInterface from './camera/CameraInterface';
 import SceneInterface from './SceneInterface';
 import SkyboxInterface from './skybox/SkyboxInterface';
-// import WorldInterface from '../world/WorldInterface';
-// import PlayerInterface from './player/PlayerInterface';
 import PlayerController from '../player/PlayerController';
+import WorldInterface from '../world/WorldInterface';
 
-export type SceneEntity = CameraInterface | SkyboxInterface | PlayerController;
-// export type SceneEntities = ModelInterface | CursorInterface | CameraInterface | SkyboxInterface | WorldInterface | PlayerInterface;
+export type SceneEntity = CursorInterface | CameraInterface | SkyboxInterface | WorldInterface | PlayerController;
 
 export default class Scene implements SceneInterface {
     private entities: SceneEntity[] = [];

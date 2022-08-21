@@ -1,15 +1,12 @@
 import vss from './vss';
 import fss from './fss';
 import BaseShader from '../BaseShader';
-import CameraInterface from '../../../../scene/camera/CameraInterface';
-import WorldInterface from '../../../../scene/world/WorldInterface';
-import ChunkInterface from '../../../../scene/world/chunk/ChunkInterface';
-import ModelInterface from '../../../../scene/model/ModelInterface';
+import ChunkInterface from '../../../../world/chunk/ChunkInterface';
 
 export default class SolidShader extends BaseShader {
 
-    constructor(camera: CameraInterface, world: WorldInterface) {
-        super(camera, world, vss, fss);
+    constructor() {
+        super(vss, fss);
     }
 
     protected preRender() {
@@ -21,7 +18,7 @@ export default class SolidShader extends BaseShader {
         context.enable(context.CULL_FACE);
     }
 
-    protected getChunkModel(chunk: ChunkInterface): ModelInterface {
+    protected getChunkModel(chunk: ChunkInterface) {
         return chunk.getSolidModel();
     }
 }

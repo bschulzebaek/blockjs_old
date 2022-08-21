@@ -1,9 +1,9 @@
-import Container from '../Container';
+import Container, { ServiceName } from '../Container';
 import EntityInterface from '../entity/EntityInterface';
 import CameraInterface from '../scene/camera/CameraInterface';
-import WorldInterface from '../scene/world/WorldInterface';
 import Vector3 from '../../math/Vector3';
 import { onLeftClick, onRightClick } from './mouse-controls';
+import WorldInterface from '../world/WorldInterface';
 
 enum ControlMap {
     WALK_FORWARD = 'w',
@@ -19,6 +19,8 @@ export default class PlayerController {
     static DEFAULT_WIDTH = 0.6;
     static DEFAULT_SPEED = 6;
     static SPRINT_FACTOR = 1.4;
+    static ROTATE_RATE_X = -150;
+    static ROTATE_RATE_Y = -120;
 
     private camera: CameraInterface;
     private entity: EntityInterface;
@@ -32,15 +34,19 @@ export default class PlayerController {
 
     private keyDownMap: Map<string, null> = new Map();
 
-    constructor(camera: CameraInterface, entity: EntityInterface, world: WorldInterface) {
+    constructor(camera: CameraInterface, entity: EntityInterface) {
         this.camera = camera;
         this.entity = entity;
-        this.world = world;
+        this.world = Container.getService(ServiceName.WORLD).getWorld();
 
         camera.transform.rotation.y = 0;
         camera.setPosition(entity.getPosition());
 
         this.registerEventListener();
+    }
+
+    public setPosition(position: Vector3) {
+        this.entity.setPosition(position);
     }
 
     public update(delta: number): void {
@@ -133,12 +139,14 @@ export default class PlayerController {
         window.addEventListener('keydown', this.onKeyDown);
         window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('click', this.onClick);
+        window.addEventListener('mousemove', this.onMouseMove);
     }
 
     private discardEventListener() {
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('keyup', this.onKeyUp);
         window.removeEventListener('click', this.onClick);
+        window.removeEventListener('mousemove', this.onMouseMove);
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
@@ -224,5 +232,18 @@ export default class PlayerController {
 
     private isGameRunning() {
         return Container.isRunning();
+    }
+
+    private onMouseMove = (event: MouseEvent): void => {
+        if (!Container.isRunning()) {
+            return;
+        }
+
+        const { movementX, movementY } = event;
+        const { transform } = this.camera
+
+        transform.rotation.x += movementY * (PlayerController.ROTATE_RATE_X / window.screen.availHeight);
+        transform.rotation.x = Math.max(-90, Math.min(90, transform.rotation.x));
+        transform.rotation.y += movementX * (PlayerController.ROTATE_RATE_Y / window.screen.availWidth);
     }
 }

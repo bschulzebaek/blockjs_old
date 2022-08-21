@@ -56,7 +56,7 @@ export default function getBlockFromRay(point: Vector3, direction: Vector3, maxD
             }
         }
 
-        const blockId = Container.getService(ServiceName.SCENE).getWorld()!.getBlockId(x, y, z);
+        const blockId = Container.getService(ServiceName.WORLD).getWorld()!.getBlockId(x, y, z);
 
         if (blockId) {
             return { x, y, z, face, blockId };

@@ -92,16 +92,16 @@ export default class StorageAdapter {
         }
     }
 
-    public async writeList(storeName: string, objs: StoreClassInterface[], ignoreKey = true): Promise<void> {
+    public async writeList(storeName: string, objs: StoreClassInterface[], ignoreKey: boolean): Promise<void> {
         const transaction = (await this.getConnection()).transaction(storeName, TransactionMode.WRITE);
         const store = transaction.objectStore(storeName);
 
-        objs.forEach((obj) => {
+        await Promise.all(objs.map((obj) => {
             if (ignoreKey) {
-                store.add(obj.getRaw());
+                return store.put(obj.getRaw());
             } else {
-                store.add(obj.getRaw(), obj.getIdentifier());
+                return store.put(obj.getRaw(), obj.getIdentifier());
             }
-        });
+        }));
     }
 }

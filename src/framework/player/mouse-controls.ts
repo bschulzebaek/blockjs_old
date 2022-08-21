@@ -19,7 +19,7 @@ function onLeftClick() {
         return printInfo({ 'Message': 'No target block found!' });
     }
 
-    const world = Container.getService(ServiceName.SCENE).getWorld()!,
+    const world = Container.getService(ServiceName.WORLD).getWorld()!,
           x = block.x,
           y = block.y,
           z = block.z;
@@ -49,8 +49,9 @@ function onLeftClick() {
 
 function onRightClick() {
     const sceneService = Container.getService(ServiceName.SCENE),
+          worldService = Container.getService(ServiceName.WORLD),
           camera       = sceneService.getCamera()!,
-          world        = sceneService.getWorld()!,
+          world        = worldService.getWorld()!,
           player       = sceneService.getController()!;
 
     const block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);

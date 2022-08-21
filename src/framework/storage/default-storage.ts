@@ -1,6 +1,6 @@
 import EntityRepository from '../entity/EntityRepository';
 import GameConfigRepository from '../game-config/GameConfigRepository';
-import ChunkRepository from '../scene/world/chunk/ChunkRepository';
+import ChunkRepository from '../world/chunk/ChunkRepository';
 
 export default [{
     name: ChunkRepository.STORE_NAME,

@@ -1,6 +1,8 @@
 import ServiceInterface from '../ServiceInterface';
 import Renderer from './Renderer';
 import SceneInterface from '../scene/SceneInterface';
+import Container from '../Container';
+import { ServiceName } from '../Container';
 
 export default class RendererService implements ServiceInterface {
     private renderer!: Renderer;
@@ -21,6 +23,14 @@ export default class RendererService implements ServiceInterface {
         if (!this.renderer.getPaused()) {
             return;
         }
+
+        const scene = Container.getService(ServiceName.SCENE).getScene();
+
+        if (!scene) {
+            throw new Error('[Renderer] Missing Scene!');
+        }
+
+        this.setScene(scene);
 
         this.renderer.setPaused(false);
         this.renderer.loop(0, 0);

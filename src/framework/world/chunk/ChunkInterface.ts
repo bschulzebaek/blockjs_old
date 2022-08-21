@@ -1,4 +1,4 @@
-import ModelInterface from '../../model/ModelInterface';
+import ModelInterface from '../../scene/model/ModelInterface';
 
 export default interface ChunkInterface {
     getSolidModel(): ModelInterface;

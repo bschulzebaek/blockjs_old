@@ -1,5 +1,5 @@
-import WorldInterface from '../scene/world/WorldInterface';
-import Chunk from '../scene/world/chunk/Chunk';
+import WorldInterface from '../world/WorldInterface';
+import Chunk from '../world/chunk/Chunk';
 import BlockID from '../data/block-id';
 
 function printStats(world: WorldInterface, start: number, end: number = Date.now()): void {

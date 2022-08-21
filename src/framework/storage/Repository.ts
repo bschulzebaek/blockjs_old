@@ -36,7 +36,7 @@ export default class Repository {
         await this.adapter.write(this.storeName, null, obj.getRaw());
     }
 
-    public async writeList(objs: StoreClassInterface[]): Promise<any> {
-        await this.adapter.writeList(this.storeName, objs);
+    public async writeList(objs: StoreClassInterface[], ignoreKey: boolean = true): Promise<any> {
+        await this.adapter.writeList(this.storeName, objs, ignoreKey);
     }
 }
