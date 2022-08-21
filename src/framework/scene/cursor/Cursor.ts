@@ -3,24 +3,35 @@ import CursorShader from '../../renderer/shader/cursor/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import CubeModel from '../model/CubeModel';
 import Model from '../model/Model';
-import CursorInterface from './CursorInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
 import Container, { ServiceName } from '../../Container';
+import SceneObject from '../SceneObject';
 
-
-export default class Cursor implements CursorInterface {
+export default class Cursor extends SceneObject {
 
     static OFFSET = 0.5;
 
     private model?: Model;
     private camera: CameraInterface;
-    private shader: CursorShader;
+    private shader!: CursorShader;
 
-    constructor(camera: CameraInterface) {
-        this.camera = camera;
-        this.model = this.createModel();
-        this.shader = new CursorShader(camera, this);
+    constructor() {
+        super();
+
+        this.camera = Container.getService(ServiceName.SCENE).getCamera();
+
+    }
+
+    public createModel() {
+        const model = CubeModel.create();
+        model.scale.set(1.001, 1.001, 1.001);
+
+        this.model = model;
+    }
+
+    public createShader(): void {
+        this.shader = new CursorShader(this.camera, this);
     }
 
     public update(): void {
@@ -38,7 +49,7 @@ export default class Cursor implements CursorInterface {
         }
 
         if (!model) {
-            this.model = this.createModel();
+           this.createModel();
         }
 
         this.updatePosition(block);
@@ -65,14 +76,7 @@ export default class Cursor implements CursorInterface {
         );
     }
 
-    private createModel(): Model {
-        const model = CubeModel.create();
-        model.scale.set(1.001, 1.001, 1.001);
-
-        return model;
-    }
-
-    public remove(): void {
+    private remove(): void {
         delete this.model;
 
         const el = document.querySelector('.cursor-container');
@@ -99,5 +103,9 @@ export default class Cursor implements CursorInterface {
 
             el.innerHTML = `Looking at ${blockName} (${x}:${y}:${z})`;
         }
+    }
+
+    public getModel() {
+        return this.model!;
     }
 }

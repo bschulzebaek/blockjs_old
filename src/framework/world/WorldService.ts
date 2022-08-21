@@ -10,7 +10,8 @@ export default class WorldService implements ServiceInterface {
 
     private chunkRepository: ChunkRepository;
     private world: World;
-    private seed: string;
+    // @ts-ignore
+    private seed: string = '';
 
     constructor(adapter: StorageAdapter) {
         this.chunkRepository = new ChunkRepository(adapter);
@@ -21,17 +22,19 @@ export default class WorldService implements ServiceInterface {
         this.world.createShader();
         this.world.getChunks().forEach((chunk) => chunk.buildModel());
 
-        // Container.getService(ServiceName.SCENE).addEntity(this.world);
+        Container.getService(ServiceName.SCENE).addEntity(this.world);
     }
 
     public async discard() {
         await this.chunkRepository.writeList(Array.from(this.world.getChunks()));
     }
 
-    public async create(seed: string) {
-        this.seed = seed;
+    public async create() {
+        const gameConfig = Container.getService(ServiceName.GAME_CONFIG).getConfig();
 
+        this.seed = gameConfig.getSeed();
         this.world = new World();
+
         createDebugWorld(this.world);
 
         const DEBUG_POSITION = new Vector3(-2, 7, -2);
@@ -39,8 +42,10 @@ export default class WorldService implements ServiceInterface {
         Container.getService(ServiceName.ENTITY).getPlayer()?.setPosition(DEBUG_POSITION);
     }
 
-    public async load(seed: string) {
-        this.seed = seed;
+    public async load() {
+        const gameConfig = Container.getService(ServiceName.GAME_CONFIG).getConfig();
+
+        this.seed = gameConfig.getSeed();
 
         const chunks = await this.chunkRepository.readAll();
         this.world = new World(chunks);

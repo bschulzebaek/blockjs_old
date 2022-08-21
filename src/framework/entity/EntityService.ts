@@ -15,7 +15,7 @@ export default class EntityService implements ServiceInterface {
         this.repository = new EntityRepository(adapter);
     }
 
-    public async createPlayer(): Promise<Entity> {
+    public async create(): Promise<Entity> {
         const player = new Entity(EntityService.PLAYER_ID);
 
         this.entities.set(player.getId(), player);

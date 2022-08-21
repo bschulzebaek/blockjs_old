@@ -1,12 +1,11 @@
 import ServiceInterface from '../ServiceInterface';
-import StorageAdapter from '../storage/StorageAdapter';
 import Scene from './Scene';
 import Skybox from './skybox/Skybox';
 import Cursor from './cursor/Cursor';
 import CameraInterface from './camera/CameraInterface';
 import PlayerController from '../player/PlayerController';
 import Camera from './camera/Camera';
-import { SceneEntity } from './Scene';
+import SceneObject from './SceneObject';
 
 export default class SceneService implements ServiceInterface {
 
@@ -17,20 +16,29 @@ export default class SceneService implements ServiceInterface {
 
     private controller!: PlayerController;
 
-    // @ts-ignore
-    constructor(adapter: StorageAdapter) {
-
-    }
-
     public async create() {
-
+        this.createSceneEntities();
     }
 
-    public createSceneEntities() {
+    public beforePlay() {
+        const objects = [
+            this.skybox,
+            this.cursor,
+            this.controller,
+            ...this.scene.getEntities()
+        ];
+
+        objects.forEach((item) => {
+            item.createModel();
+            item.createShader();
+        });
+    }
+
+    private createSceneEntities() {
         this.camera = new Camera(70, 0.05, 300.0);
 
-        this.skybox = new Skybox(this.camera);
-        this.cursor  = new Cursor(this.camera);
+        this.skybox = new Skybox();
+        this.cursor  = new Cursor();
 
         this.scene = new Scene(this.camera, this.skybox, this.cursor);
     }
@@ -39,7 +47,7 @@ export default class SceneService implements ServiceInterface {
         this.controller.beforeDestroy();
     }
 
-    public addEntity(sceneEntity: SceneEntity) {
+    public addEntity(sceneEntity: SceneObject) {
         this.scene.addEntities(sceneEntity);
     }
 
@@ -49,14 +57,6 @@ export default class SceneService implements ServiceInterface {
 
     public getCamera() {
         return this.camera;
-    }
-
-    public getCursor() {
-        return this.cursor;
-    }
-
-    public getSkybox() {
-        return this.skybox;
     }
 
     public setController(controller: PlayerController) {

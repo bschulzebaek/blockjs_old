@@ -6,8 +6,6 @@ export default interface CameraInterface {
     view: Matrix4;
     ray: Ray;
 
-    // mode: ViewMode;
-
     updateViewMatrix(): void;
     panX(value: number): void;
     panY(value: number): void;

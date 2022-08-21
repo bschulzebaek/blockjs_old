@@ -26,6 +26,10 @@ export default class World implements WorldInterface {
         });
     }
 
+    public createModel() {
+
+    }
+
     public chunkExists(x: number, z: number): boolean {
         return !!this.getChunk(x, z);
     }

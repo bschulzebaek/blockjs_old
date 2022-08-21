@@ -1,9 +1,7 @@
 import { Transform, degree2Radians, Matrix4, Ray, Vector3 } from '../../../math';
-import Container from '../../Container';
 import CameraInterface from './CameraInterface';
 
 export default class Camera implements CameraInterface {
-
     public projectionMatrix: Matrix4;
     public transform: Transform;
     public view: Matrix4;
@@ -15,10 +13,8 @@ export default class Camera implements CameraInterface {
     public ray: Ray;
 
     constructor(fov = 70, near = 0.1, far = 300.0) {
-        const context = Container.getContext();
-
         this.fov = fov;
-        this.aspectRatio = context.canvas.width / context.canvas.height;
+        this.aspectRatio = this.getAspectRatio();
         this.near = near;
         this.far = far;
 
@@ -26,15 +22,19 @@ export default class Camera implements CameraInterface {
         this.transform = new Transform();
         this.view = Matrix4.identity();
 
-        // window.addEventListener('resize', this.updateOnResize.bind(this, context));
+        // window.addEventListener('resize', this.updateOnResize.bind(this));
 
         this.ray = new Ray(this);
     }
 
-    public updateOnResize(context: WebGL2RenderingContext): void {
-        this.aspectRatio = context.canvas.width / context.canvas.height;
+    public updateOnResize(): void {
+        this.aspectRatio = this.getAspectRatio();
 
         this.projectionMatrix = Matrix4.perspective(this.fov, this.aspectRatio, this.near, this.far);
+    }
+
+    private getAspectRatio() {
+        return window.screen.availWidth / window.screen.availHeight;
     }
 
     public updateViewMatrix() {

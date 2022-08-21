@@ -18,7 +18,7 @@ export default class PlayerController {
     static DEFAULT_HEIGHT = 1.7;
     static DEFAULT_WIDTH = 0.6;
     static DEFAULT_SPEED = 6;
-    static SPRINT_FACTOR = 1.4;
+    static SPRINT_FACTOR = 1.6;
     static ROTATE_RATE_X = -150;
     static ROTATE_RATE_Y = -120;
 
@@ -135,6 +135,7 @@ export default class PlayerController {
     }
 
     private registerEventListener() {
+        window.addEventListener('keypress', this.onKeyPress);
         window.addEventListener('keydown', this.onKeyDown);
         window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('click', this.onClick);
@@ -142,13 +143,24 @@ export default class PlayerController {
     }
 
     private discardEventListener() {
+        window.removeEventListener('keypress', this.onKeyPress);
         window.removeEventListener('keydown', this.onKeyDown);
         window.removeEventListener('keyup', this.onKeyUp);
         window.removeEventListener('click', this.onClick);
         window.removeEventListener('mousemove', this.onMouseMove);
     }
 
+    private onKeyPress(event: KeyboardEvent) {
+        event.preventDefault();
+    }
+
     private onKeyDown = (event: KeyboardEvent) => {
+        if (!this.isGameRunning()) {
+            return;
+        }
+
+        event.preventDefault();
+
         if (this.keyDownMap.has(event.key)) {
             return;
         }
@@ -161,6 +173,8 @@ export default class PlayerController {
     }
 
     private onKeyUp = (event: KeyboardEvent) => {
+        event.preventDefault();
+
         if (!this.keyDownMap.has(event.key)) {
             return;
         }
@@ -238,6 +252,8 @@ export default class PlayerController {
             return;
         }
 
+        event.preventDefault();
+
         const { movementX, movementY } = event;
         const { transform } = this.camera
 
@@ -248,5 +264,13 @@ export default class PlayerController {
         const entityRotation = this.entity.getTransform().rotation;
 
         entityRotation.set(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+    }
+
+    public createModel() {
+        this.entity.createModel();
+    }
+
+    public createShader() {
+        this.entity.createShader();
     }
 }

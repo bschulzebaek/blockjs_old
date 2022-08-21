@@ -86,9 +86,9 @@ export default class StorageAdapter {
         const store = transaction.objectStore(storeName);
 
         if (key) {
-            store.add(value, key);
+            store.put(value, key);
         } else {
-            store.add(value);
+            store.put(value);
         }
     }
 

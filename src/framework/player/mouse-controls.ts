@@ -4,7 +4,7 @@ import BlockID from '../data/block-id';
 import { ChunkFaces } from '../data/chunk-faces';
 
 function printInfo(details: object) {
-    console.table({
+    console.debug({
         Action: 'Edit block',
         ...details
     });

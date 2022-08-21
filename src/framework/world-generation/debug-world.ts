@@ -9,8 +9,8 @@ function printStats(world: WorldInterface, start: number, end: number = Date.now
         countBlocks += chunk.getBlocks().length;
     });
 
-    console.info(`[World] Generating chunks took: ${end - start}ms.`)
-    console.table({
+    console.debug(`[World] Generating chunks took: ${end - start}ms.`)
+    console.debug({
         chunks: world.getChunks().length,
         blocks: countBlocks
     });

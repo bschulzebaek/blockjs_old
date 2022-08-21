@@ -1,26 +1,26 @@
 import fss from './fss';
 import vss from './vss';
 import CameraInterface from '../../../scene/camera/CameraInterface';
-import CursorInterface from '../../../scene/cursor/CursorInterface';
 import AttributeInterface from '../AttributeInterface';
 import createShaderProgram from '../utility/create-program';
 import getShaderUniforms from '../utility/get-uniforms';
 import ModelInterface from '../../../scene/model/ModelInterface';
 import { Matrix4 } from '../../../../math';
 import Container from '../../../Container';
+import type Cursor from '../../../scene/cursor/Cursor';
 
 export default class CursorShader {
 
     static COLOR = [1.0, 1.0, 1.0, 0.3];
 
     private camera: CameraInterface;
-    private cursor: CursorInterface;
+    private cursor: Cursor;
 
     private context: WebGL2RenderingContext;
     private program: WebGLProgram;
     private uniforms: Record<string, AttributeInterface>;
 
-    constructor(camera: CameraInterface, cursor: CursorInterface) {
+    constructor(camera: CameraInterface, cursor: Cursor) {
         this.context = Container.getContext();
         this.program = createShaderProgram(vss, fss);
         this.uniforms = getShaderUniforms(this.program);
@@ -34,17 +34,18 @@ export default class CursorShader {
     }
 
     public run(): void {
+        const model = this.cursor.getModel();
+
         this.context.useProgram(this.program);
         this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.view);;
-        this.context.uniformMatrix4fv(this.uniforms['view'].loc, false, (this.cursor.model as ModelInterface).view as Matrix4);
+        this.context.uniformMatrix4fv(this.uniforms['view'].loc, false, model.view as Matrix4);
 
-        this.render();
+        this.render(model);
     }
 
-    public render(): void {
+    public render(model: ModelInterface): void {
         const { context } = this;
-        const { model } = this.cursor;
-        const { mesh } = model as ModelInterface;
+        const { mesh } = model;
 
         context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
 

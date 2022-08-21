@@ -33,17 +33,17 @@ class Container {
     private context?: WebGL2RenderingContext;
 
     private services: {
-        gameConfigService?: GameConfigService,
-        entityService?: EntityService,
-        sceneService?: SceneService,
-        rendererService?: RendererService,
-        worldService?: WorldService,
+        gameConfig?: GameConfigService,
+        entity?: EntityService,
+        scene?: SceneService,
+        renderer?: RendererService,
+        world?: WorldService,
     } = {
-        gameConfigService: undefined,
-        entityService: undefined,
-        sceneService: undefined,
-        rendererService: undefined,
-        worldService: undefined,
+        gameConfig: undefined,
+        entity: undefined,
+        scene: undefined,
+        renderer: undefined,
+        world: undefined,
     };
 
     public getContext(): WebGL2RenderingContext {
@@ -59,47 +59,31 @@ class Container {
     }
 
     public async play(canvas: HTMLCanvasElement) {
-        console.log(`[CONTAINER] Start`);
-
         const sceneService    = this.getService(ServiceName.SCENE),
               worldService    = this.getService(ServiceName.WORLD),
-              entityService   = this.getService(ServiceName.ENTITY),
               rendererService = this.getService(ServiceName.RENDERER);
 
         this.context = canvas.getContext('webgl2') as WebGL2RenderingContext;
 
         prepareCanvas(canvas);
 
-        // Should be moved to "setup", but requires context to be set. Make Setup.vue a child of Game/Index.vue
-        // Or extract everything context related
-        sceneService.createSceneEntities();
+        sceneService.beforePlay();
         worldService.beforePlay();
 
         rendererService.start();
-
-        sceneService.setController(new PlayerController(
-            sceneService.getCamera(),
-            entityService.getPlayer()!,
-        ));
     }
 
     public pause() {
-        console.log(`[CONTAINER] Pause`);
-
         this.getService(ServiceName.RENDERER).stop();
         document.exitPointerLock();
     }
 
     public resume(canvas: HTMLCanvasElement) {
-        console.log(`[CONTAINER] Resume`);
-
         canvas.requestPointerLock();
         this.getService(ServiceName.RENDERER).start();
     }
 
     public async setup(setupData: SetupInterface): Promise<void> {
-        console.log(`[CONTAINER] Setup`);
-
         // TODO: Preload assets for shaders!
 
         if (setupData.id) {
@@ -107,17 +91,19 @@ class Container {
         } else {
             await this.new(setupData.name ?? DEFAULT_NAME, setupData.seed ?? generateSeed());
         }
+
+        const sceneService    = this.getService(ServiceName.SCENE),
+              entityService   = this.getService(ServiceName.ENTITY);
+
+        sceneService.setController(new PlayerController(
+            sceneService.getCamera(),
+            entityService.getPlayer()!,
+        ));
     }
 
     public async teardown(): Promise<void> {
-        console.log(`[CONTAINER] Teardown`);
-
         await Promise.all([
-            this.services.gameConfigService?.discard(),
-            this.services.rendererService?.discard(),
-            this.services.sceneService?.discard(),
-            this.services.entityService?.discard(),
-            this.services.worldService?.discard(),
+            Object.values(this.services).map((service) => service.discard())
         ]);
 
         this.services = {};
@@ -130,26 +116,25 @@ class Container {
     private async new(name: string, seed: string) {
         const id = generateUUID();
         await this.createServices(id, true);
+        this.getService(ServiceName.GAME_CONFIG).create(id, name, seed),
 
         await Promise.all([
-            this.services.gameConfigService?.create(id, name, seed),
-            this.services.sceneService?.create(),
-            this.services.entityService?.createPlayer(),
-            this.services.rendererService?.create(),
-            this.services.worldService?.create(seed),
+            this.getService(ServiceName.SCENE).create(),
+            this.getService(ServiceName.ENTITY).create(),
+            this.getService(ServiceName.RENDERER).create(),
+            this.getService(ServiceName.WORLD).create(),
         ]);
     }
 
     private async load(id: string): Promise<void> {
         await this.createServices(id, false);
-        const config = await this.services.gameConfigService?.load()!;
+        await this.getService(ServiceName.GAME_CONFIG).load()!;
 
         await Promise.all([
-            this.services.sceneService?.create(),
-            this.services.entityService?.getAll(),
-            this.services.rendererService?.create(),
-            this.services.worldService?.load(config.getSeed()),
-
+            this.getService(ServiceName.SCENE).create(),
+            this.getService(ServiceName.ENTITY).getAll(),
+            this.getService(ServiceName.RENDERER).create(),
+            this.getService(ServiceName.WORLD).load(),
         ]);
     }
 
@@ -160,11 +145,11 @@ class Container {
             await this.storageAdapter.createDefaultStorage();
         }
 
-        this.services.gameConfigService = new GameConfigService(this.storageAdapter);
-        this.services.sceneService = new SceneService(this.storageAdapter);
-        this.services.entityService = new EntityService(this.storageAdapter);
-        this.services.rendererService = new RendererService();
-        this.services.worldService = new WorldService(this.storageAdapter);
+        this.services.gameConfig = new GameConfigService(this.storageAdapter);
+        this.services.scene = new SceneService();
+        this.services.entity = new EntityService(this.storageAdapter);
+        this.services.renderer = new RendererService();
+        this.services.world = new WorldService(this.storageAdapter);
     }
 
     getService(name: ServiceName.ENTITY): EntityService
@@ -175,15 +160,15 @@ class Container {
     getService(name: ServiceName) {
         switch (name) {
             case ServiceName.ENTITY:
-                return this.services.entityService;
+                return this.services.entity;
             case ServiceName.GAME_CONFIG:
-                return this.services.gameConfigService;
+                return this.services.gameConfig;
             case ServiceName.RENDERER:
-                return this.services.rendererService;
+                return this.services.renderer;
             case ServiceName.SCENE:
-                return this.services.sceneService;
+                return this.services.scene;
             case ServiceName.WORLD:
-                return this.services.worldService;
+                return this.services.world;
             default:
                 throw new Error(`[Container] Service "${name}" does not exist!`);
         }

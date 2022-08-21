@@ -15,4 +15,7 @@ export default interface EntityInterface {
 
     getInventoryId(): string;
     setInventoryId(inventoryId: string): void;
+
+    createModel(): void;
+    createShader(): void;
 }

@@ -1,35 +1,30 @@
-import CursorInterface from './cursor/CursorInterface';
-import CameraInterface from './camera/CameraInterface';
 import SceneInterface from './SceneInterface';
-import SkyboxInterface from './skybox/SkyboxInterface';
-import PlayerController from '../player/PlayerController';
-import WorldInterface from '../world/WorldInterface';
 import Container, { ServiceName } from '../Container';
-
-export type SceneEntity = CursorInterface | CameraInterface | SkyboxInterface | WorldInterface | PlayerController;
+import SceneObject from './SceneObject';
+import CameraInterface from './camera/CameraInterface';
 
 export default class Scene implements SceneInterface {
-    private entities: SceneEntity[] = [];
+    private entities: SceneObject[] = [];
 
     private camera: CameraInterface;
-    private skybox: SkyboxInterface;
-    private cursor: CursorInterface;
+    private skybox: SceneObject;
+    private cursor: SceneObject;
 
-    constructor(camera: CameraInterface, skybox: SkyboxInterface, cursor: CursorInterface) {
+    constructor(camera: CameraInterface, skybox: SceneObject, cursor: SceneObject) {
         this.camera = camera;
         this.skybox = skybox;
         this.cursor = cursor;
     }
 
-    public addEntity(entity: SceneEntity): void {
+    public addEntity(entity: SceneObject): void {
         this.entities.push(entity);
     }
 
-    public addEntities(...entities: SceneEntity[]): void {
+    public addEntities(...entities: SceneObject[]): void {
         this.entities.push(...entities);
     }
 
-    public getEntities(): SceneEntity[] {
+    public getEntities(): SceneObject[] {
         return this.entities;
     }
 

@@ -110,4 +110,12 @@ export default class Entity extends StoreClass implements EntityInterface {
             inventoryId
         );
     }
+
+    public createModel() {
+
+    }
+
+    public createShader() {
+
+    }
 }
