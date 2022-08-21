@@ -88,6 +88,10 @@ export default class Camera implements CameraInterface {
         this.transform.position.add(0, 1.7 / 2, 0);
     }
 
+    public setTransform(transform: Transform) {
+        this.transform = transform;
+    }
+
     public update(): void {
         this.updateViewMatrix();
     }

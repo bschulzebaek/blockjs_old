@@ -3,7 +3,6 @@ import CursorShader from '../../renderer/shader/cursor/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import CubeModel from '../model/CubeModel';
 import Model from '../model/Model';
-import WorldInterface from '../world/WorldInterface';
 import CursorInterface from './CursorInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
@@ -14,34 +13,24 @@ export default class Cursor implements CursorInterface {
 
     static OFFSET = 0.5;
 
-    public model?: Model;
-
+    private model?: Model;
     private camera: CameraInterface;
-    private world: WorldInterface;
     private shader: CursorShader;
 
     constructor(camera: CameraInterface) {
         this.camera = camera;
-        this.world = Container.getService(ServiceName.WORLD).getWorld();
-
         this.model = this.createModel();
         this.shader = new CursorShader(camera, this);
     }
 
-    public setCamera(camera: CameraInterface): void {
-        this.camera = camera;
-    }
-
     public update(): void {
-        if (!this.camera) {
-            throw new Error('[Scene:Cursor] Missing required property "Camera"!');
-        }
+        const world = Container.getService(ServiceName.WORLD).getWorld();
 
-        if (!this.world) {
+        if (!world) {
             throw new Error('[Scene:Cursor] Missing required property "World"!');
         }
 
-        const { camera, model } = this,
+        const { model, camera } = this,
               block = getCellFromRay(camera.transform.position, camera.ray.fromScreen().ray);
 
         if (!block || block.blockId < 1) {

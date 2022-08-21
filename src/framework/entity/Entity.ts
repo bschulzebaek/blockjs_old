@@ -86,7 +86,7 @@ export default class Entity extends StoreClass implements EntityInterface {
             },
             rotation: {
                 x: rotation.x,
-                y: 0,
+                y: rotation.y,
                 z: rotation.z,
             }
         }

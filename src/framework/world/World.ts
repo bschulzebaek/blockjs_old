@@ -1,25 +1,27 @@
 import Chunk from './chunk/Chunk';
 import WorldInterface from './WorldInterface';
-import CameraInterface from '../camera/CameraInterface';
-
-import BlockID from '../../data/block-id';
-import SolidShader from '../../renderer/shader/block/solid/SolidShader';
-import GlassShader from '../../renderer/shader/block/glass/GlassShader';
+import BlockID from '../data/block-id';
+import SolidShader from '../renderer/shader/block/solid/SolidShader';
+import GlassShader from '../renderer/shader/block/glass/GlassShader';
 
 export default class World implements WorldInterface {
     private map: Map<string, Chunk> = new Map();
 
-    private solidShader: SolidShader
-    private glassShader: GlassShader;
+    private solidShader!: SolidShader
+    private glassShader!: GlassShader;
 
-    constructor(camera: CameraInterface) {
-        this.solidShader = new SolidShader(camera, this);
-        this.glassShader = new GlassShader(camera, this);
+    constructor(chunks: Chunk[] = []) {
+        chunks.forEach(this.pushChunk.bind(this));
+    }
+
+    public createShader() {
+        this.solidShader = new SolidShader();
+        this.glassShader = new GlassShader();
     }
 
     public update(): void {
         this.solidShader.run();
-        this.glassShader.run() ;
+        this.glassShader.run();
     }
 
     public chunkExists(x: number, z: number): boolean {

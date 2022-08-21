@@ -8,7 +8,8 @@ import generateSeed from '../utility/generate-seed';
 import SceneService from './scene/SceneService';
 import RendererService from './renderer/RendererService';
 import prepareCanvas from '../utility/prepare-canvas';
-// import PlayerService from './player/PlayerService';
+import WorldService from './world/WorldService';
+import PlayerController from './player/PlayerController';
 
 interface SetupInterface {
     id?: string;
@@ -24,6 +25,7 @@ export enum ServiceName {
     SCENE = 'scene',
     RENDERER = 'renderer',
     PLAYER = 'player',
+    WORLD = 'world',
 }
 
 class Container {
@@ -35,11 +37,13 @@ class Container {
         entityService?: EntityService,
         sceneService?: SceneService,
         rendererService?: RendererService,
+        worldService?: WorldService,
     } = {
         gameConfigService: undefined,
         entityService: undefined,
         sceneService: undefined,
         rendererService: undefined,
+        worldService: undefined,
     };
 
     public getContext(): WebGL2RenderingContext {
@@ -54,15 +58,29 @@ class Container {
         return this.getService(ServiceName.RENDERER).isRunning();
     }
 
-    public play(canvas: HTMLCanvasElement) {
+    public async play(canvas: HTMLCanvasElement) {
         console.log(`[CONTAINER] Start`);
+
+        const sceneService    = this.getService(ServiceName.SCENE),
+              worldService    = this.getService(ServiceName.WORLD),
+              entityService   = this.getService(ServiceName.ENTITY),
+              rendererService = this.getService(ServiceName.RENDERER);
 
         this.context = canvas.getContext('webgl2') as WebGL2RenderingContext;
 
         prepareCanvas(canvas);
 
-        this.getService(ServiceName.SCENE).createSceneEntities();
-        this.getService(ServiceName.RENDERER).start();
+        // Should be moved to "setup", but requires context to be set. Make Setup.vue a child of Game/Index.vue
+        // Or extract everything context related
+        sceneService.createSceneEntities();
+        worldService.beforePlay();
+
+        rendererService.start();
+
+        sceneService.setController(new PlayerController(
+            sceneService.getCamera(),
+            entityService.getPlayer()!,
+        ));
     }
 
     public pause() {
@@ -82,6 +100,8 @@ class Container {
     public async setup(setupData: SetupInterface): Promise<void> {
         console.log(`[CONTAINER] Setup`);
 
+        // TODO: Preload assets for shaders!
+
         if (setupData.id) {
             await this.load(setupData.id);
         } else {
@@ -97,6 +117,7 @@ class Container {
             this.services.rendererService?.discard(),
             this.services.sceneService?.discard(),
             this.services.entityService?.discard(),
+            this.services.worldService?.discard(),
         ]);
 
         this.services = {};
@@ -114,20 +135,21 @@ class Container {
             this.services.gameConfigService?.create(id, name, seed),
             this.services.sceneService?.create(),
             this.services.entityService?.createPlayer(),
-
             this.services.rendererService?.create(),
+            this.services.worldService?.create(seed),
         ]);
     }
 
     private async load(id: string): Promise<void> {
         await this.createServices(id, false);
+        const config = await this.services.gameConfigService?.load()!;
 
         await Promise.all([
-            this.services.gameConfigService?.load(),
             this.services.sceneService?.create(),
             this.services.entityService?.getAll(),
-
             this.services.rendererService?.create(),
+            this.services.worldService?.load(config.getSeed()),
+
         ]);
     }
 
@@ -142,12 +164,14 @@ class Container {
         this.services.sceneService = new SceneService(this.storageAdapter);
         this.services.entityService = new EntityService(this.storageAdapter);
         this.services.rendererService = new RendererService();
+        this.services.worldService = new WorldService(this.storageAdapter);
     }
 
     getService(name: ServiceName.ENTITY): EntityService
     getService(name: ServiceName.GAME_CONFIG): GameConfigService
     getService(name: ServiceName.SCENE): SceneService
     getService(name: ServiceName.RENDERER): RendererService
+    getService(name: ServiceName.WORLD): WorldService
     getService(name: ServiceName) {
         switch (name) {
             case ServiceName.ENTITY:
@@ -158,6 +182,8 @@ class Container {
                 return this.services.rendererService;
             case ServiceName.SCENE:
                 return this.services.sceneService;
+            case ServiceName.WORLD:
+                return this.services.worldService;
             default:
                 throw new Error(`[Container] Service "${name}" does not exist!`);
         }

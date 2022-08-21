@@ -3,34 +3,33 @@ import createShaderProgram from '../utility/create-program';
 import getShaderUniforms from '../utility/get-uniforms';
 import createTexture from '../utility/create-texture';
 import CameraInterface from '../../../scene/camera/CameraInterface';
-import WorldInterface from '../../../scene/world/WorldInterface';
-import ChunkInterface from '../../../scene/world/chunk/ChunkInterface';
-import Container from '../../../Container';
+import Container, { ServiceName } from '../../../Container';
 import { Matrix4 } from '../../../../math';
 import ModelInterface from '../../../scene/model/ModelInterface';
+import ChunkInterface from '../../../world/chunk/ChunkInterface';
+import WorldInterface from '../../../world/WorldInterface';
 
 export default class BaseShader {
     static TEXTURE = 'textures.png';
 
-    protected context: WebGL2RenderingContext;
+    private context: WebGL2RenderingContext;
     private camera: CameraInterface;
     private world: WorldInterface;
-    protected uniforms: Record<string, AttributeInterface>;
-    protected texture: WebGLTexture;
+    private uniforms: Record<string, AttributeInterface>;
+    private texture: WebGLTexture;
     private program: WebGLProgram;
 
-    constructor(camera: CameraInterface, world: WorldInterface, vss: string, fss: string) {
+    constructor(vss: string, fss: string) {
         this.context = Container.getContext();
         this.program = createShaderProgram(vss, fss);
         this.uniforms = getShaderUniforms(this.program);
 
         this.context.useProgram(this.program);
-
-        this.camera = camera;
-        this.world = world;
+        this.camera = Container.getService(ServiceName.SCENE).getCamera();
+        this.world = Container.getService(ServiceName.WORLD).getWorld();
 
         this.texture = createTexture(BaseShader.TEXTURE);
-        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
+        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, this.camera.projectionMatrix);
     }
 
     public run(): void {
@@ -55,7 +54,7 @@ export default class BaseShader {
         this.world.getChunks().forEach(this.renderChunk);
     }
 
-    private renderChunk= (chunk: ChunkInterface) => {
+    private renderChunk = (chunk: ChunkInterface) => {
         const model = this.getChunkModel(chunk);
 
         const { context } = this;

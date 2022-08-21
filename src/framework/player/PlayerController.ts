@@ -39,8 +39,7 @@ export default class PlayerController {
         this.entity = entity;
         this.world = Container.getService(ServiceName.WORLD).getWorld();
 
-        camera.transform.rotation.y = 0;
-        camera.setPosition(entity.getPosition());
+        camera.setTransform(this.entity.getTransform());
 
         this.registerEventListener();
     }
@@ -245,5 +244,9 @@ export default class PlayerController {
         transform.rotation.x += movementY * (PlayerController.ROTATE_RATE_X / window.screen.availHeight);
         transform.rotation.x = Math.max(-90, Math.min(90, transform.rotation.x));
         transform.rotation.y += movementX * (PlayerController.ROTATE_RATE_Y / window.screen.availWidth);
+
+        const entityRotation = this.entity.getTransform().rotation;
+
+        entityRotation.set(transform.rotation.x, transform.rotation.y, transform.rotation.z);
     }
 }

@@ -13,5 +13,6 @@ export default interface CameraInterface {
     panY(value: number): void;
     panZ(value: number): void;
     setPosition(position: Vector3): void;
+    setTransform(position: Transform): void;
     update(delta: number): void;
 }

@@ -1,25 +1,21 @@
 import ServiceInterface from '../ServiceInterface';
 import StorageAdapter from '../storage/StorageAdapter';
 import Scene from './Scene';
-import ControlledCamera from './camera/ControlledCamera';
 import Skybox from './skybox/Skybox';
-import Container, { ServiceName } from '../Container';
-import World from './world/World';
-import createDebugWorld from '../world-generation/debug-world';
-import Vector3 from '../../math/Vector3';
 import Cursor from './cursor/Cursor';
 import CameraInterface from './camera/CameraInterface';
 import PlayerController from '../player/PlayerController';
+import Camera from './camera/Camera';
+import { SceneEntity } from './Scene';
 
 export default class SceneService implements ServiceInterface {
 
-    private scene?: Scene;
-    private camera?: CameraInterface;
-    private world?: World;
-    private cursor?: Cursor;
-    private skybox?: Skybox;
+    private scene!: Scene;
+    private camera!: CameraInterface;
+    private skybox!: Skybox;
+    private cursor!: Cursor;
 
-    private controller?: PlayerController;
+    private controller!: PlayerController;
 
     // @ts-ignore
     constructor(adapter: StorageAdapter) {
@@ -30,43 +26,25 @@ export default class SceneService implements ServiceInterface {
 
     }
 
-    public createSceneEntities(): void {
-        const scene   = new Scene(),
-              camera  = new ControlledCamera(70, 0.05, 300.0),
-              skybox  = new Skybox(camera),
-              world   = new World(camera),
-              cursor  = new Cursor(camera, world);
+    public createSceneEntities() {
+        this.camera = new Camera(70, 0.05, 300.0);
 
-        createDebugWorld(world);
+        this.skybox = new Skybox(this.camera);
+        this.cursor  = new Cursor(this.camera);
 
-        scene.addEntities(camera, skybox, world, cursor);
-
-        this.skybox = skybox;
-        this.scene = scene;
-        this.camera = camera;
-        this.world = world;
-        this.cursor = cursor;
-
-        const playerEntity = Container.getService(ServiceName.ENTITY).getPlayer()!;
-        this.controller = new PlayerController(camera, playerEntity, world);
-
-        scene.addEntity(this.controller);
-
-        playerEntity.setPosition(new Vector3(-2, 7, -2));
-
-        Container.getService(ServiceName.RENDERER).setScene(scene);
+        this.scene = new Scene(this.camera, this.skybox, this.cursor);
     }
 
     public async discard(): Promise<void> {
 
     }
 
-    public getScene() {
-        return this.scene;
+    public addEntity(sceneEntity: SceneEntity) {
+        this.scene.addEntities(sceneEntity);
     }
 
-    public getWorld() {
-        return this.world;
+    public getScene() {
+        return this.scene;
     }
 
     public getCamera() {
@@ -79,6 +57,11 @@ export default class SceneService implements ServiceInterface {
 
     public getSkybox() {
         return this.skybox;
+    }
+
+    public setController(controller: PlayerController) {
+        this.controller = controller;
+        this.scene.addEntity(controller);
     }
 
     public getController() {
