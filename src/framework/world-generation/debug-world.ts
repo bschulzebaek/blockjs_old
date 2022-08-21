@@ -18,7 +18,7 @@ function printStats(world: WorldInterface, start: number, end: number = Date.now
 
 const CHUNK_LAYER_SIZE = Chunk.WIDTH * Chunk.LENGTH;
 
-export default function createDebugWorld(world: WorldInterface) {
+function createDebugWorld(world: WorldInterface) {
     const start = Date.now();
     const blocks: BlockID[] = Chunk.getEmptyBlocks();
 
@@ -36,4 +36,25 @@ export default function createDebugWorld(world: WorldInterface) {
     world.pushChunk(new Chunk(-1, -1, [...blocks]));
 
     printStats(world, start);
+}
+
+function createDebugChunk(id: string) {
+    const [x, z] = id.split(':');
+
+    const blocks: BlockID[] = Chunk.getEmptyBlocks();
+
+    blocks.splice(0, CHUNK_LAYER_SIZE, ...new Array(CHUNK_LAYER_SIZE).fill(BlockID.BEDROCK));
+    blocks.splice(CHUNK_LAYER_SIZE, CHUNK_LAYER_SIZE, ...new Array(CHUNK_LAYER_SIZE).fill(BlockID.GRASS));
+
+    blocks[CHUNK_LAYER_SIZE * 2] = BlockID.STONE;
+    blocks[CHUNK_LAYER_SIZE * 2 + 15] = BlockID.SANDSTONE;
+    blocks[CHUNK_LAYER_SIZE * 3 - 16] = BlockID.GLASS;
+    blocks[CHUNK_LAYER_SIZE * 3 - 1] = BlockID.LOG;
+
+    return new Chunk(parseInt(x), parseInt(z), blocks);
+}
+
+export {
+    createDebugChunk,
+    createDebugWorld
 }

@@ -5,13 +5,13 @@ import SolidShader from '../renderer/shader/block/solid/SolidShader';
 import GlassShader from '../renderer/shader/block/glass/GlassShader';
 
 export default class World implements WorldInterface {
-    private map: Map<string, Chunk> = new Map();
+    private map: Map<string, Chunk>;
 
     private solidShader!: SolidShader
     private glassShader!: GlassShader;
 
-    constructor(chunks: Chunk[] = []) {
-        chunks.forEach(this.pushChunk.bind(this));
+    constructor(chunks: Map<string, Chunk> = new Map()) {
+        this.map = chunks;
     }
 
     public createShader() {
@@ -21,8 +21,17 @@ export default class World implements WorldInterface {
 
     public update(): void {
         this.map.forEach((chunk) => {
-            this.solidShader.run(chunk.getSolidModel());
-            this.glassShader.run(chunk.getGlassModel());
+            const solidModel = chunk.getSolidModel();
+
+            if (solidModel) {
+                this.solidShader.run(solidModel);
+            }
+
+            const glassModel = chunk.getGlassModel();
+
+            if (glassModel) {
+                this.glassShader.run(glassModel);
+            }
         });
     }
 
@@ -30,12 +39,16 @@ export default class World implements WorldInterface {
 
     }
 
+    public getMap() {
+        return this.map;
+    }
+
     public chunkExists(x: number, z: number): boolean {
         return !!this.getChunk(x, z);
     }
 
     public getChunk(x: number, z: number): Chunk | null {
-        return this.map.get(Chunk.getId(x, z)) ?? null;
+        return this.map.get(Chunk.getFormattedId(x, z)) ?? null;
     }
 
     public getChunks(): Chunk[] {
@@ -44,6 +57,14 @@ export default class World implements WorldInterface {
 
     public pushChunk(chunk: Chunk): void {
         this.map.set(chunk.getId(), chunk);
+    }
+
+    public popChunk(key: string): Chunk {
+        const chunk = this.map.get(key);
+
+        this.map.delete(key);
+
+        return chunk as Chunk;
     }
 
     public getBlockId(x: number, y: number, z: number): BlockID {

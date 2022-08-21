@@ -42,4 +42,8 @@ export default class Transform {
         this.up = transformVector(this.view, new Vector4(0, 1, 0, 0));
         this.right = transformVector(this.view, new Vector4(1, 0, 0, 0));
     }
+
+    public setPosition(x: number, y: number, z: number) {
+        this.position.set(x, y, z);
+    }
 }

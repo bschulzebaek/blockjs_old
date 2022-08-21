@@ -1,12 +1,16 @@
 import Container, { ServiceName } from '../Container';
 import ServiceInterface from '../ServiceInterface';
 import StorageAdapter from '../storage/StorageAdapter';
-import createDebugWorld from '../world-generation/debug-world';
+import { createDebugChunk } from '../world-generation/debug-world';
 import ChunkRepository from './chunk/ChunkRepository';
 import World from './World';
 import Vector3 from '../../math/Vector3';
+import Chunk from './chunk/Chunk';
+import getChunkMap from './utility/get-chunk-map';
 
 export default class WorldService implements ServiceInterface {
+
+    static VIEW_DISTANCE = 2;
 
     private chunkRepository: ChunkRepository;
     private world: World;
@@ -30,28 +34,64 @@ export default class WorldService implements ServiceInterface {
     }
 
     public async create() {
-        const gameConfig = Container.getService(ServiceName.GAME_CONFIG).getConfig();
+        await this.createWorld();
 
-        this.seed = gameConfig.getSeed();
-        this.world = new World();
-
-        createDebugWorld(this.world);
-
-        const DEBUG_POSITION = new Vector3(-2, 7, -2);
-
-        Container.getService(ServiceName.ENTITY).getPlayer()?.setPosition(DEBUG_POSITION);
+        Container.getService(ServiceName.ENTITY).getPlayer()?.setPosition(new Vector3(-2, 7, -2));
     }
 
     public async load() {
-        const gameConfig = Container.getService(ServiceName.GAME_CONFIG).getConfig();
+        await this.createWorld();
+    }
 
-        this.seed = gameConfig.getSeed();
+    private async createWorld() {
+        this.seed = Container.getService(ServiceName.GAME_CONFIG).getConfig().getSeed();
 
-        const chunks = await this.chunkRepository.readAll();
-        this.world = new World(chunks);
+        const player = Container.getService(ServiceName.ENTITY).getPlayer()!,
+              chunkPosition = this.convertToChunkPosition(player.getPosition()),
+              chunkMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPosition.x, chunkPosition.z);
+
+        await this.chunkRepository.readList(chunkMap);
+
+        chunkMap.forEach((chunk, key) => {
+            if (chunk) {
+                return;
+            }
+
+            chunkMap.set(key, createDebugChunk(key));
+        });
+
+        this.world = new World(chunkMap as Map<string, Chunk>);
     }
 
     public getWorld() {
         return this.world;
+    }
+
+    public updateChunkGrid(position: Vector3) {
+        const chunkPos = this.convertToChunkPosition(position);
+        const newMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPos.x, chunkPos.z),
+              oldMap = this.world.getMap();
+
+        const chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
+              chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));
+
+        chunksToCreate.forEach((key) => {
+            const chunk = createDebugChunk(key);
+
+            chunk.buildModel();
+
+            this.world.pushChunk(chunk);
+        });
+
+        const saveChunks = chunksToRemove.map((key) => {
+            return this.world.popChunk(key);
+        });
+
+        this.chunkRepository.writeList(saveChunks);
+
+    }
+
+    private convertToChunkPosition(position: Vector3) {
+        return new Vector3(Math.floor(position.x / Chunk.WIDTH), 0, Math.floor(position.z / Chunk.LENGTH))
     }
 }

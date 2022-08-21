@@ -145,6 +145,10 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     }
 
     static getId(x: number, z: number): string {
+        return `${x}:${z}`;
+    }
+
+    static getFormattedId(x: number, z: number): string {
         const chunkX = Math.floor(x / Chunk.WIDTH),
               chunkZ = Math.floor(z / Chunk.LENGTH);
 

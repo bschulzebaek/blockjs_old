@@ -4,6 +4,7 @@ import CameraInterface from '../scene/camera/CameraInterface';
 import Vector3 from '../../math/Vector3';
 import { onLeftClick, onRightClick } from './mouse-controls';
 import WorldInterface from '../world/WorldInterface';
+import Chunk from '../world/chunk/Chunk';
 
 enum ControlMap {
     WALK_FORWARD = 'w',
@@ -33,6 +34,8 @@ export default class PlayerController {
     private lastJump: number = 0;
 
     private keyDownMap: Map<string, null> = new Map();
+
+    private lastChunkUpdate = 0;
 
     constructor(camera: CameraInterface, entity: EntityInterface) {
         this.camera = camera;
@@ -117,6 +120,11 @@ export default class PlayerController {
 
         camera.setPosition(position);
 
+        if (Date.now() > this.lastChunkUpdate + 1500) {
+            this.lastChunkUpdate = Date.now();
+            Container.getService(ServiceName.WORLD).updateChunkGrid(this.entity.getPosition());
+        }
+
         this.debugPosition(position);
     }
 
@@ -127,7 +135,7 @@ export default class PlayerController {
             return;
         }
 
-        el.innerHTML = `Position: ${position.x.toFixed(1)}:${position.y.toFixed(1)}:${position.z.toFixed(1)}`;
+        el.innerHTML = `Position: ${position.x.toFixed(1)}:${position.y.toFixed(1)}:${position.z.toFixed(1)} <br>Chunk: ${Math.floor(position.x / Chunk.WIDTH)}:${Math.floor(position.z / Chunk.LENGTH)}`;
     }
 
     public beforeDestroy() {

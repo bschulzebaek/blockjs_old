@@ -55,11 +55,15 @@ export default class StorageAdapter {
         });
     }
 
+    private async getStore(storeName: string, mode: TransactionMode) {
+        const transaction = (await this.getConnection()).transaction([ storeName ], mode);
+
+        return transaction.objectStore(storeName);
+    }
+
     public read(storeName: string, key: string): Promise<any> {
         return new Promise(async (resolve) => {
-
             const transaction = (await this.getConnection()).transaction([ storeName ], TransactionMode.READ);
-
             const query = transaction.objectStore(storeName).get(key)
 
             query.onsuccess = () => {
@@ -78,6 +82,21 @@ export default class StorageAdapter {
                 resolve(query.result);
             };
         });
+    }
+
+    public async readList(storeName: string, keyMap: Map<string, undefined>): Promise<void> {
+        const store = await this.getStore(storeName, TransactionMode.READ);
+
+        await Promise.all(Array.from(keyMap.keys()).map((key) => {
+            return new Promise((resolve) => {
+                store.get(key).onsuccess = (idbEvent) => {
+                    // @ts-ignore
+                    keyMap.set(key, idbEvent.target.result)
+
+                    resolve(null);
+                };
+            });
+        }));
     }
 
     public async write(storeName: string, key: string|null, value: any): Promise<void> {

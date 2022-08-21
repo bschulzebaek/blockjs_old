@@ -26,6 +26,18 @@ export default class Repository {
         return this.storeClass.createFromRaw(raw);
     }
 
+    public async readList(keyMap: Map<string, any>): Promise<void> {
+        await this.adapter.readList(this.storeName, keyMap);
+
+        keyMap.forEach((item, key) => {
+            if (!item) {
+                return;
+            }
+
+            keyMap.set(key, this.storeClass.createFromRaw(item))
+        });
+    }
+
     public async readAll(): Promise<any> {
         const rawList: any[] = await this.adapter.readAll(this.storeName);
 

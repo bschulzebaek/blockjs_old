@@ -37,7 +37,7 @@ export default class SceneService implements ServiceInterface {
     private createSceneEntities() {
         this.camera = new Camera(70, 0.05, 300.0);
 
-        this.skybox = new Skybox();
+        this.skybox = new Skybox(this.camera);
         this.cursor  = new Cursor();
 
         this.scene = new Scene(this.camera, this.skybox, this.cursor);

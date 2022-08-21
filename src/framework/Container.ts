@@ -134,8 +134,9 @@ class Container {
             this.getService(ServiceName.SCENE).create(),
             this.getService(ServiceName.ENTITY).getAll(),
             this.getService(ServiceName.RENDERER).create(),
-            this.getService(ServiceName.WORLD).load(),
         ]);
+
+        await this.getService(ServiceName.WORLD).load();
     }
 
     private async createServices(id: string, isNew: boolean) {

@@ -18,6 +18,10 @@ export default class ChunkRepository extends Repository {
         return await super.read(position);
     }
 
+    public async readList(keys: Map<string, Chunk|undefined>): Promise<void> {
+       await super.readList(keys);
+    }
+
     public async readAll(): Promise<Chunk[]> {
         return await super.readAll();
     }
