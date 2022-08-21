@@ -55,14 +55,7 @@ export default class PlayerController {
               keydownBackward = keyDownMap.has(ControlMap.WALK_BACKWARD),
               keydownLeft = keyDownMap.has(ControlMap.WALK_LEFT),
               keydownRight = keyDownMap.has(ControlMap.WALK_RIGHT),
-              keydownJump = keyDownMap.has(ControlMap.JUMP),
-              keydownSprint = keyDownMap.has(ControlMap.SPRINT);
-
-        if (keydownSprint) {
-            this.speed = PlayerController.DEFAULT_SPEED * PlayerController.SPRINT_FACTOR;
-        } else {
-            this.speed = PlayerController.DEFAULT_SPEED;
-        }
+              keydownJump = keyDownMap.has(ControlMap.JUMP);
 
         let xo = 0,
             yo = 0,
@@ -155,6 +148,10 @@ export default class PlayerController {
         }
 
         this.keyDownMap.set(event.key, null);
+
+        if (event.key === ControlMap.SPRINT) {
+            this.speed = PlayerController.DEFAULT_SPEED * PlayerController.SPRINT_FACTOR;
+        }
     }
 
     private onKeyUp = (event: KeyboardEvent) => {
@@ -163,6 +160,10 @@ export default class PlayerController {
         }
 
         this.keyDownMap.delete(event.key);
+
+        if (event.key === ControlMap.SPRINT) {
+            this.speed = PlayerController.DEFAULT_SPEED;
+        }
     }
 
     private onClick = (event: MouseEvent) => {
