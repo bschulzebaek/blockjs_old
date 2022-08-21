@@ -1,7 +1,6 @@
-import { SceneEntities } from './Scene';
-
+import { SceneEntity } from './Scene';
 export default interface SceneInterface {
-    addEntities(...entities: SceneEntities[]): void;
-    getEntities(): SceneEntities[];
+    addEntities(...entities: SceneEntity[]): void;
+    getEntities(): SceneEntity[];
     update(delta: number): void;
 }

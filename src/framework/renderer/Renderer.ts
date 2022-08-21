@@ -1,15 +1,9 @@
 import RendererInterface from './RendererInterface';
-import ShaderInterface from './shader/ShaderInterface';
 import SceneInterface from '../scene/SceneInterface';
 
 export default class Renderer implements RendererInterface {
     private paused: boolean = true;
-    private shader: ShaderInterface[] = [];
     private scene!: SceneInterface;
-
-    constructor() {
-
-    }
 
     public setScene(scene: SceneInterface) {
         this.scene = scene;

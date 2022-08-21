@@ -26,6 +26,7 @@ export default class StoreClass implements StoreClassInterface {
         return raw;
     }
 
+    // @ts-ignore
     static createFromRaw(raw: any): any {
         throw new Error('Missing implementation!');
     }

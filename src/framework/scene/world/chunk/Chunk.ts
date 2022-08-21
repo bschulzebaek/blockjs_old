@@ -150,6 +150,7 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         return Array(Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH).fill(BlockID.AIR);
     }
 
+    // @ts-ignore
     private updateModel(newId: BlockID, previousId: BlockID, blockIndex: number) {
         // Get shader of both ids and rebuild
 

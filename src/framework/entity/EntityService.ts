@@ -2,6 +2,7 @@ import ServiceInterface from '../ServiceInterface';
 import EntityRepository from './EntityRepository';
 import StorageAdapter from '../storage/StorageAdapter';
 import Entity from './Entity';
+import Vector3 from '../../math/Vector3';
 
 export default class EntityService implements ServiceInterface {
     static PLAYER_ID = 'player'; // hardcoded ID so we don't need an extra store or repository or entity for player data
@@ -16,7 +17,7 @@ export default class EntityService implements ServiceInterface {
     }
 
     public createPlayer(): Entity {
-        const player = new Entity(EntityService.PLAYER_ID, EntityService.PLAYER_POSITION);
+        const player = new Entity(EntityService.PLAYER_ID, new Vector3(0, 0, 0));
 
         this.entities.set(player.getId(), player);
 

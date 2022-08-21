@@ -1,6 +1,7 @@
 import EntityInterface from './EntityInterface';
 import StoreClass from '../storage/StoreClass';
 import Vector3 from '../../math/Vector3';
+import ModelInterface from '../scene/model/ModelInterface';
 
 export interface EntityRawInterface {
     id: string;
@@ -21,8 +22,7 @@ export default class Entity extends StoreClass implements EntityInterface {
 
     private id: string;
     private position: Vector3;
-    private rotation: any;
-    private model: any;
+    private model?: ModelInterface;
     private inventoryId: string;
 
     constructor(id: string, position: Vector3, inventoryId: string = '') {
@@ -45,15 +45,7 @@ export default class Entity extends StoreClass implements EntityInterface {
         this.position = position;
     }
 
-    public getRotation() {
-        return this.rotation;
-    }
-
-    public setRotation(rotation) {
-        this.rotation = rotation;
-    }
-
-    public setModel(model) {
+    public setModel(model: ModelInterface) {
         this.model = model;
     }
 

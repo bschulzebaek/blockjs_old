@@ -1,12 +1,14 @@
 import BlockID from './block-id';
 
 const BlockNames: Record<BlockID, string> = {
+    [BlockID.OUT_OF_CHUNK]: 'Out of Chunk',
     [BlockID.AIR]: 'Air',
     [BlockID.STONE]: 'Stone',
     [BlockID.GRASS]: 'Grass',
     [BlockID.DIRT]: 'Dirt',
     [BlockID.COBBLESTONE]: 'Cobblestone',
     [BlockID.PLANKS]: 'Planks',
+    [BlockID.SAPLING]: 'Sapling',
     [BlockID.BEDROCK]: 'Bedrock',
     [BlockID.FLOWING_WATER]: 'Flowing Water',
     [BlockID.WATER]: 'Water',

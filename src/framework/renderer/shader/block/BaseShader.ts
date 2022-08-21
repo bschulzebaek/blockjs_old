@@ -70,6 +70,7 @@ export default class BaseShader {
         throw new Error('Must be implemented!');
     }
 
+    // @ts-ignore
     protected getChunkModel(chunk: ChunkInterface): ModelInterface {
         throw new Error('Must be implemented!');
     }

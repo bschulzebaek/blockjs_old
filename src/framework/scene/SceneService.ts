@@ -21,6 +21,7 @@ export default class SceneService implements ServiceInterface {
 
     private controller?: PlayerController;
 
+    // @ts-ignore
     constructor(adapter: StorageAdapter) {
 
     }

@@ -23,7 +23,6 @@ export default class PlayerController {
     private camera: CameraInterface;
     private entity: EntityInterface;
     private world: WorldInterface;
-    private inventoryId: string = '';
 
     private acc = new Vector3();
     private vel = new Vector3();
