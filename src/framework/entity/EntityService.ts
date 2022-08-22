@@ -2,7 +2,7 @@ import ServiceInterface from '../ServiceInterface';
 import EntityRepository from './EntityRepository';
 import StorageAdapter from '../storage/StorageAdapter';
 import Entity from './Entity';
-
+import Container, { ServiceName } from '../Container';
 export default class EntityService implements ServiceInterface {
     static PLAYER_ID = 'player'; // hardcoded ID so we don't need an extra store or repository or entity for player data
     static PLAYER_POSITION = '0:32:0';
@@ -17,6 +17,8 @@ export default class EntityService implements ServiceInterface {
 
     public async create(): Promise<Entity> {
         const player = new Entity(EntityService.PLAYER_ID);
+
+        player.setInventoryId(await Container.getService(ServiceName.INVENTORY).createInventory());
 
         this.entities.set(player.getId(), player);
 
@@ -35,6 +37,10 @@ export default class EntityService implements ServiceInterface {
         entities.forEach((entity) => {
             this.entities.set(entity.getId(), entity);
         });
+
+        await Container.getService(ServiceName.INVENTORY).loadInventory(
+            this.entities.get(EntityService.PLAYER_ID)?.getInventoryId()!
+        );
     }
 
     public async discard() {

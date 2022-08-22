@@ -5,26 +5,51 @@
         <div class="cursor-container"></div>
     </div>
     <span>x</span>
+
+    <div
+        v-if="inventory"
+        class="inventory-bar"
+    >
+        <item-slot
+            v-for="i in 9"
+            :item="getItem(i)"
+            :active="i - 1 === selected"
+        ></item-slot>
+    </div>
 </template>
 
 <script lang="ts">
 export default {
-  props: {
-    canvas: {
-      required: true,
-      type: HTMLElement,
+    data() {
+        return {
+            selected: 0,
+        }
     },
-  },
-  mounted() {
-    if (this.$container.isRunning()) {
-      return;
-    }
+    props: {
+        canvas: {
+            required: true,
+            type: HTMLElement,
+        },
+        inventory: {
+            required: false,
+            type: Object
+        }
+    },
+    mounted() {
+        if (this.$container.isRunning()) {
+            return;
+        }
 
-    this.$container.resume(this.canvas);
-  },
-  beforeUnmount() {
-    this.$container.pause();
-  },
+        this.$container.resume(this.canvas);
+    },
+    beforeUnmount() {
+        this.$container.pause();
+    },
+    methods: {
+        getItem(index: number) {
+            return this.inventory.slots[index - 1];
+        },
+    }
 };
 </script>
 
@@ -42,5 +67,18 @@ span {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 0.5rem;
+}
+
+.inventory-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    transform: translateX(-50%);
+    grid-template-columns: repeat(9, 1fr);
+    display: grid;
+    border-radius: 3px;
+    overflow: hidden;
+    /* border: 3px solid #ccc; */
+    background: rgba(0, 0, 0, .5);
 }
 </style>

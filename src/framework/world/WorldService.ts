@@ -34,9 +34,9 @@ export default class WorldService implements ServiceInterface {
     }
 
     public async create() {
-        await this.createWorld();
-
         Container.getService(ServiceName.ENTITY).getPlayer()?.setPosition(new Vector3(-2, 7, -2));
+
+        await this.createWorld();
     }
 
     public async load() {

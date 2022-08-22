@@ -71,7 +71,6 @@ export default class Entity extends StoreClass implements EntityInterface {
         return this.inventoryId;
     }
 
-
     public getRaw() {
         const position = this.position,
               rotation = this.transform.rotation;

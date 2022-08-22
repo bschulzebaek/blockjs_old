@@ -5,6 +5,7 @@
         <router-view
             v-if="canvas"
             :canvas="canvas"
+            :inventory="inventory"
         ></router-view>
     </div>
 </template>
@@ -12,12 +13,14 @@
 <script lang="ts">
 import Fullscreen from '../../../../utility/Fullscreen';
 import { Views } from '../../router/routes';
+import Inventory from '../../../../framework/inventory/Inventory';
 
 export default {
     data() {
         return {
             escDown: false,
-            canvas: null
+            canvas: null,
+            inventory: null,
         }
     },
     mounted() {
@@ -28,6 +31,7 @@ export default {
         Fullscreen.enter();
 
         this.$container.play(this.canvas);
+        this.getPlayerInventory();
     },
     beforeUnmount() {
         this.discardEventListener();
@@ -38,12 +42,14 @@ export default {
             window.addEventListener('keydown', this.onKeyDown);
             window.addEventListener('keyup', this.onKeyUp);
             window.addEventListener('blur', this.onTabBlur);
+            window.addEventListener(Inventory.EVENT_UPDATE, this.onInventoryUpdate);
         },
         discardEventListener() {
             window.removeEventListener('fullscreenchange', this.onFullscreenChange);
             window.removeEventListener('keydown', this.onKeyDown);
             window.removeEventListener('keyup', this.onKeyUp);
             window.removeEventListener('blur', this.onTabBlur);
+            window.removeEventListener(Inventory.EVENT_UPDATE, this.onInventoryUpdate);
         },
         onFullscreenChange() {
             if (!document.fullscreenElement) {
@@ -81,6 +87,14 @@ export default {
             }
 
             this.$router.push({ name: Views.GAME_PAUSE });
+        },
+        getPlayerInventory() {
+            this.inventory = this.$container.getService('inventory').getInventory(
+                this.$container.getService('entity').getPlayer().getInventoryId()
+            );
+        },
+        onInventoryUpdate(event) {
+            this.inventory = event.detail;
         }
     }
 }

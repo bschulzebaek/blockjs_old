@@ -23,6 +23,10 @@ export default class Repository {
     public async read(identifier: string): Promise<any> {
         const raw: any = await this.adapter.read(this.storeName, identifier);
 
+        if (!raw) {
+            return undefined;
+        }
+
         return this.storeClass.createFromRaw(raw);
     }
 

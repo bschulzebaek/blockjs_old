@@ -7,6 +7,7 @@ import router from './router';
 import RootComponent from './App.vue';
 import McButton from './components/mc-button.vue';
 import McBackground from './components/mc-background.vue';
+import ItemSlot from './components/item-slot.vue';
 import getAssetUrl from '../../utility/get-asset-url';
 
 export default function(container: any): { app: App, router: Router } {
@@ -14,6 +15,7 @@ export default function(container: any): { app: App, router: Router } {
         .use(router)
         .component('mc-button', McButton)
         .component('mc-background', McBackground)
+        .component('item-slot', ItemSlot)
         .provide('$getAssetUrl', getAssetUrl);
 
     app.config.globalProperties.$container = container;

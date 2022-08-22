@@ -10,6 +10,7 @@ import RendererService from './renderer/RendererService';
 import prepareCanvas from '../utility/prepare-canvas';
 import WorldService from './world/WorldService';
 import PlayerController from './player/PlayerController';
+import InventoryService from './inventory/InventoryService';
 
 interface SetupInterface {
     id?: string;
@@ -26,6 +27,7 @@ export enum ServiceName {
     RENDERER = 'renderer',
     PLAYER = 'player',
     WORLD = 'world',
+    INVENTORY = 'inventory',
 }
 
 class Container {
@@ -38,12 +40,14 @@ class Container {
         scene?: SceneService,
         renderer?: RendererService,
         world?: WorldService,
+        inventory?: InventoryService,
     } = {
         gameConfig: undefined,
         entity: undefined,
         scene: undefined,
         renderer: undefined,
         world: undefined,
+        inventory: undefined,
     };
 
     public getContext(): WebGL2RenderingContext {
@@ -122,8 +126,10 @@ class Container {
             this.getService(ServiceName.SCENE).create(),
             this.getService(ServiceName.ENTITY).create(),
             this.getService(ServiceName.RENDERER).create(),
-            this.getService(ServiceName.WORLD).create(),
+            this.getService(ServiceName.INVENTORY).setup(),
         ]);
+
+        await this.getService(ServiceName.WORLD).create();
     }
 
     private async load(id: string): Promise<void> {
@@ -134,6 +140,7 @@ class Container {
             this.getService(ServiceName.SCENE).create(),
             this.getService(ServiceName.ENTITY).getAll(),
             this.getService(ServiceName.RENDERER).create(),
+            this.getService(ServiceName.INVENTORY).setup(),
         ]);
 
         await this.getService(ServiceName.WORLD).load();
@@ -146,11 +153,12 @@ class Container {
             await this.storageAdapter.createDefaultStorage();
         }
 
-        this.services.gameConfig = new GameConfigService(this.storageAdapter);
-        this.services.scene = new SceneService();
-        this.services.entity = new EntityService(this.storageAdapter);
-        this.services.renderer = new RendererService();
-        this.services.world = new WorldService(this.storageAdapter);
+        this.services[ServiceName.GAME_CONFIG] = new GameConfigService(this.storageAdapter);
+        this.services[ServiceName.SCENE]       = new SceneService();
+        this.services[ServiceName.ENTITY]      = new EntityService(this.storageAdapter);
+        this.services[ServiceName.RENDERER]    = new RendererService();
+        this.services[ServiceName.WORLD]       = new WorldService(this.storageAdapter);
+        this.services[ServiceName.INVENTORY]   = new InventoryService(this.storageAdapter);
     }
 
     getService(name: ServiceName.ENTITY): EntityService
@@ -158,6 +166,7 @@ class Container {
     getService(name: ServiceName.SCENE): SceneService
     getService(name: ServiceName.RENDERER): RendererService
     getService(name: ServiceName.WORLD): WorldService
+    getService(name: ServiceName.INVENTORY): InventoryService
     getService(name: ServiceName) {
         switch (name) {
             case ServiceName.ENTITY:
@@ -170,6 +179,8 @@ class Container {
                 return this.services.scene;
             case ServiceName.WORLD:
                 return this.services.world;
+            case ServiceName.INVENTORY:
+                return this.services.inventory;
             default:
                 throw new Error(`[Container] Service "${name}" does not exist!`);
         }
