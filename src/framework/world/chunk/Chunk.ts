@@ -125,8 +125,8 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     }
 
     public buildModel() {
-        this.rebuildGlassModel();
         this.rebuildSolidModel();
+        this.rebuildGlassModel();
     }
 
     private rebuildSolidModel() {

@@ -35,7 +35,7 @@ export default class PlayerController {
 
     private keyDownMap: Map<string, null> = new Map();
 
-    private lastChunkUpdate = 0;
+    private lastChunkId: string = '';
 
     constructor(camera: CameraInterface, entity: EntityInterface) {
         this.camera = camera;
@@ -120,22 +120,26 @@ export default class PlayerController {
 
         camera.setPosition(position);
 
-        if (Date.now() > this.lastChunkUpdate + 1500) {
-            this.lastChunkUpdate = Date.now();
+        const chunkId = Chunk.getFormattedId(position.x, position.z);
+
+        if (chunkId !== this.lastChunkId) {
+            this.lastChunkId = chunkId;
             Container.getService(ServiceName.WORLD).updateChunkGrid(this.entity.getPosition());
         }
 
-        this.debugPosition(position);
+        this.debugPosition();
     }
 
-    private debugPosition(position: Vector3) {
+    private debugPosition() {
         const el = document.querySelector('.position-container');
 
         if (!el) {
             return;
         }
 
-        el.innerHTML = `Position: ${position.x.toFixed(1)}:${position.y.toFixed(1)}:${position.z.toFixed(1)} <br>Chunk: ${Math.floor(position.x / Chunk.WIDTH)}:${Math.floor(position.z / Chunk.LENGTH)}`;
+        const { x, y, z } = this.entity.getPosition();
+
+        el.innerHTML = `Position: ${x.toFixed(1)}:${y.toFixed(1)}:${z.toFixed(1)} <br>Chunk: ${this.lastChunkId}`;
     }
 
     public beforeDestroy() {

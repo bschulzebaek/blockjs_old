@@ -44,6 +44,7 @@ export default class WorldService implements ServiceInterface {
     }
 
     private async createWorld() {
+        const start = Date.now();
         this.seed = Container.getService(ServiceName.GAME_CONFIG).getConfig().getSeed();
 
         const player = Container.getService(ServiceName.ENTITY).getPlayer()!,
@@ -61,6 +62,7 @@ export default class WorldService implements ServiceInterface {
         });
 
         this.world = new World(chunkMap as Map<string, Chunk>);
+        this.printStats(start);
     }
 
     public getWorld() {
@@ -93,5 +95,13 @@ export default class WorldService implements ServiceInterface {
 
     private convertToChunkPosition(position: Vector3) {
         return new Vector3(Math.floor(position.x / Chunk.WIDTH), 0, Math.floor(position.z / Chunk.LENGTH))
+    }
+
+    private printStats(start: number, end: number = Date.now()): void {
+        console.debug(`[World] Generating chunks took: ${end - start}ms.`)
+        console.debug({
+            chunks: this.world.getChunks().length,
+            blocks: this.world.getChunks().length * Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH,
+        });
     }
 }

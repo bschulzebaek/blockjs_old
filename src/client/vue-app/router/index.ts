@@ -7,7 +7,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-    console.debug(`[ROUTER] "${from.name?.toString()}" -> "${to.name?.toString()}"`)
+    console.debug(`[ROUTER] "${(from.name ?? '').toString()}" -> "${to.name?.toString()}"`)
 });
 
 export {
