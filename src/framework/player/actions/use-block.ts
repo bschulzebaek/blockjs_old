@@ -23,7 +23,4 @@ export default function useBlock(block: any) {
     } else if (block.blockId === BlockID.CRAFTING_TABLE) {
         useCraftingTable();
     }
-
-
-    console.log('Interact with block', block);
 }

@@ -44,14 +44,12 @@ export default {
             window.addEventListener('keydown', this.onKeyDown);
             window.addEventListener('keyup', this.onKeyUp);
             window.addEventListener('blur', this.onTabBlur);
-            window.addEventListener(Inventory.EVENT_UPDATE, this.onInventoryUpdate);
         },
         discardEventListener() {
             window.removeEventListener('fullscreenchange', this.onFullscreenChange);
             window.removeEventListener('keydown', this.onKeyDown);
             window.removeEventListener('keyup', this.onKeyUp);
             window.removeEventListener('blur', this.onTabBlur);
-            window.removeEventListener(Inventory.EVENT_UPDATE, this.onInventoryUpdate);
         },
         onFullscreenChange() {
             if (!document.fullscreenElement) {
@@ -81,9 +79,6 @@ export default {
                 this.$container.getService('entity').getPlayer().getInventoryId()
             );
         },
-        onInventoryUpdate(event) {
-            this.inventory = event.detail;
-        }
     }
 }
 </script>

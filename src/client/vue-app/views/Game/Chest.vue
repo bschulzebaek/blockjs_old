@@ -75,9 +75,6 @@ export default {
     async mounted() {
         this.chestInventory = await this.$container.services.inventory.getInventory(this.$router.currentRoute.value.params.id);
     },
-    onBeforeUnmount() {
-
-    },
     methods: {
         getItem(index: number) {
             return this.inventory.slots[index - 1];
@@ -88,7 +85,6 @@ export default {
         },
         onDragEnd(event: DragEvent) {
             event.preventDefault();
-            console.log(event)
         },
         onDragOver(event: DragEvent) {
             event.preventDefault();
@@ -96,8 +92,6 @@ export default {
         onDrop(index: number, inventory) {
             this.toInv = inventory;
             this.toIndex = index;
-
-            console.log(this)
 
             this.moveItem();
             this.reset();
