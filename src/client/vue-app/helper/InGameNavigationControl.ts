@@ -9,17 +9,21 @@ enum SUPPORTED_KEYS {
 }
 
 function onPauseKey(router: Router) {
-    if (router.currentRoute.value.name === Views.GAME_PAUSE) {
-        return router.go(-1);
+    const { name } = router.currentRoute.value;
+
+    if (name === Views.GAME_PAUSE || name === Views.GAME_CHEST || name === Views.GAME_CRAFTING_TABLE) {
+        router.push({ name: Views.GAME_DEFAULT });
     } else {
         router.push({ name: Views.GAME_PAUSE });
     }
 }
 
 function onInventoryKey(router: Router) {
-    if (router.currentRoute.value.name === Views.GAME_INVENTORY) {
+    const { name } = router.currentRoute.value;
+
+    if (name === Views.GAME_INVENTORY || name === Views.GAME_CHEST || name === Views.GAME_CRAFTING_TABLE) {
         router.push({ name: Views.GAME_DEFAULT });
-    } else if (router.currentRoute.value.name === Views.GAME_DEFAULT) {
+    } else if (name === Views.GAME_DEFAULT) {
         router.push({ name: Views.GAME_INVENTORY });
     }
 }

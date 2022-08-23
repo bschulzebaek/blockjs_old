@@ -54,7 +54,6 @@ export default {
             return this.inventory.slots[index - 1];
         },
         onScroll(event: WheelEvent) {
-            console.log(event)
             const { deltaY } = event;
 
             if (deltaY > 0) {

@@ -1,3 +1,4 @@
+import Container, { ServiceName } from '../Container';
 import StoreClass from '../storage/StoreClass';
 import InventoryInterface from './InventoryInterface';
 import InventorySlotInterface from './InventorySlotInterface';
@@ -37,6 +38,10 @@ export default class Inventory extends StoreClass implements InventoryInterface 
         return this.id;
     }
 
+    public getItem(index: number) {
+        return this.slots[index];
+    }
+
     public getActiveItem() {
         return this.slots[this.activeIndex];
     }
@@ -60,7 +65,7 @@ export default class Inventory extends StoreClass implements InventoryInterface 
         }
     }
 
-    public setSlot(index: number, item: InventorySlotInterface) {
+    public setSlot(index: number, item: InventorySlotInterface|null = null) {
         this.slots[index] = item;
 
         this.dispatchUpdate();
@@ -101,6 +106,8 @@ export default class Inventory extends StoreClass implements InventoryInterface 
     }
 
     private dispatchUpdate() {
+        Container.getService(ServiceName.INVENTORY).saveInventory(this.getId());
+
         window.dispatchEvent(new CustomEvent(Inventory.EVENT_UPDATE, {
             detail: this
         }));

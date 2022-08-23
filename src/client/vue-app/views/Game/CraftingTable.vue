@@ -5,8 +5,7 @@
             v-if="inventory"
             class="inventory"
         >
-            <div class="label">Inventory</div>
-
+            <div class="label">Crafting</div>
             <div class="crafting-area">
 
             </div>

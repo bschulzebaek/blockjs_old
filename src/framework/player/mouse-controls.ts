@@ -1,89 +1,37 @@
 import getBlockFromRay from '../../utility/get-block-from-ray';
 import Container, { ServiceName } from '../Container';
-import BlockID from '../data/block-id';
-import { ChunkFaces } from '../data/chunk-faces';
+import InteractiveBlocks from '../data/interactive-blocks';
+import useBlock from './actions/use-block';
+import placeBlock from './actions/place-block';
+import destroyBlock from './actions/destroy-block';
 
-function printInfo(details: object) {
-    console.debug({
-        Action: 'Edit block',
-        ...details
-    });
+// @ts-ignore
+function onLeftClick(event: MouseEvent) {
+    const sceneService = Container.getService(ServiceName.SCENE),
+          camera       = sceneService.getCamera()!;
+
+    const block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);
+
+    if (block) {
+        destroyBlock(block);
+    }
 }
 
-function onLeftClick() {
-    const camera = Container.getService(ServiceName.SCENE).getCamera()!;
+function onRightClick(event: MouseEvent) {
+    const sceneService = Container.getService(ServiceName.SCENE),
+          camera       = sceneService.getCamera()!;
 
     const block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);
 
     if (!block) {
-        return printInfo({ 'Message': 'No target block found!' });
-    }
-
-    const world = Container.getService(ServiceName.WORLD).getWorld()!,
-          x = block.x,
-          y = block.y,
-          z = block.z;
-
-    if (!world.chunkExists(x, z)) {
-        return printInfo({ Position: `${x}:${y}:${z}`, Message: 'No chunk found at given position!' });
-    }
-
-    // if (!Item.has(block.blockId)) {
-    //     throw new Error('[Attack] Invalid ItemID!');
-    // }
-
-    // const blockInfo = Item.get(block.blockId);
-
-    // if (blockInfo?.hardness && blockInfo.hardness === -1) {
-    //     return printInfo({ Position: `${x}:${y}:${z}`, Message: 'Block cant be removed!' });
-    // }
-
-    if (block.blockId === BlockID.BEDROCK) {
-        return printInfo({ Position: `${x}:${y}:${z}`, Message: 'Block cant be removed!' });
-    }
-
-    world.setBlockId(x, y, z, BlockID.AIR);;
-
-    printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': 0 });
-}
-
-function onRightClick() {
-    const sceneService = Container.getService(ServiceName.SCENE),
-          worldService = Container.getService(ServiceName.WORLD),
-          camera       = sceneService.getCamera()!,
-          world        = worldService.getWorld()!,
-          player       = sceneService.getController()!,
-          playerInventory = Container.getService(ServiceName.INVENTORY).getInventory(
-            Container.getService(ServiceName.ENTITY).getPlayer()!.getInventoryId()
-          ),
-          selectedItem = playerInventory?.getActiveItem();
-
-    if (!selectedItem || !selectedItem.quantity) {
         return;
     }
 
-    const block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);
-
-    if (!block) {
-        return printInfo({ 'Message': 'No target block found!' });
+    if (InteractiveBlocks.includes(block.blockId) && !event.shiftKey) {
+        useBlock(block);
+    } else {
+        placeBlock(block);
     }
-
-    const n = ChunkFaces[block.face].n,
-          x = block.x + n[0],
-          y = block.y + n[1],
-          z = block.z + n[2];
-
-    if (!world.chunkExists(x, z)) {
-        return printInfo({ Position: `${x}:${y}:${z}`, Message: 'No chunk found at given position!' });
-    }
-
-    if (player.isBlocking(x, y, z)) {
-        return printInfo({ Position: `${x}:${y}:${z}`, Message: 'Position blocked by player!' });
-    }
-
-    world.setBlockId(x, y, z, selectedItem.itemId);
-
-    printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': selectedItem.itemId });
 }
 
 export {

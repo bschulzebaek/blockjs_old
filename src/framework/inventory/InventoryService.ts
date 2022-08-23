@@ -3,7 +3,7 @@ import InventoryRepository from './InventoryRepository';
 import StorageAdapter from '../storage/StorageAdapter';
 import Inventory from './Inventory';
 import generateUUID from '../../utility/generate-uuid';
-import fillDebugInventory from './fill-debug-inventory';
+import Container, { ServiceName } from '../Container';
 
 export default class InventoryService implements ServiceInterface {
     private repository: InventoryRepository;
@@ -28,8 +28,6 @@ export default class InventoryService implements ServiceInterface {
 
     public async createInventory(inventoryId = generateUUID()) {
         const inventory = new Inventory(inventoryId);
-
-        fillDebugInventory(inventory);
 
         await this.repository.write(inventory);
 
@@ -62,5 +60,15 @@ export default class InventoryService implements ServiceInterface {
         }
 
         await this.repository.write(inventory);
+    }
+
+    public getPlayerInventory() {
+        const playerInventoryId = Container.getService(ServiceName.ENTITY).getPlayer()?.getInventoryId();
+
+        return this.getInventory(playerInventoryId!);
+    }
+
+    public async deleteInventory(id: string): Promise<void> {
+        await this.repository.delete(id);
     }
 }

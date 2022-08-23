@@ -49,6 +49,7 @@ export default class WorldService implements ServiceInterface {
 
     private async createWorld() {
         const start = Date.now();
+
         this.seed = Container.getService(ServiceName.GAME_CONFIG).getConfig().getSeed();
 
         const player = Container.getService(ServiceName.ENTITY).getPlayer()!,
@@ -75,15 +76,12 @@ export default class WorldService implements ServiceInterface {
     }
 
     public updateChunkGrid(position: Vector3) {
-        const chunkPos = this.convertToChunkPosition(position);
-        const newMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPos.x, chunkPos.z),
-              oldMap = this.world.getMap();
-
-        const chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
-              chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));
-
-
-        const createMap: Map<string, Chunk|undefined> = new Map(chunksToCreate.map((id) => [ id, undefined ]));
+        const chunkPos = this.convertToChunkPosition(position),
+              newMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPos.x, chunkPos.z),
+              oldMap = this.world.getMap(),
+              chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
+              chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key)),
+              createMap: Map<string, Chunk|undefined> = new Map(chunksToCreate.map((id) => [ id, undefined ]));
 
         this.chunkRepository.readList(createMap).then(() => {
             createMap.forEach((chunk, key) => {
@@ -118,5 +116,9 @@ export default class WorldService implements ServiceInterface {
 
     private generateChunk(chunkId: string) {
         return createDebugChunk(chunkId);
+    }
+
+    public saveChunk(chunk: Chunk) {
+        this.chunkRepository.write(chunk);
     }
 }

@@ -204,9 +204,9 @@ export default class PlayerController {
         }
 
         if (event.button === 0) {
-            onLeftClick.call(this);
+            onLeftClick.call(this, event);
         } else if (event.button === 2) {
-            onRightClick.call(this);
+            onRightClick.call(this, event);
         }
     }
 

@@ -10,6 +10,8 @@ enum Views {
     GAME_DEFAULT = 'game-default',
     GAME_PAUSE = 'game-pause',
     GAME_INVENTORY = 'game-inventory',
+    GAME_CHEST = 'game-chest',
+    GAME_CRAFTING_TABLE = 'game-crafting-table',
 }
 
 enum Paths {
@@ -22,6 +24,8 @@ enum Paths {
     GAME_DEFAULT = '',
     GAME_PAUSE = '/game/pause',
     GAME_INVENTORY = '/game/inventory',
+    GAME_CHEST = '/game/chest/:id',
+    GAME_CRAFTING_TABLE = '/game/crafting',
     GAME_SETUP = '/setup',
     GAME_TEARDOWN = '/teardown',
 }
@@ -60,6 +64,14 @@ const ROUTES_GAME = [{
         name: Views.GAME_INVENTORY,
         path: Paths.GAME_INVENTORY,
         component: () => import('../views/Game/Inventory.vue'),
+    }, {
+        name: Views.GAME_CHEST,
+        path: Paths.GAME_CHEST,
+        component: () => import('../views/Game/Chest.vue'),
+    }, {
+        name: Views.GAME_CRAFTING_TABLE,
+        path: Paths.GAME_CRAFTING_TABLE,
+        component: () => import('../views/Game/CraftingTable.vue'),
     }]
 }, {
     name: Views.GAME_SETUP,

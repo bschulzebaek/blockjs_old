@@ -100,9 +100,7 @@ export default class StorageAdapter {
     }
 
     public async write(storeName: string, key: string|null, value: any): Promise<void> {
-        const transaction = (await this.getConnection()).transaction(storeName, TransactionMode.WRITE);
-
-        const store = transaction.objectStore(storeName);
+        const store = await this.getStore(storeName, TransactionMode.WRITE);
 
         if (key) {
             store.put(value, key);
@@ -112,8 +110,7 @@ export default class StorageAdapter {
     }
 
     public async writeList(storeName: string, objs: StoreClassInterface[], ignoreKey: boolean): Promise<void> {
-        const transaction = (await this.getConnection()).transaction(storeName, TransactionMode.WRITE);
-        const store = transaction.objectStore(storeName);
+        const store = await this.getStore(storeName, TransactionMode.WRITE);
 
         await Promise.all(objs.map((obj) => {
             if (ignoreKey) {
@@ -122,5 +119,11 @@ export default class StorageAdapter {
                 return store.put(obj.getRaw(), obj.getIdentifier());
             }
         }));
+    }
+
+    public async delete(storeName: string, key: string): Promise<void> {
+        const store = await this.getStore(storeName, TransactionMode.WRITE);
+
+        await store.delete(key);
     }
 }

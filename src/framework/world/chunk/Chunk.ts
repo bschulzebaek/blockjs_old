@@ -5,6 +5,7 @@ import BlockID from '../../data/block-id';
 import { ChunkFaces } from '../../data/chunk-faces';
 import ModelInterface from '../../scene/model/ModelInterface';
 import ChunkModel, { ChunkModelType } from '../../scene/model/ChunkModel/ChunkModel';
+import Container, { ServiceName } from '../../Container';
 
 export interface ChunkRawInterface {
     id: string;
@@ -70,6 +71,7 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         this.blocks[blockIndex] = newId;
 
         this.updateModel(newId, previousId, blockIndex);
+        Container.getService(ServiceName.WORLD).saveChunk(this);
     }
 
     public getBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {

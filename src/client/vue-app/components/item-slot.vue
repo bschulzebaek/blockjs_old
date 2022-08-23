@@ -70,6 +70,6 @@ export default defineComponent({
   right: 0;
   bottom: 0;
   font-size: 13px;
-  padding: 5px;
+  padding: 1px;
 }
 </style>

@@ -55,4 +55,8 @@ export default class Repository {
     public async writeList(objs: StoreClassInterface[], ignoreKey: boolean = true): Promise<any> {
         await this.adapter.writeList(this.storeName, objs, ignoreKey);
     }
+
+    public async delete(identifier: string): Promise<void> {
+        await this.adapter.delete(this.storeName, identifier);
+    }
 }

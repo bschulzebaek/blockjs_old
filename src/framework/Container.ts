@@ -11,6 +11,7 @@ import prepareCanvas from '../utility/prepare-canvas';
 import WorldService from './world/WorldService';
 import PlayerController from './player/PlayerController';
 import InventoryService from './inventory/InventoryService';
+import fillDebugInventory from './inventory/fill-debug-inventory';
 
 interface SetupInterface {
     id?: string;
@@ -128,6 +129,8 @@ class Container {
             this.getService(ServiceName.INVENTORY).setup(),
         ]);
 
+
+        fillDebugInventory(this.getService(ServiceName.INVENTORY).getPlayerInventory()!);
         await this.getService(ServiceName.WORLD).create();
     }
 

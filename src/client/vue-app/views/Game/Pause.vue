@@ -24,7 +24,7 @@ export default {
         onClickResume() {
             Fullscreen.enter();
 
-            this.$router.go(-1);
+            this.$router.push({ name: Views.GAME_DEFAULT });
         },
         onClickQuit() {
             this.$router.push({ name: Views.GAME_TEARDOWN });

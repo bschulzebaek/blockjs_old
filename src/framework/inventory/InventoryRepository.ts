@@ -30,4 +30,8 @@ export default class InventoryRepository extends Repository {
     public async writeList(inventories: Inventory[]) {
         await super.writeList(inventories);
     }
+
+    public async delete(inventoryId: string): Promise<void> {
+        await super.delete(inventoryId);
+    }
 }
