@@ -144,6 +144,15 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         return new Chunk(chunkX, chunkZ, raw.blocks);
     }
 
+    public getRaw(): ChunkRawInterface {
+        return {
+            id: this.id,
+            worldX: this.worldX,
+            worldZ: this.worldZ,
+            blocks: this.blocks,
+        }
+    }
+
     static getId(x: number, z: number): string {
         return `${x}:${z}`;
     }

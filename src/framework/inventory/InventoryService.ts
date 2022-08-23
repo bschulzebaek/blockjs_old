@@ -3,6 +3,7 @@ import InventoryRepository from './InventoryRepository';
 import StorageAdapter from '../storage/StorageAdapter';
 import Inventory from './Inventory';
 import generateUUID from '../../utility/generate-uuid';
+import fillDebugInventory from './fill-debug-inventory';
 
 export default class InventoryService implements ServiceInterface {
     private repository: InventoryRepository;
@@ -27,6 +28,8 @@ export default class InventoryService implements ServiceInterface {
 
     public async createInventory(inventoryId = generateUUID()) {
         const inventory = new Inventory(inventoryId);
+
+        fillDebugInventory(inventory);
 
         await this.repository.write(inventory);
 

@@ -15,6 +15,8 @@ import Fullscreen from '../../../../utility/Fullscreen';
 import { Views } from '../../router/routes';
 import Inventory from '../../../../framework/inventory/Inventory';
 
+import { navigationControlKeyDown, navigationControlKeyUp } from '../../helper/InGameNavigationControl';
+
 export default {
     data() {
         return {
@@ -62,24 +64,10 @@ export default {
             this.$router.push({ name: Views.GAME_PAUSE });
         },
         onKeyDown(event: KeyboardEvent) {
-            if (event.code !== 'Escape' || this.escDown || !document.fullscreenElement) {
-                return;
-            }
-
-            this.escDown = true;
-
-            if (this.$router.currentRoute._value.name === Views.GAME_PAUSE) {
-                this.$router.go(-1);
-            } else {
-                this.$router.push({ name: Views.GAME_PAUSE });
-            }
+            navigationControlKeyDown(event, this.$router);
         },
         onKeyUp(event: KeyboardEvent) {
-            if (event.code !== 'Escape') {
-                return;
-            }
-
-            this.escDown = false;
+            navigationControlKeyUp(event);
         },
         onTabBlur() {
             if (this.$router.currentRoute._value.name !== Views.GAME_DEFAULT) {
@@ -107,7 +95,7 @@ canvas {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 0;
+    z-index: -1;
     width: 100vw;
     height: 100vh;
 }

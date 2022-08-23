@@ -3,6 +3,7 @@ import StoreClass from '../storage/StoreClass';
 import Vector3 from '../../math/Vector3';
 import ModelInterface from '../scene/model/ModelInterface';
 import { Transform } from '../../math';
+import Container, { ServiceName } from '../Container';
 
 export interface EntityRawInterface {
     id: string;
@@ -116,5 +117,16 @@ export default class Entity extends StoreClass implements EntityInterface {
 
     public createShader() {
 
+    }
+
+
+    public isBlocked() {
+        const world = Container.getService(ServiceName.WORLD).getWorld(),
+              position = this.getPosition();
+
+        return (
+            world.getBlockId(position.x, position.y - 1, position.z) > 0 ||
+            world.getBlockId(position.x, position.y, position.z) > 0
+        );
     }
 }

@@ -139,7 +139,7 @@ export default class PlayerController {
 
         const { x, y, z } = this.entity.getPosition();
 
-        el.innerHTML = `Position: ${x.toFixed(1)}:${y.toFixed(1)}:${z.toFixed(1)} <br>Chunk: ${this.lastChunkId}`;
+        el.innerHTML = `Position: ${x.toFixed(0)}:${y.toFixed(0)}:${z.toFixed(0)} <br>Chunk: ${this.lastChunkId}`;
     }
 
     public beforeDestroy() {

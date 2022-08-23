@@ -25,7 +25,6 @@ export enum ServiceName {
     ENTITY = 'entity',
     SCENE = 'scene',
     RENDERER = 'renderer',
-    PLAYER = 'player',
     WORLD = 'world',
     INVENTORY = 'inventory',
 }

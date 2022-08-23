@@ -52,7 +52,15 @@ function onRightClick() {
           worldService = Container.getService(ServiceName.WORLD),
           camera       = sceneService.getCamera()!,
           world        = worldService.getWorld()!,
-          player       = sceneService.getController()!;
+          player       = sceneService.getController()!,
+          playerInventory = Container.getService(ServiceName.INVENTORY).getInventory(
+            Container.getService(ServiceName.ENTITY).getPlayer()!.getInventoryId()
+          ),
+          selectedItem = playerInventory?.getActiveItem();
+
+    if (!selectedItem || !selectedItem.quantity) {
+        return;
+    }
 
     const block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);
 
@@ -73,9 +81,9 @@ function onRightClick() {
         return printInfo({ Position: `${x}:${y}:${z}`, Message: 'Position blocked by player!' });
     }
 
-    world.setBlockId(x, y, z, BlockID.SANDSTONE);
+    world.setBlockId(x, y, z, selectedItem.itemId);
 
-    printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': BlockID.SANDSTONE });
+    printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': selectedItem.itemId });
 }
 
 export {

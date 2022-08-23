@@ -5,6 +5,7 @@ import InventorySlotInterface from './InventorySlotInterface';
 export interface InventoryRawInterface {
     id: string;
     slots: Array<InventorySlotInterface|null>;
+    activeIndex: number;
 }
 
 export default class Inventory extends StoreClass implements InventoryInterface {
@@ -12,7 +13,8 @@ export default class Inventory extends StoreClass implements InventoryInterface 
 
     static STORAGE_FIELDS  = [
         'id',
-        'slots'
+        'slots',
+        'activeIndex',
     ];
 
     static DEFAULT_SIZE = 36;
@@ -21,15 +23,41 @@ export default class Inventory extends StoreClass implements InventoryInterface 
 
     private slots: Array<InventorySlotInterface|null>;
 
-    constructor(id: string, slots = new Array(Inventory.DEFAULT_SIZE).fill(null)) {
+    private activeIndex;
+
+    constructor(id: string, slots = new Array(Inventory.DEFAULT_SIZE).fill(null), activeIndex: number = 0) {
         super(id, Inventory.STORAGE_FIELDS);
 
         this.id = id;
         this.slots = slots;
+        this.activeIndex = activeIndex;
     }
 
     public getId() {
         return this.id;
+    }
+
+    public getActiveItem() {
+        return this.slots[this.activeIndex];
+    }
+
+    public setActiveIndex(index: number) {
+        if (index > this.slots.length) {
+            throw new Error('[Inventory] Index exceeds inventory slots!');
+        }
+
+        this.activeIndex = index;
+
+        this.dispatchUpdate();
+    }
+
+    public pushItem(item: InventorySlotInterface) {
+        for (let i = 0; i < this.slots.length; i++) {
+            if (this.slots[i] === null) {
+                this.slots[i] = item;
+                i = this.slots.length;
+            }
+        }
     }
 
     public setSlot(index: number, item: InventorySlotInterface) {
@@ -38,12 +66,12 @@ export default class Inventory extends StoreClass implements InventoryInterface 
         this.dispatchUpdate();
     }
 
-    public swapSlots(indexA: number, indexB: number) {
-        const itemA = this.slots[indexA],
-              itemB = this.slots[indexB];
+    public setItemPosition(from: number, to: number) {
+        const fromItem  = this.slots[from],
+              toItem = this.slots[to];
 
-        this.slots[indexA] = itemB;
-        this.slots[indexB] = itemA;
+        this.slots[from] = toItem;
+        this.slots[to] = fromItem;
 
         this.dispatchUpdate();
     }
@@ -58,21 +86,23 @@ export default class Inventory extends StoreClass implements InventoryInterface 
         return {
             id: this.id,
             slots: this.slots,
+            activeIndex: this.activeIndex,
         }
     }
 
     static createFromRaw(inventoryRaw: InventoryRawInterface): Inventory {
-        const { id, slots } = inventoryRaw;
+        const { id, slots, activeIndex } = inventoryRaw;
 
         return new Inventory(
             id,
-            slots
+            slots,
+            activeIndex,
         );
     }
 
     private dispatchUpdate() {
         window.dispatchEvent(new CustomEvent(Inventory.EVENT_UPDATE, {
-            detail: this.getRaw()
+            detail: this
         }));
     }
 }

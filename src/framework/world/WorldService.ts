@@ -10,7 +10,7 @@ import getChunkMap from './utility/get-chunk-map';
 
 export default class WorldService implements ServiceInterface {
 
-    static VIEW_DISTANCE = 2;
+    static VIEW_DISTANCE = 3;
 
     private chunkRepository: ChunkRepository;
     private world: World;
@@ -34,9 +34,13 @@ export default class WorldService implements ServiceInterface {
     }
 
     public async create() {
-        Container.getService(ServiceName.ENTITY).getPlayer()?.setPosition(new Vector3(-2, 7, -2));
-
         await this.createWorld();
+
+        const player = Container.getService(ServiceName.ENTITY).getPlayer()!;
+
+        while (player.isBlocked()) {
+            player.getPosition().add(0, 1, 0);
+        }
     }
 
     public async load() {
@@ -58,10 +62,11 @@ export default class WorldService implements ServiceInterface {
                 return;
             }
 
-            chunkMap.set(key, createDebugChunk(key));
+            chunkMap.set(key, this.generateChunk(key));
         });
 
         this.world = new World(chunkMap as Map<string, Chunk>);
+
         this.printStats(start);
     }
 
@@ -77,12 +82,18 @@ export default class WorldService implements ServiceInterface {
         const chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
               chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));
 
-        chunksToCreate.forEach((key) => {
-            const chunk = createDebugChunk(key);
 
-            chunk.buildModel();
+        const createMap: Map<string, Chunk|undefined> = new Map(chunksToCreate.map((id) => [ id, undefined ]));
 
-            this.world.pushChunk(chunk);
+        this.chunkRepository.readList(createMap).then(() => {
+            createMap.forEach((chunk, key) => {
+                if (!chunk) {
+                    chunk = this.generateChunk(key);
+                }
+
+                chunk.buildModel();
+                this.world.pushChunk(chunk);
+            });
         });
 
         const saveChunks = chunksToRemove.map((key) => {
@@ -103,5 +114,9 @@ export default class WorldService implements ServiceInterface {
             chunks: this.world.getChunks().length,
             blocks: this.world.getChunks().length * Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH,
         });
+    }
+
+    private generateChunk(chunkId: string) {
+        return createDebugChunk(chunkId);
     }
 }

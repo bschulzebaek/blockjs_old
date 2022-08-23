@@ -22,7 +22,7 @@
 export default {
     data() {
         return {
-            selected: 0,
+            selected: this.inventory.activeIndex,
         }
     },
     props: {
@@ -36,6 +36,8 @@ export default {
         }
     },
     mounted() {
+        window.addEventListener('wheel', this.onScroll);
+
         if (this.$container.isRunning()) {
             return;
         }
@@ -43,12 +45,32 @@ export default {
         this.$container.resume(this.canvas);
     },
     beforeUnmount() {
+        window.removeEventListener('wheel', this.onScroll);
+
         this.$container.pause();
     },
     methods: {
         getItem(index: number) {
             return this.inventory.slots[index - 1];
         },
+        onScroll(event: WheelEvent) {
+            console.log(event)
+            const { deltaY } = event;
+
+            if (deltaY > 0) {
+                this.selected++;
+                if (this.selected >= 9) {
+                    this.selected = 0;
+                }
+            } else {
+                this.selected--;
+                if (this.selected < 0) {
+                    this.selected = 8;
+                }
+            }
+
+            this.inventory.setActiveIndex(this.selected);
+        }
     }
 };
 </script>
