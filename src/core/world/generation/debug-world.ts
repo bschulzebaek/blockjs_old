@@ -1,7 +1,7 @@
 import Chunk from '../../../content/chunk/Chunk';
 import BlockID from '../../../data/block-id';
 
-const CHUNK_LAYER_SIZE = 256; //Chunk.WIDTH * Chunk.LENGTH;
+const CHUNK_LAYER_SIZE = Chunk.WIDTH * Chunk.LENGTH;
 
 function createDebugChunk(id: string): Chunk {
     const [x, z] = id.split(':');

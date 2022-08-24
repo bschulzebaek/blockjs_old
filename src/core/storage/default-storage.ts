@@ -1,3 +1,4 @@
+import BlockDataRepository from '../../content/block-data/BlockDataRepository';
 import ChunkRepository from '../../content/chunk/ChunkRepository';
 import EntityRepository from '../../content/entity/EntityRepository';
 import GameConfigRepository from '../../content/game-config/GameConfigRepository';
@@ -20,5 +21,6 @@ export default [{
     name: InventoryRepository.STORE_NAME,
     keyPath: InventoryRepository.STORE_IDENTIFIER,
 }, {
-    name: 'world'
+    name: BlockDataRepository.STORE_NAME,
+    keyPath: BlockDataRepository.STORE_IDENTIFIER,
 }]

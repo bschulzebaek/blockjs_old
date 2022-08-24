@@ -1,8 +1,7 @@
 import Chunk from '../../../content/chunk/Chunk';
 
 /**
- * Creates 2-dimensional grid (Array of X,Z pairs).
- * The radius has to be odd, to allow [0, 0] (or the offset) to always be the center of the grid.
+ * Creates 2-dimensional map (Array of X,Z pairs) of chunks in reach of "renderDistance".
  *
  * Examples
  * r = 1: [[0, 0]]
