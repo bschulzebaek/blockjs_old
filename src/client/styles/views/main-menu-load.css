@@ -1,0 +1,40 @@
+.main-menu-load .game-delete {
+    border: 1px solid #fff;
+    border-radius: 2px;
+    width: 1.25rem;
+    position: relative;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all .15s ease;
+    background-color: rgba(0, 0, 0, .3);
+    color: #fff;
+}
+
+.main-menu-load .game-delete > svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    fill: currentColor;
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+.main-menu-load .game-delete:hover {
+
+}
+
+.main-menu-load .game-load {
+    border: 1px solid #fff;
+    border-radius: 2px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .3);
+
+    transition: all .15s ease;
+}
+
+.main-menu-load .game-load:hover,
+.main-menu-load .game-delete:hover {
+    background-color: rgba(0, 0, 0, .5);
+}

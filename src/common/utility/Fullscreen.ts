@@ -1,6 +1,6 @@
 export default class Fullscreen {
     static enter() {
-        if (!!document.fullscreenElement) {
+        if (Fullscreen.active()) {
             return;
         }
 
@@ -8,10 +8,14 @@ export default class Fullscreen {
     }
 
     static exit() {
-        if (!document.fullscreenElement) {
+        if (!Fullscreen.active()) {
             return;
         }
 
         document.exitFullscreen();
+    }
+
+    static active() {
+        return !!document.fullscreenElement;
     }
 }

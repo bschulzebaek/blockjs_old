@@ -1,7 +1,7 @@
 <template>
     <mc-background />
 
-    <div class="menu-grid">
+    <div class="menu-grid center-absolute center-absolute--menu">
         <h1>Options</h1>
 
         <div class="row">
@@ -39,21 +39,8 @@
             <div>Pause menu</div>
         </div>
 
-        <div class="row">
-            <mc-button @click="$router.go(-1)">Back</mc-button>
+        <div class="row mt-4">
+            <mc-button @click="$stateMachine.to_MainMenu">Back</mc-button>
         </div>
     </div>
 </template>
-
-<style scoped>
-.menu-grid {
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.menu-grid .row:last-child {
-    margin-top: 2rem;
-}
-</style>

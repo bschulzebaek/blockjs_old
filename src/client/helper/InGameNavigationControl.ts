@@ -3,9 +3,9 @@ import { Views } from '../router/routes';
 
 const keyDownMap: Map<string, null> = new Map();
 
-enum SUPPORTED_KEYS {
-    ESCAPE = 'Escape',
-    E = 'e',
+enum MAPPED_ACTIONS {
+    MENU = 'Escape',
+    INVENTORY = 'e',
 }
 
 function onPauseKey(router: Router) {
@@ -35,10 +35,6 @@ function navigationControlKeyDown(event: KeyboardEvent, router: Router) {
 
     const { key } = event;
 
-    if (key !== SUPPORTED_KEYS.ESCAPE && key !== SUPPORTED_KEYS.E) {
-        return;
-    }
-
     if (keyDownMap.has(key)) {
         return;
     }
@@ -46,16 +42,16 @@ function navigationControlKeyDown(event: KeyboardEvent, router: Router) {
     keyDownMap.set(key, null);
 
     switch (key) {
-        case SUPPORTED_KEYS.ESCAPE:
+        case MAPPED_ACTIONS.MENU:
             return onPauseKey(router);
-        case SUPPORTED_KEYS.E:
+        case MAPPED_ACTIONS.INVENTORY:
             return onInventoryKey(router);
     }
 
 }
 
 function navigationControlKeyUp(event: KeyboardEvent) {
-    if (event.key !== SUPPORTED_KEYS.ESCAPE && event.key !== SUPPORTED_KEYS.E) {
+    if (event.key !== MAPPED_ACTIONS.MENU && event.key !== MAPPED_ACTIONS.INVENTORY) {
         return;
     }
 

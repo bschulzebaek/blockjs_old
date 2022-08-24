@@ -1,12 +1,10 @@
 <template>
-    <div class="loading">
+    <div class="center-absolute">
         Loading ...
     </div>
 </template>
 
 <script lang="ts">
-import { Views } from '../../router/routes';
-
 export default {
     mounted() {
         this.setupGame();
@@ -15,17 +13,8 @@ export default {
         async setupGame() {
             await this.$container.setup(this.$router.currentRoute.value.query);
 
-            this.$router.push({ name: Views.GAME_DEFAULT });
+            this.$stateMachine.to_GameDefault();
         }
     }
 }
 </script>
-
-<style scoped>
-.loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-</style>

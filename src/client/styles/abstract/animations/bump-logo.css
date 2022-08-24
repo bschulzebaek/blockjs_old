@@ -1,0 +1,14 @@
+@keyframes bumpLogo {
+    0% {
+        font-size: 16px;
+    }
+    10% {
+        font-size: 17px;
+    }
+    20% {
+        font-size: 16px;
+    }
+    100% {
+        font-size: 16px;
+    }
+}

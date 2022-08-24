@@ -1,3 +1,30 @@
 .center-text {
     text-align: center;
 }
+
+.center-absolute {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.center-absolute--menu {
+    top: 30%;
+}
+
+.mt-1 {
+     margin-top: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 1rem;
+}
+
+.mt-3 {
+    margin-top: 1.5rem;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}

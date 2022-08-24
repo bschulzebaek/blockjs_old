@@ -6,8 +6,8 @@ import McButton from './components/mc-button.vue';
 import McBackground from './components/mc-background.vue';
 import ItemSlot from './components/item-slot.vue';
 import getAssetUrl from '../common/utility/get-asset-url';
-import { Views } from './router/routes';
 import Container from '../core/Container';
+import StateMachine from '../core/state-machine/StateMachine';
 
 const app = createApp(RootComponent)
     .use(router)
@@ -17,7 +17,8 @@ const app = createApp(RootComponent)
     .provide('$getAssetUrl', getAssetUrl);
 
 app.config.globalProperties.$container = Container;
+app.config.globalProperties.$stateMachine = StateMachine;
 
-router.push({ name: Views.MAIN_MENU });
+StateMachine.to_MainMenu();
 
 app.mount('#app');

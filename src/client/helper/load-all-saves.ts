@@ -1,4 +1,4 @@
-import StorageAdapter from '../storage/StorageAdapter';
+import StorageAdapter from '../../core/storage/StorageAdapter';
 
 function loadSaveConfig(dbName: string) {
     return new Promise((resolve, reject) => {

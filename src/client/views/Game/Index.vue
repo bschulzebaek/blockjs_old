@@ -11,10 +11,6 @@
 </template>
 
 <script lang="ts">
-import Fullscreen from '../../../common/utility/Fullscreen';
-import { Views } from '../../router/routes';
-
-import { navigationControlKeyDown, navigationControlKeyUp } from '../../helper/InGameNavigationControl';
 
 export default {
     data() {
@@ -25,54 +21,12 @@ export default {
         }
     },
     mounted() {
-        this.registerEventListener();
-
         this.canvas = this.$refs.canvas;
-
-        Fullscreen.enter();
 
         this.$container.play(this.canvas);
         this.getPlayerInventory();
     },
-    beforeUnmount() {
-        this.discardEventListener();
-    },
     methods: {
-        registerEventListener() {
-            window.addEventListener('fullscreenchange', this.onFullscreenChange);
-            window.addEventListener('keydown', this.onKeyDown);
-            window.addEventListener('keyup', this.onKeyUp);
-            window.addEventListener('blur', this.onTabBlur);
-        },
-        discardEventListener() {
-            window.removeEventListener('fullscreenchange', this.onFullscreenChange);
-            window.removeEventListener('keydown', this.onKeyDown);
-            window.removeEventListener('keyup', this.onKeyUp);
-            window.removeEventListener('blur', this.onTabBlur);
-        },
-        onFullscreenChange() {
-            if (!document.fullscreenElement) {
-                navigator.keyboard?.unlock(['Escape']);
-            } else {
-                navigator.keyboard?.lock(['Escape']);
-            }
-        },
-        pauseGame() {
-            this.$router.push({ name: Views.GAME_PAUSE });
-        },
-        onKeyDown(event: KeyboardEvent) {
-            navigationControlKeyDown(event, this.$router);
-        },
-        onKeyUp(event: KeyboardEvent) {
-            navigationControlKeyUp(event);
-        },
-        onTabBlur() {
-            if (this.$router.currentRoute._value.name !== Views.GAME_DEFAULT) {
-                return;
-            }
-
-            this.$router.push({ name: Views.GAME_PAUSE });
-        },
         getPlayerInventory() {
             this.inventory = this.$container.getService('inventory').getInventory(
                 this.$container.getService('entity').getPlayer().getInventoryId()

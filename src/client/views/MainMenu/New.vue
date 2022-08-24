@@ -1,7 +1,7 @@
 <template>
     <mc-background />
 
-    <div class="menu-grid">
+    <div class="menu-grid center-absolute center-absolute--menu">
         <h1>Create World</h1>
 
         <div class="row">
@@ -24,16 +24,14 @@
             >
         </div>
 
-        <div class="row">
-            <mc-button @click="$router.go(-1)">Back</mc-button>
+        <div class="row mt-4">
+            <mc-button @click="$stateMachine.to_MainMenu">Back</mc-button>
             <mc-button @click="onClickConfirm">Confirm</mc-button>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Views } from '../../router/routes';
-
 export default {
     data() {
         return {
@@ -45,19 +43,8 @@ export default {
         onClickConfirm() {
             const { name, seed } = this;
 
-            this.$router.push({ name: Views.GAME_SETUP, query: { name, seed } })
+            this.$stateMachine.to_GameSetup({ name, seed });
         },
     }
 }
 </script>
-
-<style scoped>
-.menu-grid {
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 423px;
-    width: 100%;
-}
-</style>

@@ -2,7 +2,7 @@
     <div>
         <div class="backdrop"></div>
 
-        <div class="ui-container">
+        <div class="ui-container center-absolute">
             <div class="chest" v-if="chestInventory">
                 <div class="label">Chest</div>
                 <div class="item-grid">
@@ -73,7 +73,9 @@ export default {
         },
     },
     async mounted() {
-        this.chestInventory = await this.$container.services.inventory.getInventory(this.$router.currentRoute.value.params.id);
+        this.chestInventory = await this.$container.services.inventory.getInventory(
+            this.$router.currentRoute.value.params.id
+        );
     },
     methods: {
         getItem(index: number) {
@@ -114,23 +116,8 @@ export default {
 </script>
 
 <style scoped>
-.backdrop {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(0, 0, 0, .3);
-    pointer-events: none;
-}
 
 .ui-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     border: 8px solid #ccc;
     background: #999;
     border-radius: 3px;
@@ -142,7 +129,6 @@ export default {
 }
 
 .inventory {
-
     border-top: 8px solid #ccc;
 }
 

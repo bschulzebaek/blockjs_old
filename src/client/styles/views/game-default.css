@@ -1,0 +1,12 @@
+.game-default .debug-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
+}
+
+.game-default .crosshair {
+    font-size: 0.6rem;
+    transform: rotate(45deg);
+    color: #fff;
+}

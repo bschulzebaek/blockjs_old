@@ -21,8 +21,8 @@ export default class PlayerController {
     static DEFAULT_WIDTH = 0.6;
     static DEFAULT_SPEED = 6;
     static SPRINT_FACTOR = 1.6;
-    static ROTATE_RATE_X = -150;
-    static ROTATE_RATE_Y = -120;
+    static ROTATE_RATE_X = -120;
+    static ROTATE_RATE_Y = -135;
 
     private camera: CameraInterface;
     private entity: EntityInterface;

@@ -3,7 +3,7 @@
         <div class="backdrop"></div>
         <div
             v-if="inventory"
-            class="inventory"
+            class="inventory center-absolute"
         >
             <div class="label">Inventory</div>
 
@@ -81,41 +81,30 @@ export default {
 </script>
 
 <style scoped>
-.backdrop {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(0, 0, 0, .3);
-    pointer-events: none;
-}
 
 .inventory {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     border: 8px solid #ccc;
     background: #999;
     border-radius: 3px;
 }
+
 .crafting-area {
     background: #ccc;
     height: 300px;
 }
+
 .item-grid,
 .item-toolbar {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
 }
+
 .item-grid > *,
 .item-toolbar > * {
     border-color: #ccc;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, .5);
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.8);
 }
+
 .item-toolbar {
     border-top: 8px solid #ccc;
 }
