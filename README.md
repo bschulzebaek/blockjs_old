@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/assets/logo.png" alt="BlockJS Logo"/>
+  <img src="src/common/assets/logo.png" alt="BlockJS Logo"/>
 </p>
 
 # Placeholder
