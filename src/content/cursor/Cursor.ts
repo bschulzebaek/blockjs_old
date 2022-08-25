@@ -1,4 +1,4 @@
-import CursorShader from '../../core/renderer/shader/cursor/CursorShader';
+import CursorShader from './shader/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';

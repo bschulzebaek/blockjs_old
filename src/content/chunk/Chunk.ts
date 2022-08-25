@@ -3,12 +3,13 @@ import ChunkInterface from './ChunkInterface';
 import BlockID from '../../data/block-id';
 import { ChunkFaces } from '../../data/chunk-faces';
 import ModelInterface from '../../core/scene/model/ModelInterface';
-import ChunkModel, { ChunkModelType } from '../../core/scene/model/chunk/ChunkModel';
+import ChunkModel, { ChunkModelType } from './model/ChunkModel';
 import Container, { ServiceName } from '../../core/Container';
+import BlockInterface from './BlockInterface';
 
 export interface ChunkRawInterface {
     id: string;
-    blocks: number[];
+    blocks: Map<string, BlockInterface>;
     worldX: number;
     worldZ: number;
 }
@@ -25,14 +26,14 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     static HEIGHT = 64;
 
     private id: string;
-    private blocks: BlockID[];
+    private blocks: Map<string, BlockInterface>;
     private worldX: number;
     private worldZ: number;
 
     private solidModel!: ModelInterface;
     private glassModel!: ModelInterface;
 
-    constructor(chunkX: number, chunkZ: number, blocks: BlockID[] = Chunk.getEmptyBlocks()) {
+    constructor(chunkX: number, chunkZ: number, blocks = Chunk.getEmptyBlocks()) {
         const id = Chunk.getId(chunkX, chunkZ);
 
         super(id, Chunk.STORAGE_FIELDS);
@@ -59,21 +60,27 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         return this.blocks;
     }
 
-    public getBlock(index: number) {
-        return this.blocks[index];
+    public getBlockId(x: number, y: number, z: number) {
+        const block = this.blocks.get(Chunk.getBlockPosition(x, y, z));
+
+        return block ? block.id : BlockID.AIR;
     }
 
     public setBlockId(x: number, y: number, z: number, newId: BlockID) {
-        const blockIndex = this.getBlockIndex(x, y, z),
-              previousId = this.getBlockId(x, y, z);
+        const position = Chunk.getBlockPosition(x, y, z),
+              currentBlock = this.blocks.get(position) ?? { id: BlockID.AIR };
 
-        this.blocks[blockIndex] = newId;
+        const newBlock = {
+            id: newId,
+        };
 
-        this.updateModel(newId, previousId, blockIndex);
+        this.blocks.set(position, newBlock);
+
+        this.updateModel(newBlock.id, currentBlock.id);
         Container.getService(ServiceName.WORLD).saveChunk(this);
     }
 
-    public getBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {
+    public getFacingBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {
         if (dir !== -1) {
             const n = ChunkFaces[dir].n;
 
@@ -82,14 +89,10 @@ export default class Chunk extends StoreClass implements ChunkInterface {
             z += n[2];
         }
 
-        if (this.isOutOfBounds(x, y, z)) {
-            return BlockID.AIR;
-        }
-
-        return this.blocks[this.getBlockIndex(x, y, z)];
+        return this.getBlockId(x, y, z);
     }
 
-    public getFacingBlockIds(x: number, y: number, z: number): number[] {
+    public getFacingBlockIds(x: number, y: number, z: number): BlockID[] {
         let facing = [];
 
         facing.push(this.getBlockId(x, y - 1, z));
@@ -100,10 +103,6 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         facing.push(this.getBlockId(x, y, z + 1));
 
         return facing;
-    }
-
-    private getBlockIndex(x: number, y: number, z: number): number {
-        return x + (z * Chunk.WIDTH) + (y * Chunk.WIDTH * Chunk.LENGTH);
     }
 
     public isOutOfBounds(x: number, y: number, z: number): boolean {
@@ -165,13 +164,13 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         return `${chunkX}:${chunkZ}`;
     }
 
-    static getEmptyBlocks(): BlockID.AIR[] {
-        return Array(Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH).fill(BlockID.AIR);
+    static getEmptyBlocks(): Map<string, BlockInterface> {
+        return new Map();
     }
 
     // @ts-ignore
-    private updateModel(newId: BlockID, previousId: BlockID, blockIndex: number) {
-        // Get shader of both ids and rebuild
+    private updateModel(newId: BlockID, previousId: BlockID) {
+        // ToDo: Get shader of both ids and rebuild accordingly
 
         if (newId === BlockID.GLASS) {
             this.rebuildGlassModel();
@@ -181,5 +180,9 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         } else {
             this.rebuildSolidModel();
         }
+    }
+
+    static getBlockPosition(x: number, y: number, z: number) {
+        return `${x}:${y}:${z}`;
     }
 }

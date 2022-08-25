@@ -1,4 +1,4 @@
-import SkyboxShader from '../../core/renderer/shader/skybox/SkyboxShader';
+import SkyboxShader from './shader/SkyboxShader';
 import CubeModel from '../../core/scene/model/cube/CubeModel';
 import ModelInterface from '../../core/scene/model/ModelInterface';
 import SceneObject from '../../core/scene/SceneObject';

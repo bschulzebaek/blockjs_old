@@ -69,7 +69,7 @@ export default {
     grid-template-columns: repeat(9, 1fr);
     /* outline: 5px solid #000; */
     border: 3px solid #929292;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, .5);
+    box-shadow: inset 1px 1px 2px rgb(0 0 0 / 50%)
 }
 
 .toolbar-quickslots .item-slot {

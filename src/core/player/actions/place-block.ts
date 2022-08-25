@@ -39,5 +39,5 @@ export default function placeBlock(block: any) {
 
     world.setBlockId(x, y, z, selectedItem.itemId);
 
-    printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': selectedItem.itemId });
+    // printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': selectedItem.itemId });
 }

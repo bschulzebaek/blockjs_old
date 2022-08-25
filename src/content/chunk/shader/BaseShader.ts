@@ -1,11 +1,11 @@
-import AttributeInterface from '../AttributeInterface';
-import createShaderProgram from '../utility/create-program';
-import getShaderUniforms from '../utility/get-uniforms';
-import createTexture from '../utility/create-texture';
-import Container, { ServiceName } from '../../../Container';
-import CameraInterface from '../../../../content/camera/CameraInterface';
-import ModelInterface from '../../../scene/model/ModelInterface';
-import { Matrix4 } from '../../../../common/math';
+import { Matrix4 } from '../../../common/math';
+import Container, { ServiceName } from '../../../core/Container';
+import AttributeInterface from '../../../core/renderer/shader/AttributeInterface';
+import createShaderProgram from '../../../core/renderer/shader/utility/create-program';
+import createTexture from '../../../core/renderer/shader/utility/create-texture';
+import getShaderUniforms from '../../../core/renderer/shader/utility/get-uniforms';
+import ModelInterface from '../../../core/scene/model/ModelInterface';
+import CameraInterface from '../../camera/CameraInterface';
 
 export default class BaseShader {
     static TEXTURE = 'textures.png';

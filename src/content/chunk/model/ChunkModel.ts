@@ -1,12 +1,13 @@
-import Mesh from '../Mesh';
-import Model from '../Model';
-import BlockID from '../../../../data/block-id';
-import BlockUV from '../../../../data/block-model';
-import { ChunkFaces } from '../../../../data/chunk-faces';
+
 import buildFaces from './build-faces';
 import { getFaceFn, getSkipFn} from './add-face-fn';
-import Chunk from '../../../../content/chunk/Chunk';
-import Container from '../../../Container';
+import Chunk from '../Chunk';
+import Model from '../../../core/scene/model/Model';
+import Container from '../../../core/Container';
+import BlockID from '../../../data/block-id';
+import BlockUV from '../../../data/block-model';
+import { ChunkFaces } from '../../../data/chunk-faces';
+import Mesh from '../../../core/scene/model/Mesh';
 
 export enum ChunkModelType {
     SOLID = 'solid',
@@ -48,18 +49,38 @@ export default class ChunkModel {
     }
 
     static buildMesh(chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, skipBlockFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): Mesh {
-        const size = Chunk.WIDTH * Chunk.HEIGHT * Chunk.LENGTH;
+        // chunk.getBlocks().forEach(({ id }, position) => {
+        //     const [x, y, z] = position.split(':');
+
+        //     if (skipBlockFn(id)) {
+        //         return;
+        //     }
+
+        //     let xf, yf;
+
+        //     for (let j = 0; j < ChunkFaces.length; j++) {
+        //         xf = BlockUV[id][j * 2];
+        //         yf = BlockUV[id][j * 2 + 1];
+
+        //         if (addFaceFn(chunk.getFacingBlockId(x, y, z, j))) {
+        //             buildFaces(chunk, index, faces, verts, inds, uvs, normals, arrayObject, j, x, y, z, xf, yf);
+        //         }
+        //     }
+        // });
+
+        const size = Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH;
 
         for (let index = 0; index < size; index++) {
-            const blockId = chunk.getBlock(index);
-
-            if (skipBlockFn(blockId)) {
-                continue;
-            }
 
             const x = index % Chunk.WIDTH,
                   z = ((index / Chunk.WIDTH) | 0) % Chunk.LENGTH,
                   y = (index / (Chunk.WIDTH * Chunk.LENGTH)) | 0;
+
+            const blockId = chunk.getBlockId(x, y, z);
+
+            if (skipBlockFn(blockId)) {
+                continue;
+            }
 
             let xf, yf;
 
@@ -67,7 +88,7 @@ export default class ChunkModel {
                 xf = BlockUV[blockId][j * 2];
                 yf = BlockUV[blockId][j * 2 + 1];
 
-                if (addFaceFn(chunk.getBlockId(x, y, z, j))) {
+                if (addFaceFn(chunk.getFacingBlockId(x, y, z, j))) {
                     buildFaces(chunk, index, faces, verts, inds, uvs, normals, arrayObject, j, x, y, z, xf, yf);
                 }
             }

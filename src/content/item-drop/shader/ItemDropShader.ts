@@ -1,40 +1,37 @@
+import { Matrix4 } from '../../../common/math';
+import Container from '../../../core/Container';
+import AttributeInterface from '../../../core/renderer/shader/AttributeInterface';
+import createShaderProgram from '../../../core/renderer/shader/utility/create-program';
+import getShaderUniforms from '../../../core/renderer/shader/utility/get-uniforms';
+import ModelInterface from '../../../core/scene/model/ModelInterface';
+import CameraInterface from '../../camera/CameraInterface';
 import fss from './fss';
 import vss from './vss';
-import AttributeInterface from '../AttributeInterface';
-import createShaderProgram from '../utility/create-program';
-import getShaderUniforms from '../utility/get-uniforms';
-import Container from '../../../Container';
-import type Cursor from '../../../../content/cursor/Cursor';
-import CameraInterface from '../../../../content/camera/CameraInterface';
-import ModelInterface from '../../../scene/model/ModelInterface';
-import { Matrix4 } from '../../../../common/math';
 
-export default class CursorShader {
+export default class ItemDropShader {
+    static COLOR = [0.0, 0.0, 1.0, 0.7];
 
-    static COLOR = [1.0, 1.0, 1.0, 0.3];
+    static TEXTURE = 'textures.png';
 
     private camera: CameraInterface;
-    private cursor: Cursor;
 
     private context: WebGL2RenderingContext;
     private program: WebGLProgram;
     private uniforms: Record<string, AttributeInterface>;
 
-    constructor(camera: CameraInterface, cursor: Cursor) {
+    constructor(camera: CameraInterface) {
         this.context = Container.getContext();
         this.program = createShaderProgram(vss, fss);
         this.uniforms = getShaderUniforms(this.program);
         this.context.useProgram(this.program);
 
         this.camera = camera;
-        this.cursor = cursor;
 
         this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
-        this.context.uniform4fv(this.uniforms['color'].loc, CursorShader.COLOR);
+        this.context.uniform4fv(this.uniforms['color'].loc, ItemDropShader.COLOR);
     }
 
-    public run(): void {
-        const model = this.cursor.getModel();
+    public run(model: ModelInterface): void {
 
         this.context.useProgram(this.program);
         this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.view);;

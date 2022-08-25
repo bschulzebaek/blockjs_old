@@ -1,8 +1,8 @@
 
 import WorldInterface from './WorldInterface';
 import BlockID from '../../data/block-id';
-import SolidShader from '../../core/renderer/shader/block/solid/SolidShader';
-import GlassShader from '../../core/renderer/shader/block/glass/GlassShader';
+import SolidShader from '../../content/chunk/shader/solid/SolidShader';
+import GlassShader from '../../content/chunk/shader/glass/GlassShader';
 import Chunk from '../../content/chunk/Chunk';
 
 export default class World implements WorldInterface {

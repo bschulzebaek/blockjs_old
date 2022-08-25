@@ -1,6 +1,5 @@
 import StorageAdapter from './storage/StorageAdapter';
 import EntityService from '../content/entity/EntityService';
-import BlockDataService from '../content/block-data/BlockDataService';
 import Fullscreen from '../common/utility/Fullscreen';
 import generateUUID from '../common/utility/generate-uuid';
 import generateSeed from '../common/utility/generate-seed';
@@ -28,7 +27,6 @@ export enum ServiceName {
     RENDERER = 'renderer',
     WORLD = 'world',
     INVENTORY = 'inventory',
-    BLOCK_DATA = 'blockData',
 }
 
 class Container {
@@ -42,7 +40,6 @@ class Container {
         renderer?: RendererService,
         world?: WorldService,
         inventory?: InventoryService,
-        blockData?: BlockDataService,
     } = {
         gameConfig: undefined,
         entity: undefined,
@@ -50,8 +47,12 @@ class Container {
         renderer: undefined,
         world: undefined,
         inventory: undefined,
-        blockData: undefined,
     };
+
+    constructor() {
+        // @ts-ignore
+        window.$container = this;
+    }
 
     public getContext(): WebGL2RenderingContext {
         return this.context as WebGL2RenderingContext;
@@ -164,7 +165,6 @@ class Container {
         this.services[ServiceName.RENDERER]    = new RendererService();
         this.services[ServiceName.WORLD]       = new WorldService(this.storageAdapter);
         this.services[ServiceName.INVENTORY]   = new InventoryService(this.storageAdapter);
-        this.services[ServiceName.BLOCK_DATA]  = new BlockDataService(this.storageAdapter);
     }
 
     getService(name: ServiceName.ENTITY): EntityService
@@ -173,7 +173,6 @@ class Container {
     getService(name: ServiceName.RENDERER): RendererService
     getService(name: ServiceName.WORLD): WorldService
     getService(name: ServiceName.INVENTORY): InventoryService
-    getService(name: ServiceName.BLOCK_DATA): BlockDataService
     getService(name: ServiceName) {
         switch (name) {
             case ServiceName.ENTITY:
@@ -188,8 +187,6 @@ class Container {
                 return this.services.world;
             case ServiceName.INVENTORY:
                 return this.services.inventory;
-            case ServiceName.BLOCK_DATA:
-                return this.services.blockData;
             default:
                 throw new Error(`[Container] Service "${name}" does not exist!`);
         }

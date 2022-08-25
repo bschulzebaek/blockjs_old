@@ -1,4 +1,4 @@
-import BlockID from '../../../../data/block-id';
+import BlockID from '../../../data/block-id';
 import { ChunkModelType } from './ChunkModel';
 
 function addSolidFace(facing: BlockID): boolean {

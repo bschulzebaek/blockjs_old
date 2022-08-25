@@ -1,16 +1,17 @@
-import ShaderInterface from '../ShaderInterface';
-import AttributeInterface from '../AttributeInterface';
-import vss from './vss';
+import { Matrix4 } from '../../../common/math';
+import Container, { ServiceName } from '../../../core/Container';
+import AttributeInterface from '../../../core/renderer/shader/AttributeInterface';
+import ShaderInterface from '../../../core/renderer/shader/ShaderInterface';
+import createCubemap from '../../../core/renderer/shader/utility/create-cubemap';
+import createShaderProgram from '../../../core/renderer/shader/utility/create-program';
+import getShaderUniforms from '../../../core/renderer/shader/utility/get-uniforms';
+import ModelInterface from '../../../core/scene/model/ModelInterface';
+import CameraInterface from '../../camera/CameraInterface';
 import fss from './fss';
-import createShaderProgram from '../utility/create-program';
-import getShaderUniforms from '../utility/get-uniforms';
-import createCubemap from '../utility/create-cubemap';
-import Container, { ServiceName } from '../../../Container';
-import CameraInterface from '../../../../content/camera/CameraInterface';
-import ModelInterface from '../../../scene/model/ModelInterface';
-import { Matrix4 } from '../../../../common/math';
+import vss from './vss';
 
-export default class SkyboxShader implements ShaderInterface {
+
+export default class SkyboxShader implements ShaderInterface{
     static TEXTURE = [ 'skybox/mc_rt.png', 'skybox/mc_lf.png', 'skybox/mc_up.png', 'skybox/mc_dn.png', 'skybox/mc_bk.png', 'skybox/mc_ft.png' ];
 
     private context: WebGL2RenderingContext;

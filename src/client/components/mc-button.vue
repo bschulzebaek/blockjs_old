@@ -9,3 +9,13 @@
         </div>
     </button>
 </template>
+
+<script>
+export default {
+    methods: {
+        onClick(event) {
+            event.stopPropagation();
+        }
+    }
+}
+</script>

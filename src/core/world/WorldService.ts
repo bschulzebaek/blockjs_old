@@ -82,27 +82,36 @@ export default class WorldService extends Service {
               newMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPos.x, chunkPos.z),
               oldMap = this.world.getMap(),
               chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
-              chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key)),
-              createMap: Map<string, Chunk|undefined> = new Map(chunksToCreate.map((id) => [ id, undefined ]));
+              chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));
 
-        this.chunkRepository.readList(createMap).then(() => {
-            createMap.forEach((chunk, key) => {
+        this.createNewChunks(chunksToCreate);
+        this.unloadChunks(chunksToRemove);
+    }
 
-                if (!chunk) {
-                    chunk = this.generateChunk(key);
-                }
+    private async createNewChunks(chunks: string[]) {
+        const createMap: Map<string, Chunk|undefined> = new Map(chunks.map((id) => [ id, undefined ]));
 
-                chunk.buildModel();
-                this.world.pushChunk(chunk);
-            });
+        await this.chunkRepository.readList(createMap);
+
+        createMap.forEach(async (chunk, key) => {
+
+            if (!chunk) {
+                chunk = this.generateChunk(key);
+            }
+
+            chunk.buildModel();
+            this.world.pushChunk(chunk);
         });
+    }
 
-        const saveChunks = chunksToRemove.map((key) => {
+    private unloadChunks(chunks: string[]) {
+        // ToDo: Keep nearby chunks cached, only remove chunks in given distance!
+
+        const saveChunks = chunks.map((key) => {
             return this.world.popChunk(key);
         });
 
         this.chunkRepository.writeList(saveChunks);
-
     }
 
     private convertToChunkPosition(position: Vector3) {

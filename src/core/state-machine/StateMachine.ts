@@ -26,7 +26,6 @@ class StateMachine {
     }
 
     public to_GameSetup = async (query: any = {}) => {
-        console.log(query)
         if (query.id === undefined && query.name === undefined && query.seed === undefined) {
             throw new Error('[StateMachine] Missing required parameter!');
         }

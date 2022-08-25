@@ -2,6 +2,7 @@ import BlockID from '../../../data/block-id';
 import BlockMeta from '../../../data/block-meta';
 import Container from '../../Container';
 import { ServiceName } from '../../Container';
+// import ItemDrop from '../../../content/item-drop/ItemDrop';
 
 function printInfo(details: object) {
     console.debug({
@@ -16,6 +17,7 @@ function onDestroyChest(id: string) {
 
 export default function destroyBlock(block: any) {
     const world = Container.getService(ServiceName.WORLD).getWorld()!,
+        //   sceneService = Container.getService(ServiceName.SCENE),
           x = block.x,
           y = block.y,
           z = block.z;
@@ -32,7 +34,9 @@ export default function destroyBlock(block: any) {
         onDestroyChest(positionStr);
     }
 
-    world.setBlockId(x, y, z, BlockID.AIR);;
+    world.setBlockId(x, y, z, BlockID.AIR);
 
-    printInfo({ Position: positionStr, 'New Block ID': 0 });
+    // sceneService.addEntity(new ItemDrop(blockId, x, y, z));
+
+    // printInfo({ Position: positionStr, 'New Block ID': 0 });
 }
