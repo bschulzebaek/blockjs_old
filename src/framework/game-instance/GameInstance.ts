@@ -69,11 +69,12 @@ export default class GameInstance {
         await this.scene.discard();
     }
 
+    // @ts-ignore
     private onBeforeUnload = async (event: BeforeUnloadEvent) => {
         this.teardown();
 
         event.preventDefault();
-        event.returnValue = 'afasdasd';
+        event.returnValue = 'unsaved-changes';
 
         return event.returnValue;
     }

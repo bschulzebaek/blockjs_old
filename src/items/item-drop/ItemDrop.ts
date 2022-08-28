@@ -1,11 +1,11 @@
-import Container, { ServiceName } from '../../framework/container/Container';
+import Container from '../../framework/container/Container';
 import ItemDropShader from './shader/ItemDropShader';
 import Model from '../../framework/scene/model/Model';
 import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
 import BlockID from '../../data/block-id';
-import CameraInterface from '../../client/camera/CameraInterface';
 import ItemDropModel from './ItemDropModel';
 import generateUUID from '../../common/utility/generate-uuid';
+import type Camera from '../../client/camera/Camera';
 
 export default class ItemDrop implements SceneObjectInterface {
 
@@ -15,7 +15,7 @@ export default class ItemDrop implements SceneObjectInterface {
 
     private model: Model;
     private shader!: ItemDropShader;
-    private camera: CameraInterface;
+    private camera: Camera;
 
     private itemId: BlockID;
     private x: number;
@@ -23,7 +23,7 @@ export default class ItemDrop implements SceneObjectInterface {
     private z: number;
 
     constructor(itemId: BlockID, x: number, y: number, z: number) {
-        this.camera = Container.getService(ServiceName.SCENE).getCamera();
+        this.camera = Container.getGameInstance()?.getScene().getSceneObject('camera') as Camera;
 
         this.itemId = itemId;
         this.x = x + 0.5;

@@ -43,7 +43,7 @@ export default class Cursor implements SceneObjectInterface {
         }
 
         const { model, camera } = this,
-              block = getBlockFromRay(camera.getTransform().getPosition(), camera.ray.fromScreen().ray);
+              block = getBlockFromRay(camera.getTransform().getPosition(), camera.getRay().fromScreen().ray);
 
         if (!block || block.blockId < 1) {
             return this.remove();

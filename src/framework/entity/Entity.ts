@@ -109,6 +109,7 @@ export default class Entity extends StoreClass implements EntityInterface, Scene
         );
     }
 
+    // @ts-ignore
     public update(delta: number) {
 
     }

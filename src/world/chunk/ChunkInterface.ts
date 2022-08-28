@@ -1,4 +1,4 @@
-import ModelInterface from '../../core/scene/model/ModelInterface';
+import ModelInterface from '../../framework/scene/model/ModelInterface';
 import BlockID from '../../data/block-id';
 import BlockInterface from './BlockInterface';
 
