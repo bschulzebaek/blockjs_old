@@ -1,8 +1,8 @@
 import SceneInterface from './SceneInterface';
 import Container, { ServiceName } from '../container/Container';
-import Camera from '../../content/camera/Camera';
+import Camera from '../../client/camera/Camera';
 import Skybox from '../../world/skybox/Skybox';
-import Cursor from '../../content/cursor/Cursor';
+import Cursor from '../../client/cursor/Cursor';
 import PlayerController from '../player/PlayerController';
 import SceneObjectInterface from './SceneObjectInterface';
 

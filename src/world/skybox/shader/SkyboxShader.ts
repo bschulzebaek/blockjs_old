@@ -8,7 +8,7 @@ import getShaderUniforms from '../../../core/renderer/utility/get-uniforms';
 import ModelInterface from '../../../core/scene/model/ModelInterface';
 import fss from './fss';
 import vss from './vss';
-import type Camera from '../../../content/camera/Camera';
+import type Camera from '../../../client/camera/Camera';
 
 
 export default class SkyboxShader implements ShaderInterface{

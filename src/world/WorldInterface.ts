@@ -1,4 +1,4 @@
-import CameraInterface from '../content/camera/CameraInterface';
+import CameraInterface from '../client/camera/CameraInterface';
 import ChunkInterface from './chunk/ChunkInterface';
 import BlockID from '../data/block-id';
 

@@ -1,7 +1,7 @@
 
 import { onLeftClick, onRightClick } from './mouse-controls';
 import WorldInterface from '../../world/WorldInterface';
-import CameraInterface from '../../content/camera/CameraInterface';
+import CameraInterface from '../../client/camera/CameraInterface';
 import EntityInterface from '../../content/entity/EntityInterface';
 import { Vector3 } from '../../common/math';
 import Container, { ServiceName } from '../container/Container';

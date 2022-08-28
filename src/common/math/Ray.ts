@@ -1,5 +1,5 @@
 import { Matrix4, transformVector, multiply, Vector4, Vector3 } from '.';
-import CameraInterface from '../../content/camera/CameraInterface';
+import CameraInterface from '../../client/camera/CameraInterface';
 
 export default class Ray {
     public camera: CameraInterface;

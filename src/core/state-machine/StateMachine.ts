@@ -1,7 +1,7 @@
 import Fullscreen from '../../common/utility/Fullscreen';
-import router from '../../client/router';
-import { Views, Paths } from '../../client/router/routes';
-import { navigationControlKeyDown, navigationControlKeyUp } from '../../client/helper/InGameNavigationControl';
+import router from '../../client/user-interface/router';
+import { Views, Paths } from '../../client/user-interface/router/routes';
+import { navigationControlKeyDown, navigationControlKeyUp } from '../../client/user-interface/helper/InGameNavigationControl';
 import Container, { ServiceName } from '../container/Container';
 import prepareCanvas from '../../common/utility/prepare-canvas';
 
