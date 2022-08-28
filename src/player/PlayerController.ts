@@ -1,12 +1,12 @@
 
 import { onLeftClick, onRightClick } from './mouse-controls';
-import WorldInterface from '../../world/WorldInterface';
-import CameraInterface from '../../client/camera/CameraInterface';
-import EntityInterface from '../../content/entity/EntityInterface';
-import { Vector3 } from '../../common/math';
-import Container, { ServiceName } from '../container/Container';
-import Chunk from '../../world/chunk/Chunk';
-import SceneObjectInterface from '../scene/SceneObjectInterface';
+import WorldInterface from '../world/WorldInterface';
+import CameraInterface from '../client/camera/CameraInterface';
+import EntityInterface from '../content/entity/EntityInterface';
+import { Vector3 } from '../common/math';
+import Container, { ServiceName } from '../core/container/Container';
+import Chunk from '../world/chunk/Chunk';
+import SceneObjectInterface from '../core/scene/SceneObjectInterface';
 
 enum ControlMap {
     WALK_FORWARD = 'w',

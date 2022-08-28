@@ -3,7 +3,7 @@ import Container, { ServiceName } from '../container/Container';
 import Camera from '../../client/camera/Camera';
 import Skybox from '../../world/skybox/Skybox';
 import Cursor from '../../client/cursor/Cursor';
-import PlayerController from '../player/PlayerController';
+import PlayerController from '../../player/PlayerController';
 import SceneObjectInterface from './SceneObjectInterface';
 
 export default class Scene implements SceneInterface {

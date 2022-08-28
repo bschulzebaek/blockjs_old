@@ -1,10 +1,9 @@
-import { Vector3 } from '../../../common/math';
-import { publish } from '../../../common/utility/event-helper';
-import BlockID from '../../../data/block-id';
-import BlockMeta from '../../../data/block-meta';
-import Events from '../../../data/events';
-import Container from '../../container/Container';
-import { ServiceName } from '../../container/Container';
+import { Vector3 } from '../../common/math';
+import { publish } from '../../common/utility/event-helper';
+import BlockID from '../../data/block-id';
+import BlockMeta from '../../data/block-meta';
+import Events from '../../data/events';
+import Container, { ServiceName } from '../../core/container/Container';
 
 export class BlockDestroyedEvent extends Event {
 

@@ -1,10 +1,10 @@
-import Container, { ServiceName } from '../../container/Container';
-import { ChunkFaces } from '../../../data/chunk-faces';
+import Container, { ServiceName } from '../../core/container/Container';
+import { ChunkFaces } from '../../data/chunk-faces';
 import type PlayerController from '../PlayerController';
-import BlockID from '../../../data/block-id';
-import Events from '../../../data/events';
-import { publish } from '../../../common/utility/event-helper';
-import Vector3 from '../../../common/math/Vector3';
+import BlockID from '../../data/block-id';
+import Events from '../../data/events';
+import { publish } from '../../common/utility/event-helper';
+import Vector3 from '../../common/math/Vector3';
 
 export class BlockPlacedEvent extends Event {
 
