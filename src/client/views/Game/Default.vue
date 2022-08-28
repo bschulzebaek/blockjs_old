@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import Toolbar from '../../components/toolbar';
+import Toolbar from '../../components/toolbar.vue';
 
 export default {
     components: {
@@ -30,14 +30,10 @@ export default {
         }
     },
     mounted() {
-        if (this.$container.isRunning()) {
-            return;
-        }
-
-        this.$container.resume(this.canvas);
+        this.$stateMachine.game_resume(this.canvas);
     },
     beforeUnmount() {
-        this.$container.pause();
+        this.$stateMachine.game_pause(this.canvas);
     },
 };
 </script>

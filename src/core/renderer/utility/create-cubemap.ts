@@ -1,5 +1,5 @@
-import getAssetUrl from '../../../../common/utility/get-asset-url';
-import Container from '../../../Container';
+import getAssetUrl from '../../../common/utility/get-asset-url';
+import Container from '../../container/Container';
 
 const width = 1;
 const height = 1;

@@ -1,26 +1,20 @@
-import router from '../../../client/router';
-import { Views } from '../../../client/router/routes';
-import Container, { ServiceName } from '../../../core/Container';
 import BlockID from '../../../data/block-id';
-
-async function useChest(block: any) {
-    const { x, y ,z } = block;
-
-    const inventoryId = `${x}:${y}:${z}`;
-
-    await Container.getService(ServiceName.INVENTORY).loadInventory(inventoryId);
-
-    router.push({ name: Views.GAME_CHEST, params: { id: inventoryId }});
-}
-
-function useCraftingTable() {
-    router.push({ name: Views.GAME_CRAFTING_TABLE });
-}
+import StateMachine from '../../state-machine/StateMachine';
 
 export default function useBlock(block: any) {
-    if (block.blockId === BlockID.CHEST) {
-        useChest(block);
-    } else if (block.blockId === BlockID.CRAFTING_TABLE) {
-        useCraftingTable();
+    const { x, y, z, blockId } = block,
+          positionStr = `${x}:${y}:${z}`;
+
+    switch (blockId) {
+        case BlockID.CHEST:
+            StateMachine.to_GameChest(positionStr);
+
+            break;
+        case BlockID.CRAFTING_TABLE:
+            StateMachine.to_GameCraftingTable();
+
+            break;
+        default:
+            throw new Error(`[useBlock] Something went wrong for block ID "${blockId}" at ${positionStr}!`);
     }
 }

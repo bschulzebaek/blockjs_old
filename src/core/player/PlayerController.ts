@@ -4,8 +4,9 @@ import WorldInterface from '../world/WorldInterface';
 import CameraInterface from '../../content/camera/CameraInterface';
 import EntityInterface from '../../content/entity/EntityInterface';
 import { Vector3 } from '../../common/math';
-import Container, { ServiceName } from '../Container';
+import Container, { ServiceName } from '../container/Container';
 import Chunk from '../../content/chunk/Chunk';
+import SceneObjectInterface from '../scene/SceneObjectInterface';
 
 enum ControlMap {
     WALK_FORWARD = 'w',
@@ -16,11 +17,13 @@ enum ControlMap {
     SPRINT = 'Control'
 }
 
-export default class PlayerController {
+export default class PlayerController implements SceneObjectInterface {
+    static SCENE_ID = 'player-controller';
     static DEFAULT_HEIGHT = 1.7;
     static DEFAULT_WIDTH = 0.6;
     static DEFAULT_SPEED = 6;
     static SPRINT_FACTOR = 1.6;
+    static JUMP_ACCELERATION = 0.18;
     static ROTATE_RATE_X = -120;
     static ROTATE_RATE_Y = -135;
 
@@ -43,9 +46,12 @@ export default class PlayerController {
         this.entity = entity;
         this.world = Container.getService(ServiceName.WORLD).getWorld();
 
-        camera.setTransform(this.entity.getTransform());
-
+        this.syncCameraPosition();
         this.registerEventListener();
+    }
+
+    public getId() {
+        return PlayerController.SCENE_ID;
     }
 
     public setPosition(position: Vector3) {
@@ -53,11 +59,10 @@ export default class PlayerController {
     }
 
     public update(delta: number): void {
-        const position = this.entity.getPosition();
 
-        const { camera, world, vel, acc, speed, keyDownMap } = this;
-
-        const { transform } = this.camera;
+        const { world, vel, acc, speed, keyDownMap } = this,
+              position = this.entity.getPosition(),
+              transform = this.camera.getTransform();
 
         const keydownForward = keyDownMap.has(ControlMap.WALK_FORWARD),
               keydownBackward = keyDownMap.has(ControlMap.WALK_BACKWARD),
@@ -87,7 +92,7 @@ export default class PlayerController {
         }
 
         if (keydownJump && this.canJump()) {
-            acc.y = 0.22;
+            acc.y = PlayerController.JUMP_ACCELERATION;
         }
 
         vel.y += acc.y;
@@ -113,13 +118,13 @@ export default class PlayerController {
 
         position.add(xo, yo, zo);
 
+        this.syncCameraPosition();
+
         acc.set(0, 0, 0);
 
         if (position.y < -100) {
             position.set(8, 100, 8);
         }
-
-        camera.setPosition(position);
 
         const chunkId = Chunk.getFormattedId(position.x, position.z);
 
@@ -129,6 +134,12 @@ export default class PlayerController {
         }
 
         this.debugPosition();
+    }
+
+    private syncCameraPosition() {
+        const position = this.entity.getPosition();
+
+        this.camera.getTransform().setPosition(position.x, position.y + PlayerController.DEFAULT_HEIGHT, position.z);
     }
 
     private debugPosition() {
@@ -143,7 +154,7 @@ export default class PlayerController {
         el.innerHTML = `Position: ${x.toFixed(0)}:${y.toFixed(0)}:${z.toFixed(0)} <br>Chunk: ${this.lastChunkId}`;
     }
 
-    public beforeDestroy() {
+    public async discard(): Promise<void> {
         this.discardEventListener();
     }
 
@@ -219,35 +230,41 @@ export default class PlayerController {
 
     private getSurroundingCoordinates() {
         const { x, y, z } = this.entity.getPosition(),
-              w = PlayerController.DEFAULT_WIDTH / 2,
-              h = PlayerController.DEFAULT_HEIGHT / 2;
+              radius = PlayerController.DEFAULT_WIDTH / 2;
+
+        const x0 = x - radius,
+              x1 = x + radius,
+              y0 = y + PlayerController.DEFAULT_HEIGHT / 2,
+              y1 = y + PlayerController.DEFAULT_HEIGHT,
+              z0 = z - radius,
+              z1 = z + radius;
 
         return [
-            { x: x - w, y: y - h, z: z - w },
-            { x: x + w, y: y - h, z: z - w },
-            { x: x - w, y: y - h, z: z + w },
-            { x: x + w, y: y - h, z: z + w },
-            { x: x - w, y,        z: z - w },
-            { x: x + w, y,        z: z - w },
-            { x: x - w, y,        z: z + w },
-            { x: x + w, y,        z: z + w },
-            { x: x - w, y: y + h, z: z - w, top: true },
-            { x: x + w, y: y + h, z: z - w, top: true },
-            { x: x - w, y: y + h, z: z + w, top: true },
-            { x: x + w, y: y + h, z: z + w, top: true }
+            { x: x0, y, z: z0 },
+            { x: x1, y, z: z0 },
+            { x: x0, y, z: z1 },
+            { x: x1, y, z: z1 },
+            { x: x0, y: y0, z: z0 },
+            { x: x1, y: y0, z: z0 },
+            { x: x0, y: y0, z: z1 },
+            { x: x1, y: y0, z: z1 },
+            { x: x0, y: y1, z: z0, top: true },
+            { x: x1, y: y1, z: z0, top: true },
+            { x: x0, y: y1, z: z1, top: true },
+            { x: x1, y: y1, z: z1, top: true }
         ];
     }
 
     private canJump(): boolean {
         const position = this.entity.getPosition();
 
-        const blockAbove = this.world.getBlockId(position.x, position.y + 1, position.z),
+        const aboveBlockId = this.world.getBlockId(position.x, position.y + 1, position.z),
               lastJump = this.lastJump,
               now = Date.now(),
               delta = now - lastJump;
 
 
-        if (delta > 300 && this.vel.y === 0 && blockAbove < 1) {
+        if (delta > 300 && this.vel.y === 0 && aboveBlockId < 1) {
             this.lastJump = now;
 
             return true;
@@ -267,23 +284,25 @@ export default class PlayerController {
 
         event.preventDefault();
 
-        const { movementX, movementY } = event;
-        const { transform } = this.camera
+        const { movementX, movementY } = event,
+              rotation = this.camera.getTransform().getRotation();
 
-        transform.rotation.x += movementY * (PlayerController.ROTATE_RATE_X / window.screen.availHeight);
-        transform.rotation.x = Math.max(-90, Math.min(90, transform.rotation.x));
-        transform.rotation.y += movementX * (PlayerController.ROTATE_RATE_Y / window.screen.availWidth);
+        rotation.add(
+            movementY * (PlayerController.ROTATE_RATE_X / window.screen.availHeight),
+            movementX * (PlayerController.ROTATE_RATE_Y / window.screen.availWidth),
+            0
+        );
 
-        const entityRotation = this.entity.getTransform().rotation;
+        rotation.x = Math.max(-90, Math.min(90, rotation.x));
 
-        entityRotation.set(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+        this.entity.getTransform().getRotation().set(rotation.x, rotation.y, rotation.z);
     }
 
     public createModel() {
-        this.entity.createModel();
+
     }
 
     public createShader() {
-        this.entity.createShader();
+
     }
 }

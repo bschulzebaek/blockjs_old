@@ -1,4 +1,4 @@
-import Container from '../../../Container';
+import Container from '../../container/Container';
 
 function compileShader(context: WebGL2RenderingContext, src: string, type: number): WebGLShader {
     const shader = context.createShader(type) as WebGLShader;

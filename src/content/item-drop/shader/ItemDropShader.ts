@@ -1,8 +1,8 @@
 import { Matrix4 } from '../../../common/math';
-import Container from '../../../core/Container';
-import AttributeInterface from '../../../core/renderer/shader/AttributeInterface';
-import createShaderProgram from '../../../core/renderer/shader/utility/create-program';
-import getShaderUniforms from '../../../core/renderer/shader/utility/get-uniforms';
+import Container from '../../../core/container/Container';
+import AttributeInterface from '../../../core/renderer/AttributeInterface';
+import createShaderProgram from '../../../core/renderer/utility/create-program';
+import getShaderUniforms from '../../../core/renderer/utility/get-uniforms';
 import ModelInterface from '../../../core/scene/model/ModelInterface';
 import CameraInterface from '../../camera/CameraInterface';
 import fss from './fss';
@@ -27,14 +27,14 @@ export default class ItemDropShader {
 
         this.camera = camera;
 
-        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.projectionMatrix);
+        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.getProjectionMatrix());
         this.context.uniform4fv(this.uniforms['color'].loc, ItemDropShader.COLOR);
     }
 
     public run(model: ModelInterface): void {
 
         this.context.useProgram(this.program);
-        this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.view);;
+        this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.getView());;
         this.context.uniformMatrix4fv(this.uniforms['view'].loc, false, model.view as Matrix4);
 
         this.render(model);

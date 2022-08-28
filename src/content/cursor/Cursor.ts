@@ -2,25 +2,26 @@ import CursorShader from './shader/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
-import Container, { ServiceName } from '../../core/Container';
+import Container, { ServiceName } from '../../core/container/Container';
 import getBlockFromRay from '../../common/utility/get-block-from-ray';
-import SceneObject from '../../core/scene/SceneObject';
 import Model from '../../core/scene/model/Model';
 import CubeModel from '../../core/scene/model/cube/CubeModel';
+import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
 
-export default class Cursor extends SceneObject {
-
+export default class Cursor implements SceneObjectInterface {
+    static SCENE_ID = 'cursor';
     static OFFSET = 0.5;
 
     private model?: Model;
     private camera: CameraInterface;
     private shader!: CursorShader;
 
-    constructor() {
-        super();
+    constructor(camera: CameraInterface) {
+        this.camera = camera;
+    }
 
-        this.camera = Container.getService(ServiceName.SCENE).getCamera();
-
+    public getId() {
+        return Cursor.SCENE_ID;
     }
 
     public createModel() {
@@ -42,7 +43,7 @@ export default class Cursor extends SceneObject {
         }
 
         const { model, camera } = this,
-              block = getBlockFromRay(camera.transform.position, camera.ray.fromScreen().ray);
+              block = getBlockFromRay(camera.getTransform().getPosition(), camera.ray.fromScreen().ray);
 
         if (!block || block.blockId < 1) {
             return this.remove();

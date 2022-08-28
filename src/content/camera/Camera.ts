@@ -1,43 +1,65 @@
 import { Transform, degree2Radians, Matrix4, Ray, Vector3 } from '../../common/math';
 import CameraInterface from './CameraInterface';
+import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
 
-export default class Camera implements CameraInterface {
-    public projectionMatrix: Matrix4;
-    public transform: Transform;
-    public view: Matrix4;
-    private fov: number;
-    private near: number;
-    private far: number;
-    private aspectRatio: number;
+export default class Camera implements CameraInterface, SceneObjectInterface {
+    static SCENE_ID = 'camera';
 
-    public ray: Ray;
+    protected projectionMatrix: Matrix4;
+    protected transform: Transform;
+    protected view: Matrix4;
+    protected fov: number;
+    protected near: number;
+    protected far: number;
+    protected aspectRatio: number;
+    protected ray: Ray;
 
     constructor(fov = 70, near = 0.1, far = 300.0) {
-        this.fov = fov;
         this.aspectRatio = this.getAspectRatio();
+        this.fov = fov;
         this.near = near;
         this.far = far;
 
-        this.projectionMatrix = Matrix4.perspective(fov, this.aspectRatio, near, far);
         this.transform = new Transform();
         this.view = Matrix4.identity();
 
-        // window.addEventListener('resize', this.updateOnResize.bind(this));
-
         this.ray = new Ray(this);
+        this.projectionMatrix = this.createProjectionMatrix();
     }
 
-    public updateOnResize(): void {
-        this.aspectRatio = this.getAspectRatio();
-
-        this.projectionMatrix = Matrix4.perspective(this.fov, this.aspectRatio, this.near, this.far);
+    public getId() {
+        return Camera.SCENE_ID;
     }
 
-    private getAspectRatio() {
+    protected createProjectionMatrix(): Matrix4 {
+        return Matrix4.perspective(this.fov, this.aspectRatio, this.near, this.far);
+    }
+
+    public createModel(): void {
+
+    }
+
+    public createShader(): void {
+
+    }
+
+    public getProjectionMatrix() {
+        return this.projectionMatrix;
+    }
+
+    public getView() {
+        return this.view;
+    }
+
+    public getRay() {
+        return this.ray;
+    }
+
+    protected getAspectRatio() {
         return window.screen.availWidth / window.screen.availHeight;
     }
 
-    public updateViewMatrix() {
+    protected updateViewMatrix() {
         const { transform } = this;
         const { position, rotation, view } = transform;
 
@@ -53,39 +75,13 @@ export default class Camera implements CameraInterface {
         return this.view;
     }
 
-    public panX(v: number) {
-        const { transform } = this;
-
-        this.updateViewMatrix();
-
-        transform.position.x += transform.right[0] * v;
-        transform.position.y += transform.right[1] * v;
-        transform.position.z += transform.right[2] * v;
-    }
-
-    public panY(v: number) {
-        const { transform } = this;
-
-        this.updateViewMatrix();
-
-        transform.position.y += transform.up[1] * v;
-        transform.position.x += transform.up[0] * v;
-        transform.position.z += transform.up[2] * v;
-    }
-
-    public panZ(v: number) {
-        const { transform } = this;
-
-        this.updateViewMatrix();
-
-        transform.position.x += transform.forward[0] * v;
-        transform.position.y += transform.forward[1] * v;
-        transform.position.z += transform.forward[2] * v;
-    }
-
     public setPosition(position: Vector3): void {
         this.transform.position.set(position.x, position.y, position.z);
         this.transform.position.add(0, 1.7 / 2, 0);
+    }
+
+    public getTransform() {
+        return this.transform;
     }
 
     public setTransform(transform: Transform) {

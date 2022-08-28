@@ -1,24 +1,36 @@
 import SceneInterface from '../scene/SceneInterface';
 
-
 export default class Renderer {
     private paused: boolean = true;
-    private scene!: SceneInterface;
+    private scene?: SceneInterface;
 
     public setScene(scene: SceneInterface) {
         this.scene = scene;
     }
 
-    public setPaused(paused: boolean) {
-        if (paused === this.paused) {
+    public start() {
+        if (!this.paused) {
             return;
         }
 
-        this.paused = paused;
+        if (!this.scene) {
+            throw new Error('[Renderer:start] Missing required Scene!');
+        }
+
+        this.paused = false;
+        this.loop(0, 0);
     }
 
-    public getPaused() {
-        return this.paused;
+    public stop() {
+        if (this.paused) {
+            return;
+        }
+
+        this.paused = true;
+    }
+
+    public isRunning() {
+        return !this.paused;
     }
 
     public runFrame(): void {
@@ -36,7 +48,7 @@ export default class Renderer {
 
     private render(delta: number): void {
         this.logFps(delta);
-        this.scene.update(delta);
+        this.scene!.update(delta);
     }
 
     private getDelta(time: number, lastTime: number): number {

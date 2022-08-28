@@ -1,8 +1,9 @@
 import EntityInterface from './EntityInterface';
-import Container, { ServiceName } from '../../core/Container';
+import Container, { ServiceName } from '../../core/container/Container';
 import StoreClass from '../../core/storage/StoreClass';
 import ModelInterface from '../../core/scene/model/ModelInterface';
 import { Transform, Vector3 } from '../../common/math';
+import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
 
 export interface EntityRawInterface {
     id: string;
@@ -19,8 +20,8 @@ export interface EntityRawInterface {
     inventoryId: string;
 }
 
-export default class Entity extends StoreClass implements EntityInterface {
-    static STORAGE_FIELDS  = [
+export default class Entity extends StoreClass implements EntityInterface, SceneObjectInterface {
+    static STORAGE_FIELDS = [
         'id',
         'x',
         'y',
@@ -29,7 +30,6 @@ export default class Entity extends StoreClass implements EntityInterface {
     ];
 
     private id: string;
-    private position: Vector3;
     public transform: Transform = new Transform();
     private model?: ModelInterface;
     private inventoryId: string;
@@ -38,9 +38,9 @@ export default class Entity extends StoreClass implements EntityInterface {
         super(id, Entity.STORAGE_FIELDS);
 
         this.id = id;
-        this.position = position;
         this.inventoryId = inventoryId;
-        this.transform.rotation = rotation;
+        this.transform.getPosition().set(position.x, position.y, position.z);
+        this.transform.getRotation().set(rotation.x, rotation.y, rotation.z);
     }
 
     public getId() {
@@ -48,11 +48,11 @@ export default class Entity extends StoreClass implements EntityInterface {
     }
 
     public getPosition() {
-        return this.position;
+        return this.transform.position;
     }
 
     public setPosition(position: Vector3) {
-        this.position = position;
+        this.transform.position.set(position.x, position.y, position.z);
     }
 
     public setModel(model: ModelInterface) {
@@ -72,8 +72,7 @@ export default class Entity extends StoreClass implements EntityInterface {
     }
 
     public getRaw() {
-        const position = this.position,
-              rotation = this.transform.rotation;
+        const { position, rotation } = this.transform;
 
         return {
             id: this.id,
@@ -110,6 +109,10 @@ export default class Entity extends StoreClass implements EntityInterface {
         );
     }
 
+    public update(delta: number) {
+
+    }
+
     public createModel() {
 
     }
@@ -124,8 +127,8 @@ export default class Entity extends StoreClass implements EntityInterface {
               position = this.getPosition();
 
         return (
-            world.getBlockId(position.x, position.y - 1, position.z) > 0 ||
-            world.getBlockId(position.x, position.y, position.z) > 0
+            world.getBlockId(position.x, position.y, position.z) > 0 ||
+            world.getBlockId(position.x, position.y + 1,    position.z) > 0
         );
     }
 }

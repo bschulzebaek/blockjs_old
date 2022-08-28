@@ -1,7 +1,6 @@
 
 import EntityRepository from './EntityRepository';
 import Entity from './Entity';
-import Container, { ServiceName } from '../../core/Container';
 import Service from '../../core/Service';
 import StorageAdapter from '../../core/storage/StorageAdapter';
 
@@ -19,16 +18,21 @@ export default class EntityService extends Service {
         this.repository = new EntityRepository(adapter);
     }
 
-    public async create(): Promise<Entity> {
-        const player = new Entity(EntityService.PLAYER_ID);
+    public async new() {
+        const id = EntityService.PLAYER_ID,
+              player = new Entity(id);
 
-        player.setInventoryId(await Container.getService(ServiceName.INVENTORY).createInventory());
+        this.entities.set(id, player);
 
-        this.entities.set(player.getId(), player);
+        await this.repository.write(this.entities.get(id)!);
+    }
 
-        await this.repository.write(player);
+    public async load() {
+        await this.getAll();
+    }
 
-        return player;
+    public async discard() {
+        await this.repository.writeList(Array.from(this.entities.values()));
     }
 
     public getPlayer() {
@@ -41,13 +45,5 @@ export default class EntityService extends Service {
         entities.forEach((entity) => {
             this.entities.set(entity.getId(), entity);
         });
-
-        await Container.getService(ServiceName.INVENTORY).loadInventory(
-            this.entities.get(EntityService.PLAYER_ID)?.getInventoryId()!
-        );
-    }
-
-    public async discard() {
-        await this.repository.writeList(Array.from(this.entities.values()));
     }
 }

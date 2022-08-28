@@ -4,10 +4,12 @@ import BlockID from '../../data/block-id';
 import SolidShader from '../../content/chunk/shader/solid/SolidShader';
 import GlassShader from '../../content/chunk/shader/glass/GlassShader';
 import Chunk from '../../content/chunk/Chunk';
+import SceneObjectInterface from '../scene/SceneObjectInterface';
 
-export default class World implements WorldInterface {
+export default class World implements WorldInterface, SceneObjectInterface {
+    static SCENE_ID = 'world';
+
     private map: Map<string, Chunk>;
-
     private solidShader!: SolidShader
     private glassShader!: GlassShader;
 
@@ -15,9 +17,17 @@ export default class World implements WorldInterface {
         this.map = chunks;
     }
 
+    public getId() {
+        return World.SCENE_ID;
+    }
+
     public createShader() {
         this.solidShader = new SolidShader();
         this.glassShader = new GlassShader();
+    }
+
+    public createModel() {
+        this.getChunks().forEach((chunk) => chunk.buildModel());
     }
 
     public update(): void {
@@ -34,10 +44,6 @@ export default class World implements WorldInterface {
                 this.glassShader.run(glassModel);
             }
         });
-    }
-
-    public createModel() {
-
     }
 
     public getMap() {

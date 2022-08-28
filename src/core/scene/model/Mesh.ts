@@ -1,4 +1,4 @@
-import Container from '../../Container';
+import Container from '../../container/Container';
 
 enum ATTRIBUTE_LOCATIONS {
     POSITION = 0,

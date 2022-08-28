@@ -11,7 +11,7 @@ enum MAPPED_ACTIONS {
 function onPauseKey(router: Router) {
     const { name } = router.currentRoute.value;
 
-    if (name === Views.GAME_PAUSE || name === Views.GAME_CHEST || name === Views.GAME_CRAFTING_TABLE) {
+    if (name === Views.GAME_PAUSE || name === Views.GAME_CHEST || name === Views.GAME_CRAFTING_TABLE || name === Views.GAME_INVENTORY) {
         router.push({ name: Views.GAME_DEFAULT });
     } else {
         router.push({ name: Views.GAME_PAUSE });

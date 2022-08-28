@@ -1,41 +1,72 @@
 import SceneInterface from './SceneInterface';
-import Container, { ServiceName } from '../Container';
-import SceneObject from './SceneObject';
-import CameraInterface from '../../content/camera/CameraInterface';
+import Container, { ServiceName } from '../container/Container';
+import Camera from '../../content/camera/Camera';
+import Skybox from '../../content/skybox/Skybox';
+import Cursor from '../../content/cursor/Cursor';
+import PlayerController from '../player/PlayerController';
+import SceneObjectInterface from './SceneObjectInterface';
 
 export default class Scene implements SceneInterface {
-    private entities: SceneObject[] = [];
+    private sceneObjects: Map<string, SceneObjectInterface> = new Map();
 
-    private camera: CameraInterface;
-    private skybox: SceneObject;
-    private cursor: SceneObject;
-
-    constructor(camera: CameraInterface, skybox: SceneObject, cursor: SceneObject) {
-        this.camera = camera;
-        this.skybox = skybox;
-        this.cursor = cursor;
+    public addSceneObject = (sceneObject: SceneObjectInterface) => {
+        this.sceneObjects.set(sceneObject.getId(), sceneObject);
     }
 
-    public addEntity(entity: SceneObject): void {
-        this.entities.push(entity);
+    public addSceneObjects = (...sceneObjects: SceneObjectInterface[]) =>  {
+        sceneObjects.forEach(this.addSceneObject);
     }
 
-    public addEntities(...entities: SceneObject[]): void {
-        this.entities.push(...entities);
+    public getSceneObject(id: string) {
+        if (!this.sceneObjects.has(id)) {
+            throw new Error(`[Scene] SceneObject with id "${id}" does not exist!`);
+        }
+
+        return this.sceneObjects.get(id) as SceneObjectInterface;
     }
 
-    public getEntities(): SceneObject[] {
-        return this.entities;
+    public beforePlay() {
+        this.createSceneObjects();
+
+        this.sceneObjects.forEach((sceneObject) => {
+            if (sceneObject.createModel) {
+                sceneObject.createModel();
+            }
+
+            if (sceneObject.createShader) {
+                sceneObject.createShader();
+            }
+        });
+    }
+
+    public async discard(): Promise<void> {
+        const sceneObjcets = Array.from(this.sceneObjects.values());
+
+        Promise.allSettled(sceneObjcets.map((sceneObjcet) => {
+            if (sceneObjcet.discard) {
+                return sceneObjcet.discard();
+            }
+
+            return undefined;
+        }));
     }
 
     public update(delta: number): void {
-        this.getEntities().forEach((entity) => {
-            entity.update(delta);
+        this.sceneObjects.forEach((sceneObject) => {
+            sceneObject.update(delta);
         });
+    }
 
-        this.camera.update(delta);
-        this.skybox.update(delta);
-        Container.getService(ServiceName.WORLD).getWorld().update();
-        this.cursor.update(delta);
+    private createSceneObjects() {
+        const camera = new Camera(70, 0.05, 300.0),
+              skybox = new Skybox(camera),
+              cursor = new Cursor(camera),
+              world  = Container.getService(ServiceName.WORLD).getWorld(),
+              player = new PlayerController(
+                  camera,
+                  Container.getService(ServiceName.ENTITY).getPlayer()!,
+              );
+
+        this.addSceneObjects(camera, skybox, world, cursor, player);
     }
 }

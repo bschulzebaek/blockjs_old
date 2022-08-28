@@ -1,14 +1,17 @@
-import Container, { ServiceName } from '../../core/Container';
+import Container, { ServiceName } from '../../core/container/Container';
 import ItemDropShader from './shader/ItemDropShader';
 import Model from '../../core/scene/model/Model';
-import SceneObject from '../../core/scene/SceneObject';
+import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
 import BlockID from '../../data/block-id';
 import CameraInterface from '../camera/CameraInterface';
 import ItemDropModel from './ItemDropModel';
+import generateUUID from '../../common/utility/generate-uuid';
 
-export default class ItemDrop extends SceneObject {
+export default class ItemDrop implements SceneObjectInterface {
 
     static ROTATE_RATE= 0.02;
+
+    private id = generateUUID();
 
     private model: Model;
     private shader!: ItemDropShader;
@@ -20,8 +23,6 @@ export default class ItemDrop extends SceneObject {
     private z: number;
 
     constructor(itemId: BlockID, x: number, y: number, z: number) {
-        super();
-
         this.camera = Container.getService(ServiceName.SCENE).getCamera();
 
         this.itemId = itemId;
@@ -33,6 +34,10 @@ export default class ItemDrop extends SceneObject {
         this.model = this.createModel();
 
         console.log(this)
+    }
+
+    public getId(): string {
+        return this.id;
     }
 
     public createModel() {

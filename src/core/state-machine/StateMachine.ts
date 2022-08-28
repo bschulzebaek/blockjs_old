@@ -2,11 +2,43 @@ import Fullscreen from '../../common/utility/Fullscreen';
 import router from '../../client/router';
 import { Views, Paths } from '../../client/router/routes';
 import { navigationControlKeyDown, navigationControlKeyUp } from '../../client/helper/InGameNavigationControl';
+import Container, { ServiceName } from '../container/Container';
+import prepareCanvas from '../../common/utility/prepare-canvas';
 
 class StateMachine {
 
     constructor() {
         this.registerEventListener();
+    }
+
+    public game_play(canvas: HTMLCanvasElement) {
+        const gameInstance = Container.getGameInstance(),
+              renderer     = Container.getRenderer();
+
+        if (!gameInstance) {
+            throw new Error('[StateMachine:game_play] Missing required GameInstance!');
+        }
+
+        Container.setContext(canvas.getContext('webgl2') as WebGL2RenderingContext);
+
+        prepareCanvas(canvas);
+
+        gameInstance.getScene().beforePlay();
+        renderer.start();
+    }
+
+    public game_resume(canvas: HTMLCanvasElement) {
+        if (Container.isRunning()) {
+            return;
+        }
+
+        canvas.requestPointerLock();
+        Container.getRenderer().start();
+    }
+
+    public game_pause() {
+        Container.getRenderer().stop();
+        document.exitPointerLock();
     }
 
     public to_MainMenu = async () => {
@@ -27,16 +59,38 @@ class StateMachine {
 
     public to_GameSetup = async (query: any = {}) => {
         if (query.id === undefined && query.name === undefined && query.seed === undefined) {
-            throw new Error('[StateMachine] Missing required parameter!');
+            throw new Error('[StateMachine:to_GameSetup] Missing required parameter!');
         }
 
         this.pushTransition(Views.GAME_SETUP, query);
     }
 
-    public to_GameDefault = async () => {
+    public GameSetup_GameDefault = async () => {
         Fullscreen.enter();
 
+        await Container.setup(router.currentRoute.value.query);
+        await Container.getGameInstance()?.setup();
+
         this.pushTransition(Views.GAME_DEFAULT);
+    }
+
+    public to_GameDefault = async () => {
+        Fullscreen.enter();
+        this.pushTransition(Views.GAME_DEFAULT);
+    }
+
+    public to_GameChest = async (inventoryId: string) => {
+        if (!inventoryId) {
+            throw new Error('[StateMachine.to_GameChest] Missing required parameter!');
+        }
+
+        await Container.getService(ServiceName.INVENTORY).loadInventory(inventoryId);
+
+        this.pushTransition(Views.GAME_CHEST, {}, { id: inventoryId });
+    }
+
+    public to_GameCraftingTable = async () => {
+        this.pushTransition(Views.GAME_CRAFTING_TABLE);
     }
 
     public to_GamePause = async () => {

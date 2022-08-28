@@ -7,14 +7,7 @@
 <script lang="ts">
 export default {
     mounted() {
-        this.setupGame();
+        this.$stateMachine.GameSetup_GameDefault();
     },
-    methods: {
-        async setupGame() {
-            await this.$container.setup(this.$router.currentRoute.value.query);
-
-            this.$stateMachine.to_GameDefault();
-        }
-    }
 }
 </script>

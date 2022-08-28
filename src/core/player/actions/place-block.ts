@@ -1,19 +1,36 @@
-import Container, { ServiceName } from '../../../core/Container';
+import Container, { ServiceName } from '../../container/Container';
 import { ChunkFaces } from '../../../data/chunk-faces';
+import type PlayerController from '../PlayerController';
+import BlockID from '../../../data/block-id';
+import Events from '../../../data/events';
+import { publish } from '../../../common/utility/event-helper';
+import Vector3 from '../../../common/math/Vector3';
 
-function printInfo(details: object) {
-    console.debug({
-        Action: 'Edit block',
-        ...details
-    });
+export class BlockPlacedEvent extends Event {
+
+    private blockId: BlockID;
+    private position: Vector3;
+
+    constructor(blockId: BlockID, position: Vector3) {
+        super(Events.BLOCK_PLACED);
+
+        this.blockId = blockId;
+        this.position = position;
+    }
+
+    public getBlockId() {
+        return this.blockId;
+    }
+
+    public getPosition() {
+        return this.position;
+    }
 }
 
 export default function placeBlock(block: any) {
     const world           = Container.getService(ServiceName.WORLD).getWorld()!,
-          player          = Container.getService(ServiceName.SCENE).getController()!,
-          playerInventory = Container.getService(ServiceName.INVENTORY).getInventory(
-            Container.getService(ServiceName.ENTITY).getPlayer()!.getInventoryId()
-          ),
+          player          = Container.getScene().getSceneObject('player-controller') as PlayerController,
+          playerInventory = Container.getService(ServiceName.INVENTORY).getPlayerInventory(),
           selectedItem    = playerInventory?.getActiveItem();
 
     if (!selectedItem || !selectedItem.quantity) {
@@ -21,7 +38,7 @@ export default function placeBlock(block: any) {
     }
 
     if (!block) {
-        return printInfo({ 'Message': 'No target block found!' });
+        return;
     }
 
     const n = ChunkFaces[block.face].n,
@@ -30,14 +47,14 @@ export default function placeBlock(block: any) {
           z = block.z + n[2];
 
     if (!world.chunkExists(x, z)) {
-        return printInfo({ Position: `${x}:${y}:${z}`, Message: 'No chunk found at given position!' });
+        return;
     }
 
     if (player.isBlocking(x, y, z)) {
-        return printInfo({ Position: `${x}:${y}:${z}`, Message: 'Position blocked by player!' });
+        return;
     }
 
     world.setBlockId(x, y, z, selectedItem.itemId);
 
-    // printInfo({ Position: `${x}:${y}:${z}`, 'New Block ID': selectedItem.itemId });
+    publish(new BlockPlacedEvent(selectedItem.itemId, new Vector3(x, y, z)));
 }

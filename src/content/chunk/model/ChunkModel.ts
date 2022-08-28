@@ -3,7 +3,7 @@ import buildFaces from './build-faces';
 import { getFaceFn, getSkipFn} from './add-face-fn';
 import Chunk from '../Chunk';
 import Model from '../../../core/scene/model/Model';
-import Container from '../../../core/Container';
+import Container from '../../../core/container/Container';
 import BlockID from '../../../data/block-id';
 import BlockUV from '../../../data/block-model';
 import { ChunkFaces } from '../../../data/chunk-faces';

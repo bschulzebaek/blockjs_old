@@ -46,4 +46,16 @@ export default class Transform {
     public setPosition(x: number, y: number, z: number) {
         this.position.set(x, y, z);
     }
+
+    public getPosition() {
+        return this.position;
+    }
+
+    public getRotation() {
+        return this.rotation;
+    }
+
+    public setRotation(x: number, y: number, z: number) {
+        this.rotation.set(x, y, z);
+    }
 }

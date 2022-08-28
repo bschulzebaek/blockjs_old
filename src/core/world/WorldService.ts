@@ -1,4 +1,4 @@
-import Container, { ServiceName } from '../../core/Container';
+import Container, { ServiceName } from '../container/Container';
 import { createDebugChunk } from './generation/debug-world';
 import World from './World';
 import getChunkMap from './utility/get-chunk-map';
@@ -9,11 +9,11 @@ import Chunk from '../../content/chunk/Chunk';
 import { Vector3 } from '../../common/math';
 
 export default class WorldService extends Service {
-
+    static PLAYER_START = new Vector3(-3, 4, -3);
     static VIEW_DISTANCE = 3;
 
     private chunkRepository: ChunkRepository;
-    private world: World;
+    private world = new World();
     // @ts-ignore
     private seed: string = '';
 
@@ -21,24 +21,14 @@ export default class WorldService extends Service {
         super();
 
         this.chunkRepository = new ChunkRepository(adapter);
-        this.world = new World();
     }
 
-    public beforePlay() {
-        this.world.createShader();
-        this.world.getChunks().forEach((chunk) => chunk.buildModel());
-
-        Container.getService(ServiceName.SCENE).addEntity(this.world);
-    }
-
-    public async discard() {
-        await this.chunkRepository.writeList(Array.from(this.world.getChunks()));
-    }
-
-    public async create() {
+    public async new() {
         await this.createWorld();
 
         const player = Container.getService(ServiceName.ENTITY).getPlayer()!;
+
+        player.setPosition(WorldService.PLAYER_START);
 
         while (player.isBlocked()) {
             player.getPosition().add(0, 1, 0);
@@ -47,6 +37,10 @@ export default class WorldService extends Service {
 
     public async load() {
         await this.createWorld();
+    }
+
+    public async discard() {
+        await this.chunkRepository.writeList(Array.from(this.world.getChunks()));
     }
 
     private async createWorld() {

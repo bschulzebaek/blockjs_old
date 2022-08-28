@@ -1,4 +1,4 @@
-import Container from '../../../Container';
+import Container from '../../container/Container';
 import AttributeInterface from '../AttributeInterface';
 
 export default function getShaderUniforms(program: WebGLProgram): Record<string, AttributeInterface> {

@@ -4,7 +4,7 @@ import BlockID from '../../data/block-id';
 import { ChunkFaces } from '../../data/chunk-faces';
 import ModelInterface from '../../core/scene/model/ModelInterface';
 import ChunkModel, { ChunkModelType } from './model/ChunkModel';
-import Container, { ServiceName } from '../../core/Container';
+import Container, { ServiceName } from '../../core/container/Container';
 import BlockInterface from './BlockInterface';
 
 export interface ChunkRawInterface {

@@ -1,7 +1,9 @@
-import SceneObject from './SceneObject';
-
+import SceneObjectInterface from './SceneObjectInterface';
 export default interface SceneInterface {
-    addEntities(...entities: SceneObject[]): void;
-    getEntities(): SceneObject[];
+    addSceneObject(sceneObject: SceneObjectInterface): void;
+    addSceneObjects(...sceneObjects: SceneObjectInterface[]): void;
+    getSceneObject(id: string): SceneObjectInterface;
+    beforePlay(): void;
+    discard(): Promise<void>;
     update(delta: number): void;
 }

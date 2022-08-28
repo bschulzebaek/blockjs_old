@@ -23,14 +23,12 @@ export default {
     mounted() {
         this.canvas = this.$refs.canvas;
 
-        this.$container.play(this.canvas);
+        this.$stateMachine.game_play(this.canvas);
         this.getPlayerInventory();
     },
     methods: {
         getPlayerInventory() {
-            this.inventory = this.$container.getService('inventory').getInventory(
-                this.$container.getService('entity').getPlayer().getInventoryId()
-            );
+            this.inventory = this.$container.getService('inventory').getPlayerInventory();
         },
     }
 }

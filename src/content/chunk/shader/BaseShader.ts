@@ -1,17 +1,17 @@
 import { Matrix4 } from '../../../common/math';
-import Container, { ServiceName } from '../../../core/Container';
-import AttributeInterface from '../../../core/renderer/shader/AttributeInterface';
-import createShaderProgram from '../../../core/renderer/shader/utility/create-program';
-import createTexture from '../../../core/renderer/shader/utility/create-texture';
-import getShaderUniforms from '../../../core/renderer/shader/utility/get-uniforms';
+import Container from '../../../core/container/Container';
+import AttributeInterface from '../../../core/renderer/AttributeInterface';
+import createShaderProgram from '../../../core/renderer/utility/create-program';
+import createTexture from '../../../core/renderer/utility/create-texture';
+import getShaderUniforms from '../../../core/renderer/utility/get-uniforms';
 import ModelInterface from '../../../core/scene/model/ModelInterface';
-import CameraInterface from '../../camera/CameraInterface';
+import type Camera from '../../camera/Camera';
 
 export default class BaseShader {
     static TEXTURE = 'textures.png';
 
     protected context: WebGL2RenderingContext;
-    private camera: CameraInterface;
+    private camera: Camera;
     private uniforms: Record<string, AttributeInterface>;
     private texture: WebGLTexture;
     private program: WebGLProgram;
@@ -20,17 +20,16 @@ export default class BaseShader {
         this.context = Container.getContext();
         this.program = createShaderProgram(vss, fss);
         this.uniforms = getShaderUniforms(this.program);
+        this.texture = createTexture(BaseShader.TEXTURE);
+        this.camera = Container.getScene().getSceneObject('camera') as Camera;
 
         this.context.useProgram(this.program);
-        this.camera = Container.getService(ServiceName.SCENE).getCamera();
-
-        this.texture = createTexture(BaseShader.TEXTURE);
-        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, this.camera.projectionMatrix);
+        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, this.camera.getProjectionMatrix());
     }
 
     public run(model: ModelInterface): void {
         this.context.useProgram(this.program);
-        this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.view);
+        this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, this.camera.getView());
         this.context.activeTexture(this.context['TEXTURE0']);
         this.context.bindTexture(this.context.TEXTURE_2D, this.texture);
         this.context.uniform1i(this.uniforms['tex0'].loc, 0);

@@ -1,4 +1,4 @@
-import Container, { ServiceName } from '../../core/Container';
+import Container, { ServiceName } from '../../core/container/Container';
 import StoreClass from '../../core/storage/StoreClass';
 import InventoryInterface from './InventoryInterface';
 import InventorySlotInterface from './InventorySlotInterface';

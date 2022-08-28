@@ -1,42 +1,45 @@
+import { Vector3 } from '../../../common/math';
+import { publish } from '../../../common/utility/event-helper';
 import BlockID from '../../../data/block-id';
 import BlockMeta from '../../../data/block-meta';
-import Container from '../../Container';
-import { ServiceName } from '../../Container';
-// import ItemDrop from '../../../content/item-drop/ItemDrop';
+import Events from '../../../data/events';
+import Container from '../../container/Container';
+import { ServiceName } from '../../container/Container';
 
-function printInfo(details: object) {
-    console.debug({
-        Action: 'Edit block',
-        ...details
-    });
-}
+export class BlockDestroyedEvent extends Event {
 
-function onDestroyChest(id: string) {
-    Container.getService(ServiceName.INVENTORY).deleteInventory(id);
+    private blockId: BlockID;
+    private position: Vector3;
+
+    constructor(blockId: BlockID, position: Vector3) {
+        super(Events.BLOCK_DESTROYED);
+
+        this.blockId = blockId;
+        this.position = position;
+    }
+
+    public getBlockId() {
+        return this.blockId;
+    }
+
+    public getPosition() {
+        return this.position;
+    }
 }
 
 export default function destroyBlock(block: any) {
-    const world = Container.getService(ServiceName.WORLD).getWorld()!,
-        //   sceneService = Container.getService(ServiceName.SCENE),
+    const world = Container.getService(ServiceName.WORLD).getWorld(),
           x = block.x,
           y = block.y,
           z = block.z;
 
-    const positionStr = `${x}:${y}:${z}`;
-
     const blockId = block.blockId as BlockID;
 
     if (BlockMeta[blockId].durability === -1) {
-        return printInfo({ Position: positionStr, Message: 'Block cant be removed!' });
-    }
-
-    if (blockId === BlockID.CHEST) {
-        onDestroyChest(positionStr);
+        return;
     }
 
     world.setBlockId(x, y, z, BlockID.AIR);
 
-    // sceneService.addEntity(new ItemDrop(blockId, x, y, z));
-
-    // printInfo({ Position: positionStr, 'New Block ID': 0 });
+    publish(new BlockDestroyedEvent(blockId, new Vector3(x, y, z)));
 }
