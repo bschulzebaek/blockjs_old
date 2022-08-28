@@ -1,12 +1,12 @@
-import Container, { ServiceName } from '../container/Container';
+import Container, { ServiceName } from '../core/container/Container';
 import { createDebugChunk } from './generation/debug-world';
 import World from './World';
 import getChunkMap from './utility/get-chunk-map';
-import Service from '../Service';
-import ChunkRepository from '../../content/chunk/ChunkRepository';
-import StorageAdapter from '../storage/StorageAdapter';
-import Chunk from '../../content/chunk/Chunk';
-import { Vector3 } from '../../common/math';
+import Service from '../core/Service';
+import ChunkRepository from './chunk/ChunkRepository';
+import StorageAdapter from '../core/storage/StorageAdapter';
+import Chunk from './chunk/Chunk';
+import { Vector3 } from '../common/math';
 
 export default class WorldService extends Service {
     static PLAYER_START = new Vector3(-3, 4, -3);

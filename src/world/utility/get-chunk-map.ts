@@ -1,4 +1,4 @@
-import Chunk from '../../../content/chunk/Chunk';
+import Chunk from '../chunk/Chunk';
 
 /**
  * Creates 2-dimensional map (Array of X,Z pairs) of chunks in reach of "renderDistance".

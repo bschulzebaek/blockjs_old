@@ -1,11 +1,11 @@
 
 import { onLeftClick, onRightClick } from './mouse-controls';
-import WorldInterface from '../world/WorldInterface';
+import WorldInterface from '../../world/WorldInterface';
 import CameraInterface from '../../content/camera/CameraInterface';
 import EntityInterface from '../../content/entity/EntityInterface';
 import { Vector3 } from '../../common/math';
 import Container, { ServiceName } from '../container/Container';
-import Chunk from '../../content/chunk/Chunk';
+import Chunk from '../../world/chunk/Chunk';
 import SceneObjectInterface from '../scene/SceneObjectInterface';
 
 enum ControlMap {

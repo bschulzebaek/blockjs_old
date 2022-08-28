@@ -5,7 +5,7 @@ import createShaderProgram from '../../../core/renderer/utility/create-program';
 import createTexture from '../../../core/renderer/utility/create-texture';
 import getShaderUniforms from '../../../core/renderer/utility/get-uniforms';
 import ModelInterface from '../../../core/scene/model/ModelInterface';
-import type Camera from '../../camera/Camera';
+import type Camera from '../../../content/camera/Camera';
 
 export default class BaseShader {
     static TEXTURE = 'textures.png';

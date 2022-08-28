@@ -1,5 +1,5 @@
-import Chunk from '../../../content/chunk/Chunk';
-import BlockID from '../../../data/block-id';
+import Chunk from '../chunk/Chunk';
+import BlockID from '../../data/block-id';
 
 function getBlockIdForY(y: number) {
     if (y < 2) {

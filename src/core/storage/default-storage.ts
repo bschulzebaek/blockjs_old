@@ -1,4 +1,4 @@
-import ChunkRepository from '../../content/chunk/ChunkRepository';
+import ChunkRepository from '../../world/chunk/ChunkRepository';
 import EntityRepository from '../../content/entity/EntityRepository';
 import GameConfigRepository from '../../content/game-config/GameConfigRepository';
 import InventoryRepository from '../../items/inventory/InventoryRepository';
