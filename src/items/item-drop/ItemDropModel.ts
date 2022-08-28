@@ -1,5 +1,5 @@
-import CubeModel from '../../core/scene/model/cube/CubeModel';
-import Mesh from '../../core/scene/model/Mesh';
+import CubeModel from '../../framework/scene/model/cube/CubeModel';
+import Mesh from '../../framework/scene/model/Mesh';
 import BlockID from '../../data/block-id';
 import BlockUV from '../../data/block-model';
 

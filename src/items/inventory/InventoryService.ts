@@ -1,14 +1,14 @@
 import InventoryRepository from './InventoryRepository';
 import Inventory from './Inventory';
 import generateUUID from '../../common/utility/generate-uuid';
-import Service from '../../core/Service';
-import StorageAdapter from '../../core/storage/StorageAdapter';
+import Service from '../../framework/Service';
+import StorageAdapter from '../../framework/storage/StorageAdapter';
 import fillDebugInventory from './fill-debug-inventory';
 import { subscribe } from '../../common/utility/event-helper';
 import Events from '../../data/events';
-import { BlockPlacedEvent } from '../../core/player/actions/place-block';
+import { BlockPlacedEvent } from '../../player/actions/place-block';
 import BlockID from '../../data/block-id';
-import { BlockDestroyedEvent } from '../../core/player/actions/destroy-block';
+import { BlockDestroyedEvent } from '../../player/actions/destroy-block';
 
 export default class InventoryService extends Service {
     static PLAYER_ID = 'player';

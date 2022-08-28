@@ -1,8 +1,8 @@
 
 import EntityRepository from './EntityRepository';
 import Entity from './Entity';
-import Service from '../../core/Service';
-import StorageAdapter from '../../core/storage/StorageAdapter';
+import Service from '../../framework/Service';
+import StorageAdapter from '../../framework/storage/StorageAdapter';
 
 export default class EntityService extends Service {
     static PLAYER_ID = 'player';

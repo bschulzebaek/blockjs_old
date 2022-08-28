@@ -1,7 +1,7 @@
 import Inventory from './Inventory';
 import generateUUID from '../../common/utility/generate-uuid';
-import Repository from '../../core/storage/Repository';
-import StorageAdapter from '../../core/storage/StorageAdapter';
+import Repository from '../../framework/storage/Repository';
+import StorageAdapter from '../../framework/storage/StorageAdapter';
 
 export default class InventoryRepository extends Repository {
     static STORE_NAME = 'inventory';

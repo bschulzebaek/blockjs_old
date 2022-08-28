@@ -1,6 +1,6 @@
 import { Transform, degree2Radians, Matrix4, Ray, Vector3 } from '../../common/math';
 import CameraInterface from './CameraInterface';
-import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
+import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
 
 export default class Camera implements CameraInterface, SceneObjectInterface {
     static SCENE_ID = 'camera';

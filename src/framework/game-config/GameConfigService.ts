@@ -1,8 +1,8 @@
 
 import GameConfigRepository from './GameConfigRepository';
 import GameConfig from './GameConfig';
-import Service from '../../core/Service';
-import StorageAdapter from '../../core/storage/StorageAdapter';
+import Service from '../Service';
+import StorageAdapter from '../storage/StorageAdapter';
 
 export default class GameConfigService extends Service {
 

@@ -1,4 +1,4 @@
-import StoreClass from '../../core/storage/StoreClass';
+import StoreClass from '../storage/StoreClass';
 import GameConfigInterface from './GameConfigInterface';
 
 export interface GameConfigRawInterface {

@@ -27,7 +27,7 @@ export default class GameInstance {
 
         Container.getRenderer().setScene(this.scene);
 
-        window.addEventListener('beforeunload', this.onBeforeUnload);
+        // window.addEventListener('beforeunload', this.onBeforeUnload);
     }
 
     public getScene() {

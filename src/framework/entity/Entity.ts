@@ -1,9 +1,9 @@
 import EntityInterface from './EntityInterface';
-import Container, { ServiceName } from '../../core/container/Container';
-import StoreClass from '../../core/storage/StoreClass';
-import ModelInterface from '../../core/scene/model/ModelInterface';
+import Container, { ServiceName } from '../container/Container';
+import StoreClass from '../storage/StoreClass';
+import ModelInterface from '../scene/model/ModelInterface';
 import { Transform, Vector3 } from '../../common/math';
-import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
+import SceneObjectInterface from '../scene/SceneObjectInterface';
 
 export interface EntityRawInterface {
     id: string;

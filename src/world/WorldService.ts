@@ -1,10 +1,10 @@
-import Container, { ServiceName } from '../core/container/Container';
+import Container, { ServiceName } from '../framework/container/Container';
 import { createDebugChunk } from './generation/debug-world';
 import World from './World';
 import getChunkMap from './utility/get-chunk-map';
-import Service from '../core/Service';
+import Service from '../framework/Service';
 import ChunkRepository from './chunk/ChunkRepository';
-import StorageAdapter from '../core/storage/StorageAdapter';
+import StorageAdapter from '../framework/storage/StorageAdapter';
 import Chunk from './chunk/Chunk';
 import { Vector3 } from '../common/math';
 

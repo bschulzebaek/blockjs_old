@@ -4,7 +4,7 @@ import BlockID from '../data/block-id';
 import SolidShader from './chunk/shader/solid/SolidShader';
 import GlassShader from './chunk/shader/glass/GlassShader';
 import Chunk from './chunk/Chunk';
-import SceneObjectInterface from '../core/scene/SceneObjectInterface';
+import SceneObjectInterface from '../framework/scene/SceneObjectInterface';
 
 export default class World implements WorldInterface, SceneObjectInterface {
     static SCENE_ID = 'world';

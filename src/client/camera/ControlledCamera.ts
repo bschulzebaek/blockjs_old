@@ -1,4 +1,4 @@
-import Container from '../../core/container/Container';
+import Container from '../../framework/container/Container';
 import Camera from './Camera';
 
 export default class ControlledCamera extends Camera {

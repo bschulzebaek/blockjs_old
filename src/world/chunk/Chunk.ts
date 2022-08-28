@@ -1,10 +1,10 @@
-import StoreClass from '../../core/storage/StoreClass';
+import StoreClass from '../../framework/storage/StoreClass';
 import ChunkInterface from './ChunkInterface';
 import BlockID from '../../data/block-id';
 import { ChunkFaces } from '../../data/chunk-faces';
-import ModelInterface from '../../core/scene/model/ModelInterface';
+import ModelInterface from '../../framework/scene/model/ModelInterface';
 import ChunkModel, { ChunkModelType } from './model/ChunkModel';
-import Container, { ServiceName } from '../../core/container/Container';
+import Container, { ServiceName } from '../../framework/container/Container';
 import BlockInterface from './BlockInterface';
 
 export interface ChunkRawInterface {

@@ -2,11 +2,11 @@
 import { onLeftClick, onRightClick } from './mouse-controls';
 import WorldInterface from '../world/WorldInterface';
 import CameraInterface from '../client/camera/CameraInterface';
-import EntityInterface from '../content/entity/EntityInterface';
+import EntityInterface from '../framework/entity/EntityInterface';
 import { Vector3 } from '../common/math';
-import Container, { ServiceName } from '../core/container/Container';
+import Container, { ServiceName } from '../framework/container/Container';
 import Chunk from '../world/chunk/Chunk';
-import SceneObjectInterface from '../core/scene/SceneObjectInterface';
+import SceneObjectInterface from '../framework/scene/SceneObjectInterface';
 
 enum ControlMap {
     WALK_FORWARD = 'w',
@@ -48,6 +48,10 @@ export default class PlayerController implements SceneObjectInterface {
 
         this.syncCameraPosition();
         this.registerEventListener();
+
+        const entityRotation = this.entity.getTransform().getRotation();
+
+        this.camera.getTransform().setRotation(entityRotation.x, entityRotation.y, entityRotation.z);
     }
 
     public getId() {

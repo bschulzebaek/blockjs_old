@@ -1,5 +1,5 @@
-import Repository from '../../core/storage/Repository';
-import StorageAdapter from '../../core/storage/StorageAdapter';
+import Repository from '../../framework/storage/Repository';
+import StorageAdapter from '../../framework/storage/StorageAdapter';
 import Chunk from './Chunk';
 
 export default class ChunkRepository extends Repository {

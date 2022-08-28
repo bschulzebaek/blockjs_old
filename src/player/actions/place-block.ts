@@ -1,4 +1,4 @@
-import Container, { ServiceName } from '../../core/container/Container';
+import Container, { ServiceName } from '../../framework/container/Container';
 import { ChunkFaces } from '../../data/chunk-faces';
 import type PlayerController from '../PlayerController';
 import BlockID from '../../data/block-id';

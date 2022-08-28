@@ -2,12 +2,12 @@
 import buildFaces from './build-faces';
 import { getFaceFn, getSkipFn} from './add-face-fn';
 import Chunk from '../Chunk';
-import Model from '../../../core/scene/model/Model';
-import Container from '../../../core/container/Container';
+import Model from '../../../framework/scene/model/Model';
+import Container from '../../../framework/container/Container';
 import BlockID from '../../../data/block-id';
 import BlockUV from '../../../data/block-model';
 import { ChunkFaces } from '../../../data/chunk-faces';
-import Mesh from '../../../core/scene/model/Mesh';
+import Mesh from '../../../framework/scene/model/Mesh';
 
 export enum ChunkModelType {
     SOLID = 'solid',

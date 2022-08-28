@@ -1,9 +1,9 @@
 import StorageAdapter from '../storage/StorageAdapter';
-import EntityService from '../../content/entity/EntityService';
+import EntityService from '../entity/EntityService';
 import Fullscreen from '../../common/utility/Fullscreen';
 import generateUUID from '../../common/utility/generate-uuid';
 import InventoryService from '../../items/inventory/InventoryService';
-import GameConfigService from '../../content/game-config/GameConfigService';
+import GameConfigService from '../game-config/GameConfigService';
 import WorldService from '../../world/WorldService';
 import Renderer from '../renderer/Renderer';
 import GameInstance, { SetupDataInterface } from '../game-instance/GameInstance';

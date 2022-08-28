@@ -1,5 +1,5 @@
-import Repository from '../../core/storage/Repository';
-import StorageAdapter from '../../core/storage/StorageAdapter';
+import Repository from '../storage/Repository';
+import StorageAdapter from '../storage/StorageAdapter';
 import GameConfig from './GameConfig';
 
 export default class GameConfigRepository extends Repository {

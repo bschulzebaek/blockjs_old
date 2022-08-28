@@ -1,10 +1,10 @@
 import { Matrix4 } from '../../../common/math';
-import Container from '../../../core/container/Container';
-import AttributeInterface from '../../../core/renderer/AttributeInterface';
-import createShaderProgram from '../../../core/renderer/utility/create-program';
-import getShaderUniforms from '../../../core/renderer/utility/get-uniforms';
-import ModelInterface from '../../../core/scene/model/ModelInterface';
-import CameraInterface from '../../camera/CameraInterface';
+import Container from '../../../framework/container/Container';
+import AttributeInterface from '../../../framework/renderer/AttributeInterface';
+import createShaderProgram from '../../../framework/renderer/utility/create-program';
+import getShaderUniforms from '../../../framework/renderer/utility/get-uniforms';
+import ModelInterface from '../../../framework/scene/model/ModelInterface';
+import CameraInterface from '../../../client/camera/CameraInterface';
 import fss from './fss';
 import vss from './vss';
 

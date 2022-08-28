@@ -1,8 +1,8 @@
 import SkyboxShader from './shader/SkyboxShader';
-import CubeModel from '../../core/scene/model/cube/CubeModel';
-import ModelInterface from '../../core/scene/model/ModelInterface';
+import CubeModel from '../../framework/scene/model/cube/CubeModel';
+import ModelInterface from '../../framework/scene/model/ModelInterface';
 import CameraInterface from '../../client/camera/CameraInterface';
-import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
+import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
 
 export default class Skybox implements SceneObjectInterface {
     static SCENE_ID = 'skybox';

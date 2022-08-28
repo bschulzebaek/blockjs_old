@@ -1,9 +1,9 @@
-import Container, { ServiceName } from '../../core/container/Container';
+import Container, { ServiceName } from '../../framework/container/Container';
 import ItemDropShader from './shader/ItemDropShader';
-import Model from '../../core/scene/model/Model';
-import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
+import Model from '../../framework/scene/model/Model';
+import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
 import BlockID from '../../data/block-id';
-import CameraInterface from '../camera/CameraInterface';
+import CameraInterface from '../../client/camera/CameraInterface';
 import ItemDropModel from './ItemDropModel';
 import generateUUID from '../../common/utility/generate-uuid';
 

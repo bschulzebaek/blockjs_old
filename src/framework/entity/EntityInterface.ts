@@ -1,5 +1,5 @@
 import { Transform, Vector3 } from '../../common/math';
-import ModelInterface from '../../core/scene/model/ModelInterface';
+import ModelInterface from '../scene/model/ModelInterface';
 
 
 export default interface EntityInterface {

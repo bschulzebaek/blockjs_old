@@ -1,5 +1,5 @@
-import Container from './core/container/Container';
-import './core/state-machine/StateMachine';
+import Container from './framework/container/Container';
+import './framework/state-machine/StateMachine';
 import './common/utility/prevent-defaults';
 import './client/user-interface';
 

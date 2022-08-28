@@ -3,7 +3,7 @@ import { publish } from '../../common/utility/event-helper';
 import BlockID from '../../data/block-id';
 import BlockMeta from '../../data/block-meta';
 import Events from '../../data/events';
-import Container, { ServiceName } from '../../core/container/Container';
+import Container, { ServiceName } from '../../framework/container/Container';
 
 export class BlockDestroyedEvent extends Event {
 

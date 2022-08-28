@@ -1,11 +1,11 @@
 import { Matrix4 } from '../../../common/math';
-import Container from '../../../core/container/Container';
-import AttributeInterface from '../../../core/renderer/AttributeInterface';
-import ShaderInterface from '../../../core/renderer/ShaderInterface';
-import createCubemap from '../../../core/renderer/utility/create-cubemap';
-import createShaderProgram from '../../../core/renderer/utility/create-program';
-import getShaderUniforms from '../../../core/renderer/utility/get-uniforms';
-import ModelInterface from '../../../core/scene/model/ModelInterface';
+import Container from '../../../framework/container/Container';
+import AttributeInterface from '../../../framework/renderer/AttributeInterface';
+import ShaderInterface from '../../../framework/renderer/ShaderInterface';
+import createCubemap from '../../../framework/renderer/utility/create-cubemap';
+import createShaderProgram from '../../../framework/renderer/utility/create-program';
+import getShaderUniforms from '../../../framework/renderer/utility/get-uniforms';
+import ModelInterface from '../../../framework/scene/model/ModelInterface';
 import fss from './fss';
 import vss from './vss';
 import type Camera from '../../../client/camera/Camera';

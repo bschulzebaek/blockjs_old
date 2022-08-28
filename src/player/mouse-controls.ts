@@ -2,7 +2,7 @@
 import useBlock from './actions/use-block';
 import placeBlock from './actions/place-block';
 import destroyBlock from './actions/destroy-block';
-import Container from '../core/container/Container';
+import Container from '../framework/container/Container';
 import getBlockFromRay from '../common/utility/get-block-from-ray';
 import InteractiveBlocks from '../data/interactive-blocks';
 import type Camera from '../client/camera/Camera';

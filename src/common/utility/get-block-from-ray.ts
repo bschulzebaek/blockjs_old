@@ -1,6 +1,6 @@
-import Container from '../../core/container/Container';
+import Container from '../../framework/container/Container';
 import { ChunkDirections } from '../../data/chunk-faces';
-import { ServiceName } from '../../core/container/Container';
+import { ServiceName } from '../../framework/container/Container';
 import Vector3 from '../math/Vector3';
 
 function frac(dir: any, a: number) {

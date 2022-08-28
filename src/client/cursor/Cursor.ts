@@ -2,11 +2,11 @@ import CursorShader from './shader/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
-import Container, { ServiceName } from '../../core/container/Container';
+import Container, { ServiceName } from '../../framework/container/Container';
 import getBlockFromRay from '../../common/utility/get-block-from-ray';
-import Model from '../../core/scene/model/Model';
-import CubeModel from '../../core/scene/model/cube/CubeModel';
-import SceneObjectInterface from '../../core/scene/SceneObjectInterface';
+import Model from '../../framework/scene/model/Model';
+import CubeModel from '../../framework/scene/model/cube/CubeModel';
+import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';

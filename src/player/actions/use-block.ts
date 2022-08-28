@@ -1,5 +1,5 @@
 import BlockID from '../../data/block-id';
-import StateMachine from '../../core/state-machine/StateMachine';
+import StateMachine from '../../framework/state-machine/StateMachine';
 
 export default function useBlock(block: any) {
     const { x, y, z, blockId } = block,

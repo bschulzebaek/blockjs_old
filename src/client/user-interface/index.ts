@@ -6,8 +6,8 @@ import McButton from './components/mc-button.vue';
 import McBackground from './components/mc-background.vue';
 import ItemSlot from './components/item-slot.vue';
 import getAssetUrl from '../../common/utility/get-asset-url';
-import Container from '../../core/container/Container';
-import StateMachine from '../../core/state-machine/StateMachine';
+import Container from '../../framework/container/Container';
+import StateMachine from '../../framework/state-machine/StateMachine';
 
 const app = createApp(RootComponent)
     .use(router)
