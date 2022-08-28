@@ -1,7 +1,7 @@
 import ChunkRepository from '../../content/chunk/ChunkRepository';
 import EntityRepository from '../../content/entity/EntityRepository';
 import GameConfigRepository from '../../content/game-config/GameConfigRepository';
-import InventoryRepository from '../../content/inventory/InventoryRepository';
+import InventoryRepository from '../../items/inventory/InventoryRepository';
 
 export default [{
     name: ChunkRepository.STORE_NAME,
