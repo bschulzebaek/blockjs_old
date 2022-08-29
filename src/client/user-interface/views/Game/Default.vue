@@ -8,12 +8,17 @@
 
         <span class="crosshair center-absolute">x</span>
 
-        <toolbar :inventory="inventory" />
+        <toolbar
+            :key="inventoryKey"
+            :inventory="inventory"
+        />
     </div>
 </template>
 
 <script lang="ts">
 import Toolbar from '../../components/toolbar.vue';
+import { subscribe, unsubscribe } from '../../../../common/utility/event-helper';
+import Events from '../../../../data/events';
 
 export default {
     components: {
@@ -29,11 +34,25 @@ export default {
             type: Object
         }
     },
+    data() {
+        return {
+            inventoryKey: 1
+        }
+    },
     mounted() {
         this.$stateMachine.game_resume(this.canvas);
+
+        subscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
     },
     beforeUnmount() {
         this.$stateMachine.game_pause(this.canvas);
+
+        unsubscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
     },
+    methods: {
+        onInventoryUpdate() {
+            this.inventoryKey *= -1;
+        }
+    }
 };
 </script>

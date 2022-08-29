@@ -2,17 +2,18 @@ import Container, { ServiceName } from '../../framework/container/Container';
 import StoreClass from '../../framework/storage/StoreClass';
 import InventoryInterface from './InventoryInterface';
 import InventorySlotInterface from './InventorySlotInterface';
+import { publish } from '../../common/utility/event-helper';
+import InventoryUpdateEvent from './InventoryUpdateEvent';
+import BlockMeta from '../../data/block-meta';
 
 export interface InventoryRawInterface {
     id: string;
-    slots: Array<InventorySlotInterface|null>;
+    slots: Array<InventorySlotInterface | null>;
     activeIndex: number;
 }
 
 export default class Inventory extends StoreClass implements InventoryInterface {
-    static EVENT_UPDATE = 'inventory/update';
-
-    static STORAGE_FIELDS  = [
+    static STORAGE_FIELDS = [
         'id',
         'slots',
         'activeIndex',
@@ -22,7 +23,7 @@ export default class Inventory extends StoreClass implements InventoryInterface 
 
     private id: string;
 
-    private slots: Array<InventorySlotInterface|null>;
+    private slots: Array<InventorySlotInterface | null>;
 
     private activeIndex;
 
@@ -46,6 +47,26 @@ export default class Inventory extends StoreClass implements InventoryInterface 
         return this.slots[this.activeIndex];
     }
 
+    public getActiveIndex() {
+        return this.activeIndex;
+    }
+
+    public reduceActiveItemQuantity() {
+        const item = this.getActiveItem();
+
+        if (!item) {
+            return;
+        }
+
+        item.quantity--;
+
+        if (item.quantity === 0) {
+            this.clearSlot(this.getActiveIndex());
+        } else {
+            this.dispatchUpdate();
+        }
+    }
+
     public setActiveIndex(index: number) {
         if (index > this.slots.length) {
             throw new Error('[Inventory] Index exceeds inventory slots!');
@@ -57,23 +78,44 @@ export default class Inventory extends StoreClass implements InventoryInterface 
     }
 
     public pushItem(item: InventorySlotInterface) {
+        let firstEmpty = -1;
+        let remaining = item.quantity;
+
         for (let i = 0; i < this.slots.length; i++) {
-            if (this.slots[i] === null) {
-                this.slots[i] = item;
+            if (remaining <= 0) {
                 i = this.slots.length;
             }
+
+            const current = this.slots[i];
+
+            if (!current) {
+                firstEmpty = i;
+            } else if (current.itemId === item.itemId && current.quantity < BlockMeta[current.itemId].stack) {
+                current.quantity += remaining;
+
+                remaining = current.quantity - BlockMeta[current.itemId].stack;
+            }
         }
+
+        if (remaining > 0 && firstEmpty) {
+            this.slots[firstEmpty] = {
+                ...item,
+                quantity: remaining,
+            }
+        }
+
+        this.dispatchUpdate();
     }
 
-    public setSlot(index: number, item: InventorySlotInterface|null = null) {
+    public setSlot(index: number, item: InventorySlotInterface | null = null) {
         this.slots[index] = item;
 
         this.dispatchUpdate();
     }
 
     public setItemPosition(from: number, to: number) {
-        const fromItem  = this.slots[from],
-              toItem = this.slots[to];
+        const fromItem = this.slots[from],
+            toItem = this.slots[to];
 
         this.slots[from] = toItem;
         this.slots[to] = fromItem;
@@ -108,8 +150,6 @@ export default class Inventory extends StoreClass implements InventoryInterface 
     private dispatchUpdate() {
         Container.getService(ServiceName.INVENTORY).saveInventory(this.getId());
 
-        window.dispatchEvent(new CustomEvent(Inventory.EVENT_UPDATE, {
-            detail: this
-        }));
+        publish(new InventoryUpdateEvent(this));
     }
 }

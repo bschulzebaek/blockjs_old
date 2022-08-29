@@ -15,10 +15,7 @@
                 />
             </span>
 
-            <span
-                v-if="false"
-                class="item-slot--quantity"
-            >
+            <span class="item-slot--quantity">
                 {{ item.quantity }}
             </span>
         </div>

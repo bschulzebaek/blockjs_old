@@ -4,11 +4,6 @@ import generateUUID from '../../common/utility/generate-uuid';
 import Service from '../../framework/Service';
 import StorageAdapter from '../../framework/storage/StorageAdapter';
 import fillDebugInventory from './fill-debug-inventory';
-import { subscribe } from '../../common/utility/event-helper';
-import Events from '../../data/events';
-import { BlockPlacedEvent } from '../../player/actions/place-block';
-import BlockID from '../../data/block-id';
-import { BlockDestroyedEvent } from '../../player/actions/destroy-block';
 
 export default class InventoryService extends Service {
     static PLAYER_ID = 'player';
@@ -20,8 +15,6 @@ export default class InventoryService extends Service {
         super();
 
         this.repository = new InventoryRepository(adapter);
-        subscribe(Events.BLOCK_PLACED, this.onBlockPlaced);
-        subscribe(Events.BLOCK_DESTROYED, this.onBlockDestroyed);
     }
 
     public async new() {
@@ -94,25 +87,5 @@ export default class InventoryService extends Service {
 
     public async deleteInventory(id: string): Promise<void> {
         await this.repository.delete(id);
-    }
-
-    private onBlockPlaced = (event: BlockPlacedEvent) => {
-        if (event.getBlockId() !== BlockID.CHEST) {
-            return;
-        }
-
-        const { x, y, z } = event.getPosition();
-
-        this.createInventory(`${x}:${y}:${z}`);
-    }
-
-    private onBlockDestroyed = (event: BlockDestroyedEvent) => {
-        if (event.getBlockId() !== BlockID.CHEST) {
-            return;
-        }
-
-        const { x, y, z } = event.getPosition();
-
-        this.deleteInventory(`${x}:${y}:${z}`);
     }
 }

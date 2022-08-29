@@ -25,6 +25,14 @@ export default class Scene implements SceneInterface {
         return this.sceneObjects.get(id) as SceneObjectInterface;
     }
 
+    public deleteSceneObject(id: string) {
+        if (!this.sceneObjects.has(id)) {
+            throw new Error(`[Scene] SceneObject with id "${id}" does not exist!`);
+        }
+
+        this.sceneObjects.delete(id);
+    }
+
     public beforePlay() {
         this.createSceneObjects();
 

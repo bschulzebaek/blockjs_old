@@ -1,31 +1,9 @@
 import Container, { ServiceName } from '../../framework/container/Container';
 import { ChunkFaces } from '../../data/chunk-faces';
 import type PlayerController from '../PlayerController';
-import BlockID from '../../data/block-id';
-import Events from '../../data/events';
 import { publish } from '../../common/utility/event-helper';
 import Vector3 from '../../common/math/Vector3';
-
-export class BlockPlacedEvent extends Event {
-
-    private blockId: BlockID;
-    private position: Vector3;
-
-    constructor(blockId: BlockID, position: Vector3) {
-        super(Events.BLOCK_PLACED);
-
-        this.blockId = blockId;
-        this.position = position;
-    }
-
-    public getBlockId() {
-        return this.blockId;
-    }
-
-    public getPosition() {
-        return this.position;
-    }
-}
+import BlockPlacedEvent from './BlockPlacedEvent';
 
 export default function placeBlock(block: any) {
     const world           = Container.getService(ServiceName.WORLD).getWorld()!,
@@ -56,5 +34,5 @@ export default function placeBlock(block: any) {
 
     world.setBlockId(x, y, z, selectedItem.itemId);
 
-    publish(new BlockPlacedEvent(selectedItem.itemId, new Vector3(x, y, z)));
+    publish(new BlockPlacedEvent(selectedItem.itemId, new Vector3(x, y, z), playerInventory));
 }

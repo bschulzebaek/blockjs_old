@@ -4,6 +4,7 @@ import './common/utility/prevent-defaults';
 import './client/user-interface';
 
 import './common/utility/preload-assets';
+import './subscriber';
 
 // @ts-ignore
 window.$container = Container;

@@ -75,7 +75,7 @@ export default {
         moveItem(from: number, to: number) {
             this.inventory.setItemPosition(from, to);
             this.draggedItem = -1;
-        }
+        },
     }
 };
 </script>

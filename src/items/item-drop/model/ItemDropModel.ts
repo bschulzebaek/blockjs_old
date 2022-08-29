@@ -1,7 +1,7 @@
-import CubeModel from '../../framework/scene/model/cube/CubeModel';
-import Mesh from '../../framework/scene/model/Mesh';
-import BlockID from '../../data/block-id';
-import BlockUV from '../../data/block-model';
+import CubeModel from '../../../framework/scene/model/cube/CubeModel';
+import Mesh from '../../../framework/scene/model/Mesh';
+import BlockID from '../../../data/block-id';
+import BlockUV from '../../../data/block-model';
 
 const CubeNormals = [
     0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
