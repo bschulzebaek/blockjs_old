@@ -1,4 +1,3 @@
-import CursorShader from './shader/CursorShader';
 import CameraInterface from '../camera/CameraInterface';
 import BlockNames from '../../data/block-name';
 import BlockID from '../../data/block-id';
@@ -7,6 +6,7 @@ import getBlockFromRay from '../../common/utility/get-block-from-ray';
 import Model from '../../framework/scene/model/Model';
 import CubeModel from '../../framework/scene/model/cube/CubeModel';
 import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
+import ShaderInterface from '../../framework/renderer/ShaderInterface';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
@@ -14,7 +14,7 @@ export default class Cursor implements SceneObjectInterface {
 
     private model?: Model;
     private camera: CameraInterface;
-    private shader!: CursorShader;
+    private shader!: ShaderInterface;
 
     constructor(camera: CameraInterface) {
         this.camera = camera;
@@ -31,8 +31,8 @@ export default class Cursor implements SceneObjectInterface {
         this.model = model;
     }
 
-    public createShader(): void {
-        this.shader = new CursorShader(this.camera, this);
+    public createShaderReference(): void {
+        this.shader = Container.getShader('cursor');
     }
 
     public update(): void {

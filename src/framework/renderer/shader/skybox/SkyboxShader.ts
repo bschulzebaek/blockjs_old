@@ -1,14 +1,14 @@
-import { Matrix4 } from '../../../common/math';
-import Container from '../../../framework/container/Container';
-import AttributeInterface from '../../../framework/renderer/AttributeInterface';
-import ShaderInterface from '../../../framework/renderer/ShaderInterface';
-import createCubemap from '../../../framework/renderer/utility/create-cubemap';
-import createShaderProgram from '../../../framework/renderer/utility/create-program';
-import getShaderUniforms from '../../../framework/renderer/utility/get-uniforms';
-import ModelInterface from '../../../framework/scene/model/ModelInterface';
+import { Matrix4 } from '../../../../common/math';
+import Container from '../../../container/Container';
+import AttributeInterface from '../../AttributeInterface';
+import ShaderInterface from '../../ShaderInterface';
+import createCubemap from '../../utility/create-cubemap';
+import createShaderProgram from '../../utility/create-program';
+import getShaderUniforms from '../../utility/get-uniforms';
+import ModelInterface from '../../../scene/model/ModelInterface';
 import fss from './fss';
 import vss from './vss';
-import type Camera from '../../../client/camera/Camera';
+import type Camera from '../../../../client/camera/Camera';
 
 
 export default class SkyboxShader implements ShaderInterface{

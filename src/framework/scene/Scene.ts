@@ -32,9 +32,13 @@ export default class Scene implements SceneInterface {
             if (sceneObject.createModel) {
                 sceneObject.createModel();
             }
+        });
 
-            if (sceneObject.createShader) {
-                sceneObject.createShader();
+        Container.getShaderRegistry().compileShaders();
+
+        this.sceneObjects.forEach((sceneObject) => {
+            if (sceneObject.createShaderReference) {
+                sceneObject.createShaderReference();
             }
         });
     }

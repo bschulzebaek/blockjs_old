@@ -7,6 +7,7 @@ import GameConfigService from '../game-config/GameConfigService';
 import WorldService from '../../world/WorldService';
 import Renderer from '../renderer/Renderer';
 import GameInstance, { SetupDataInterface } from '../game-instance/GameInstance';
+import ShaderRegistry from '../renderer/ShaderRegistry';
 
 export enum ServiceName {
     GAME_CONFIG = 'gameConfig',
@@ -17,6 +18,7 @@ export enum ServiceName {
 
 class Container {
     private renderer = new Renderer();
+    private shaderRegistry = new ShaderRegistry();
     private storageAdapter?: StorageAdapter;
     private context?: WebGL2RenderingContext;
     private gameInstance?: GameInstance;
@@ -65,6 +67,14 @@ class Container {
         return this.context as WebGL2RenderingContext;
     }
 
+    public getShaderRegistry() {
+        return this.shaderRegistry;
+    }
+
+    public getShader(key: string) {
+        return this.shaderRegistry.getShader(key);
+    }
+
     public isRunning(): boolean {
         if (!Object.keys(this.services).length) {
             return false;
@@ -91,9 +101,12 @@ class Container {
             Object.values(this.services).map((service) => service.discard())
         ]);
 
+        this.shaderRegistry.discard();
+
         this.services = {};
         delete this.storageAdapter;
         delete this.context;
+
 
         Fullscreen.exit();
     }

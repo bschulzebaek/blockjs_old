@@ -1,33 +1,33 @@
-import { Matrix4 } from '../../../common/math';
-import Container from '../../../framework/container/Container';
-import AttributeInterface from '../../../framework/renderer/AttributeInterface';
-import createShaderProgram from '../../../framework/renderer/utility/create-program';
-import getShaderUniforms from '../../../framework/renderer/utility/get-uniforms';
-import ModelInterface from '../../../framework/scene/model/ModelInterface';
-import CameraInterface from '../../../client/camera/CameraInterface';
+import { Matrix4 } from '../../../../common/math';
+import Container from '../../../container/Container';
+import AttributeInterface from '../../AttributeInterface';
+import createShaderProgram from '../../utility/create-program';
+import getShaderUniforms from '../../utility/get-uniforms';
+import ModelInterface from '../../../scene/model/ModelInterface';
 import fss from './fss';
 import vss from './vss';
+import type Camera from '../../../../client/camera/Camera';
 
 export default class ItemDropShader {
     static COLOR = [0.0, 0.0, 1.0, 0.7];
 
     static TEXTURE = 'textures.png';
 
-    private camera: CameraInterface;
+    private camera: Camera;
 
     private context: WebGL2RenderingContext;
     private program: WebGLProgram;
     private uniforms: Record<string, AttributeInterface>;
 
-    constructor(camera: CameraInterface) {
+    constructor() {
         this.context = Container.getContext();
         this.program = createShaderProgram(vss, fss);
         this.uniforms = getShaderUniforms(this.program);
         this.context.useProgram(this.program);
 
-        this.camera = camera;
+        this.camera = Container.getScene().getSceneObject('camera') as Camera;
 
-        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, camera.getProjectionMatrix());
+        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, this.camera.getProjectionMatrix());
         this.context.uniform4fv(this.uniforms['color'].loc, ItemDropShader.COLOR);
     }
 

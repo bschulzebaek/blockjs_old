@@ -1,8 +1,9 @@
-import SkyboxShader from './shader/SkyboxShader';
+import SkyboxShader from '../../framework/renderer/shader/skybox/SkyboxShader';
 import CubeModel from '../../framework/scene/model/cube/CubeModel';
 import ModelInterface from '../../framework/scene/model/ModelInterface';
 import CameraInterface from '../../client/camera/CameraInterface';
 import SceneObjectInterface from '../../framework/scene/SceneObjectInterface';
+import Container from '../../framework/container/Container';
 
 export default class Skybox implements SceneObjectInterface {
     static SCENE_ID = 'skybox';
@@ -32,8 +33,8 @@ export default class Skybox implements SceneObjectInterface {
         this.shader.run(this.model);
     }
 
-    public createShader() {
-        this.shader = new SkyboxShader();
+    public createShaderReference() {
+        this.shader = Container.getShader('skybox');
     }
 
     public createModel(): void {

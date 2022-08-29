@@ -1,17 +1,17 @@
 
 import WorldInterface from './WorldInterface';
 import BlockID from '../data/block-id';
-import SolidShader from './chunk/shader/solid/SolidShader';
-import GlassShader from './chunk/shader/glass/GlassShader';
 import Chunk from './chunk/Chunk';
 import SceneObjectInterface from '../framework/scene/SceneObjectInterface';
+import Container from '../framework/container/Container';
+import ShaderInterface from '../framework/renderer/ShaderInterface';
 
 export default class World implements WorldInterface, SceneObjectInterface {
     static SCENE_ID = 'world';
 
     private map: Map<string, Chunk>;
-    private solidShader!: SolidShader
-    private glassShader!: GlassShader;
+    private solidShader!: ShaderInterface
+    private glassShader!: ShaderInterface;
 
     constructor(chunks: Map<string, Chunk> = new Map()) {
         this.map = chunks;
@@ -21,9 +21,9 @@ export default class World implements WorldInterface, SceneObjectInterface {
         return World.SCENE_ID;
     }
 
-    public createShader() {
-        this.solidShader = new SolidShader();
-        this.glassShader = new GlassShader();
+    public createShaderReference() {
+        this.solidShader = Container.getShader('chunk-solid');
+        this.glassShader = Container.getShader('chunk-glass');
     }
 
     public createModel() {
