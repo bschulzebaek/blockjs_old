@@ -19,11 +19,6 @@ function loadTextureAsync(url: string, callback: (img: HTMLImageElement) => void
 }
 
 export default function createTexture(assetPath: string): WebGLTexture {
-    // TODO: This approach will lead to a loose texture object after leaving a game!
-    // if (REGISTRY[assetPath]) {
-    //     return REGISTRY[assetPath];
-    // }
-
     const context = Container.getContext();
 
     const {
