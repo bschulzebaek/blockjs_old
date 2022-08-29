@@ -3,9 +3,7 @@ import './framework/state-machine/StateMachine';
 import './common/utility/prevent-defaults';
 import './client/user-interface';
 
-import preloadAssets from './common/utility/preload-assets';
-
-preloadAssets();
+import './common/utility/preload-assets';
 
 // @ts-ignore
 window.$container = Container;
