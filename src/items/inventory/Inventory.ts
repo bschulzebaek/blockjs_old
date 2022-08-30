@@ -89,7 +89,9 @@ export default class Inventory extends StoreClass implements InventoryInterface 
             const current = this.slots[i];
 
             if (!current) {
-                firstEmpty = i;
+                if (firstEmpty === -1) {
+                    firstEmpty = i;
+                }
             } else if (current.itemId === item.itemId && current.quantity < BlockMeta[current.itemId].stack) {
                 current.quantity += remaining;
 
@@ -97,7 +99,7 @@ export default class Inventory extends StoreClass implements InventoryInterface 
             }
         }
 
-        if (remaining > 0 && firstEmpty) {
+        if (remaining > 0 && firstEmpty > -1) {
             this.slots[firstEmpty] = {
                 ...item,
                 quantity: remaining,
