@@ -1,11 +1,8 @@
-import StoreClass from '../../framework/storage/StoreClass';
-import ChunkInterface from './ChunkInterface';
+import ChunkModel, { ChunkModelType } from './model/ChunkModel';
+import BlockInterface from './BlockInterface';
 import BlockID from '../../data/block-id';
 import { ChunkFaces } from '../../data/chunk-faces';
-import ModelInterface from '../../framework/scene/model/ModelInterface';
-import ChunkModel, { ChunkModelType } from './model/ChunkModel';
-import Container, { ServiceName } from '../../framework/container/Container';
-import BlockInterface from './BlockInterface';
+import ModelInterface from '../../scene/model/ModelInterface';
 
 export interface ChunkRawInterface {
     id: string;
@@ -14,7 +11,7 @@ export interface ChunkRawInterface {
     worldZ: number;
 }
 
-export default class Chunk extends StoreClass implements ChunkInterface {
+export default class Chunk  {
     static STORAGE_FIELDS = [
         'id',
         'blocks',
@@ -34,11 +31,7 @@ export default class Chunk extends StoreClass implements ChunkInterface {
     private glassModel!: ModelInterface;
 
     constructor(chunkX: number, chunkZ: number, blocks = Chunk.getEmptyBlocks()) {
-        const id = Chunk.getId(chunkX, chunkZ);
-
-        super(id, Chunk.STORAGE_FIELDS);
-
-        this.id = id;
+        this.id = Chunk.getId(chunkX, chunkZ);
         this.blocks = blocks;
         this.worldX = chunkX * Chunk.WIDTH;
         this.worldZ = chunkZ * Chunk.LENGTH;
@@ -77,7 +70,6 @@ export default class Chunk extends StoreClass implements ChunkInterface {
         this.blocks.set(position, newBlock);
 
         this.updateModel(newBlock.id, currentBlock.id);
-        Container.getService(ServiceName.WORLD).saveChunk(this);
     }
 
     public getFacingBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {

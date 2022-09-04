@@ -1,4 +1,4 @@
-import BlockID from '../../data/block-id';
+import BlockID from '../../__old/data/block-id';
 
 export default interface BlockInterface {
     id: BlockID;

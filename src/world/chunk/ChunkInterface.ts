@@ -1,5 +1,5 @@
-import ModelInterface from '../../framework/scene/model/ModelInterface';
-import BlockID from '../../data/block-id';
+import ModelInterface from '../../__old/framework/scene/model/ModelInterface';
+import BlockID from '../../__old/data/block-id';
 import BlockInterface from './BlockInterface';
 
 export default interface ChunkInterface {

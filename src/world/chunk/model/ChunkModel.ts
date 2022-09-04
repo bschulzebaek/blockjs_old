@@ -2,12 +2,11 @@
 import buildFaces from './build-faces';
 import { getFaceFn, getSkipFn} from './add-face-fn';
 import Chunk from '../Chunk';
-import Model from '../../../framework/scene/model/Model';
-import Container from '../../../framework/container/Container';
+import Model from '../../../scene/model/Model';
 import BlockID from '../../../data/block-id';
-import BlockUV from '../../../data/block-model';
 import { ChunkFaces } from '../../../data/chunk-faces';
-import Mesh from '../../../framework/scene/model/Mesh';
+import BlockUV from '../../../data/block-model';
+import RawMesh from '../../../scene/model/RawMesh';
 
 export enum ChunkModelType {
     SOLID = 'solid',
@@ -17,38 +16,27 @@ export enum ChunkModelType {
 export default class ChunkModel {
 
     static create(chunk: Chunk, type: ChunkModelType): Model {
-        const faces: number[] = [],
-              arrayObject: number[] = [],
-              model = new Model(ChunkModel.buildMesh(chunk, getFaceFn(type), getSkipFn(type), [], [], [], [], faces, arrayObject));
+        const model = new Model(
+            ChunkModel.buildMesh(
+                chunk,
+                getFaceFn(type),
+                getSkipFn(type),
+                [],
+                [],
+                [],
+                [],
+                [],
+                [])
+        );
 
         model.position.set(chunk.getX(), 0, chunk.getZ());
-
-        ChunkModel.bindToContext(model, faces, arrayObject);
 
         model.update();
 
         return model;
     }
 
-    static bindToContext(model: Model, faces: number[], arrayObject: number[]) {
-        const context = Container.getContext();
-
-        context.bindVertexArray(model.mesh.vao);
-
-        model.mesh.faces = context.createBuffer() as WebGLBuffer;
-        context.bindBuffer(context.ARRAY_BUFFER, model.mesh.faces);
-        context.bufferData(context.ARRAY_BUFFER, new Float32Array(faces), context.STATIC_DRAW);
-        context.enableVertexAttribArray(3);
-        context.vertexAttribPointer(3, 2, context.FLOAT, false, 0, 0);
-
-        model.mesh.arrayObj = context.createBuffer() as WebGLBuffer;
-        context.bindBuffer(context.ARRAY_BUFFER, model.mesh.arrayObj);
-        context.bufferData(context.ARRAY_BUFFER, new Float32Array(arrayObject), context.STATIC_DRAW);
-        context.enableVertexAttribArray(4);
-        context.vertexAttribPointer(4, 1, context.FLOAT, false, 0, 0);
-    }
-
-    static buildMesh(chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, skipBlockFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): Mesh {
+    static buildMesh(chunk: Chunk, addFaceFn: (blockId: BlockID) => boolean, skipBlockFn: (blockId: BlockID) => boolean, verts: number[], inds: number[], uvs: number[], normals: number[], faces: number[], arrayObject: number[]): RawMesh {
         // chunk.getBlocks().forEach(({ id }, position) => {
         //     const [x, y, z] = position.split(':');
 
@@ -94,6 +82,6 @@ export default class ChunkModel {
             }
         }
 
-        return new Mesh('chunk', inds, verts, normals, uvs);
+        return new RawMesh('chunk', inds, verts, normals, uvs, faces, arrayObject);
     }
 }

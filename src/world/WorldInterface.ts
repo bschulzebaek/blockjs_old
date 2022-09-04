@@ -1,5 +1,5 @@
 import ChunkInterface from './chunk/ChunkInterface';
-import BlockID from '../data/block-id';
+import BlockID from '../__old/data/block-id';
 
 export default interface WorldInterface {
     update(): void;

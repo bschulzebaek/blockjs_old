@@ -1,17 +1,10 @@
-
-import WorldInterface from './WorldInterface';
 import BlockID from '../data/block-id';
 import Chunk from './chunk/Chunk';
-import SceneObjectInterface from '../framework/scene/SceneObjectInterface';
-import Container from '../framework/container/Container';
-import ShaderInterface from '../framework/renderer/ShaderInterface';
 
-export default class World implements WorldInterface, SceneObjectInterface {
+export default class World {
     static SCENE_ID = 'world';
 
-    private map: Map<string, Chunk>;
-    private solidShader!: ShaderInterface
-    private glassShader!: ShaderInterface;
+    private readonly map: Map<string, Chunk>;
 
     constructor(chunks: Map<string, Chunk> = new Map()) {
         this.map = chunks;
@@ -21,29 +14,8 @@ export default class World implements WorldInterface, SceneObjectInterface {
         return World.SCENE_ID;
     }
 
-    public createShaderReference() {
-        this.solidShader = Container.getShader('chunk-solid');
-        this.glassShader = Container.getShader('chunk-glass');
-    }
-
     public createModel() {
         this.getChunks().forEach((chunk) => chunk.buildModel());
-    }
-
-    public update(): void {
-        this.map.forEach((chunk) => {
-            const solidModel = chunk.getSolidModel();
-
-            if (solidModel) {
-                this.solidShader.run(solidModel);
-            }
-
-            const glassModel = chunk.getGlassModel();
-
-            if (glassModel) {
-                this.glassShader.run(glassModel);
-            }
-        });
     }
 
     public getMap() {
@@ -60,6 +32,13 @@ export default class World implements WorldInterface, SceneObjectInterface {
 
     public getChunks(): Chunk[] {
         return Array.from(this.map.values());
+    }
+
+    public getChunkData() {
+        return this.getChunks().map((chunk) => ({
+           id: chunk.getId(),
+           blocks: chunk.getBlocks()
+        }));
     }
 
     public pushChunk(chunk: Chunk): void {
