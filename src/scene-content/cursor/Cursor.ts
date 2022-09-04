@@ -1,10 +1,9 @@
-import SceneObjectInterface from '../../scene/SceneObjectInterface';
-import Model from '../../scene/model/Model';
+import SceneObjectInterface from '../../engine/scene/SceneObjectInterface';
+import Model from '../../engine/scene/model/Model';
 import CameraInterface from '../camera/CameraInterface';
-import CubeModel from '../../scene/model/cube/CubeModel';
-import SceneContainer from '../../scene/SceneContainer';
-import getBlockFromRay from '../../shared/utility/get-block-from-ray';
-
+import CubeModel from '../../engine/scene/model/cube/CubeModel';
+import SceneContainer from '../../engine/scene/SceneContainer';
+import getBlockFromRay from '../../engine/scene/world-helper/get-block-from-ray';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
@@ -73,7 +72,7 @@ export default class Cursor implements SceneObjectInterface {
         );
     }
 
-    private remove(): void {
+    public remove(): void {
         delete this.model;
     }
 

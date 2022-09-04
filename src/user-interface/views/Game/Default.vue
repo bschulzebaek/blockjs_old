@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import Toolbar from '../../components/toolbar.vue';
-import Fullscreen from '../../../shared/utility/Fullscreen';
 import ThreadManager from '../../../engine/threads/ThreadManager';
 import { BroadcastMessages } from '../../../engine/threads/ThreadMessages';
 // import { subscribe, unsubscribe } from '../../../../common/utility/event-helper';
@@ -38,19 +37,15 @@ export default {
     },
     mounted() {
         this.canvas.requestPointerLock();
-        Fullscreen.enter();
-
         // console.log(this.$router.currentRoute.value.query)
 
-        ThreadManager.broadcast(BroadcastMessages.START, this.$router.currentRoute.value.query);
+        ThreadManager.broadcast(BroadcastMessages.START);
         // this.$stateMachine.game_resume(this.canvas);
         //
         // subscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
     },
     beforeUnmount() {
         document.exitPointerLock();
-        Fullscreen.exit();
-
         ThreadManager.broadcast(BroadcastMessages.STOP);
         // this.$stateMachine.game_pause(this.canvas);
         //

@@ -1,24 +1,18 @@
-import { RenderMessages, SceneMessages, WorldMessages } from '../engine/threads/ThreadMessages';
+import { RenderMessages, SceneMessages, WorldMessages } from '../threads/ThreadMessages';
 import World from './World';
-import { Vector3 } from '../shared/math';
+import { Vector3 } from '../../shared/math';
 import Chunk from './chunk/Chunk';
 import getChunkMap from './utility/get-chunk-map';
-import { createDebugChunk } from './generation/debug-world';
+import { createDebugChunk } from '../../world-generation/debug-world';
+import BlockID from '../../data/block-id';
+import WorldContainer from './WorldContainer';
 
 export default class WorldService {
     static PLAYER_START = new Vector3(-3, 4, -3);
     static VIEW_DISTANCE = 3;
 
-    private renderer?: MessagePort;
-    private scene?: MessagePort;
-    private world = new World();
+    public async discard() {
 
-    public setRenderPort(port: MessagePort) {
-        this.renderer = port;
-    }
-
-    public setScenePort(port: MessagePort) {
-        this.scene = port;
     }
 
     public sync(newChunks: string[] = [], removeChunks: string[] = []) {
@@ -27,27 +21,29 @@ export default class WorldService {
     }
 
     private syncRenderer(newChunks: string[] = [], removeChunks: string[] = []) {
-        this.renderer?.postMessage({
+        WorldContainer.getRenderPort().postMessage({
             action: RenderMessages.SYNC_WORLD,
             detail: this.getRendererData(newChunks, removeChunks),
         });
     }
 
     private getRendererData(newChunks: string[] = [], removeChunks: string[] = []) {
-        const chunks = this.world.getChunks(),
-              add: Record<string, any> = {};
+        const add: Record<string, any> = {};
+        const world = WorldContainer.getWorld();
 
-        chunks.forEach((chunk) => {
-            if (newChunks.length && !newChunks.includes(chunk.getId())) {
-                return;
-            }
+        if (!newChunks.length) {
+            newChunks = world.getChunks().map((chunk) => chunk.getId());
+        }
 
-            if (!add[chunk.getId()]) {
-                add[chunk.getId()] = {};
+        newChunks.forEach((chunkId) => {
+            const chunk = world.getChunkById(chunkId)!;
+
+            if (!add[chunkId]) {
+                add[chunkId] = {};
             }
 
             const solid = chunk.getSolidModel(),
-                  glass = chunk.getGlassModel();
+                glass = chunk.getGlassModel();
 
             add[chunk.getId()].solid = {
                 shader: 'chunk-solid',
@@ -79,7 +75,7 @@ export default class WorldService {
     }
 
     private syncScene(newChunks: string[] = [], removeChunks: string[] = []) {
-        this.scene?.postMessage({
+        WorldContainer.getScenePort().postMessage({
             action: SceneMessages.SYNC_WORLD,
             detail: this.getSceneData(newChunks, removeChunks),
         });
@@ -87,14 +83,17 @@ export default class WorldService {
 
     // @ts-ignore
     private getSceneData(newChunks: string[] = [], removeChunks: string[] = []) {
-        return this.world.getChunkData();
+        return WorldContainer.getWorld().getChunkData();
     }
 
     // @ts-ignore
-    public async create(config: any) {
+    public async create(isNew: boolean) {
         await this.createWorld();
 
-        postMessage({ action: WorldMessages.READY, detail: { isNew: true }});
+        postMessage({ action: WorldMessages.READY });
+
+        console.log('ToDo: IF "isNew" -> create player entity and find starting position.');
+        console.log('ToDo: IF not "isNew" -> get player entity position and add map offset.');
     }
 
     private async createWorld() {
@@ -102,19 +101,22 @@ export default class WorldService {
               chunkPosition = this.convertToChunkPosition(WorldService.PLAYER_START),
               chunkMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPosition.x, chunkPosition.z);
 
-        // await this.chunkRepository.readList(chunkMap);
+        await WorldContainer.getChunkRepository().readList(chunkMap);
 
         chunkMap.forEach((chunk, key) => {
             if (chunk) {
+                chunk.buildModel();
+
                 return;
             }
 
             const _chunk = this.generateChunk(key);
             _chunk.buildModel();
             chunkMap.set(key, _chunk);
+
         });
 
-        this.world = new World(chunkMap as Map<string, Chunk>);
+        WorldContainer.setWorld(new World(chunkMap as Map<string, Chunk>));
 
         this.printStats(start);
     }
@@ -130,17 +132,17 @@ export default class WorldService {
     private printStats(start: number, end: number = Date.now()): void {
         console.debug(`[WorldService] Generating chunks took: ${end - start}ms.`)
         console.debug({
-            chunks: this.world.getChunks().length,
-            blocks: this.world.getChunks().length * Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH,
+            chunks: WorldContainer.getWorld().getChunks().length,
+            blocks: WorldContainer.getWorld().getChunks().length * Chunk.HEIGHT * Chunk.WIDTH * Chunk.LENGTH,
         });
     }
 
     public async updateChunkGrid(position: Vector3) {
         const chunkPos = this.convertToChunkPosition(position),
-            newMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPos.x, chunkPos.z),
-            oldMap = this.world.getMap(),
-            chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
-            chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));
+              newMap = getChunkMap(WorldService.VIEW_DISTANCE, chunkPos.x, chunkPos.z),
+              oldMap = WorldContainer.getWorld().getMap(),
+              chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
+              chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));
 
         await this.createNewChunks(chunksToCreate);
         this.unloadChunks(chunksToRemove);
@@ -149,9 +151,10 @@ export default class WorldService {
     }
 
     private async createNewChunks(chunks: string[]) {
-        const createMap: Map<string, Chunk|undefined> = new Map(chunks.map((id) => [ id, undefined ]));
+        const world = WorldContainer.getWorld(),
+              createMap: Map<string, Chunk|undefined> = new Map(chunks.map((id) => [ id, undefined ]));
 
-        // await this.chunkRepository.readList(createMap);
+        await WorldContainer.getChunkRepository().readList(createMap);
 
         createMap.forEach((chunk, key) => {
             if (!chunk) {
@@ -159,16 +162,27 @@ export default class WorldService {
             }
 
             chunk.buildModel();
-            this.world.pushChunk(chunk);
+            world.pushChunk(chunk);
         });
     }
 
     private unloadChunks(chunks: string[]) {
-        // @ts-ignore
+        const world = WorldContainer.getWorld();
+
         const saveChunks = chunks.map((key) => {
-            return this.world.popChunk(key);
+            return world.popChunk(key);
         });
 
-        // this.chunkRepository.writeList(saveChunks);
+        WorldContainer.getChunkRepository().writeList(saveChunks);
+    }
+
+    public setBlockId(x: number, y: number, z: number, blockId: BlockID): void {
+        const world = WorldContainer.getWorld();
+
+        world.setBlockId(x, y, z, blockId);
+        WorldContainer.getChunkRepository().write(world.getChunk(x, z)!);
+
+        this.sync([ Chunk.getFormattedId(x, z) ]);
+
     }
 }

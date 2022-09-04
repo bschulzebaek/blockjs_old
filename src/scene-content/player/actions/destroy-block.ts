@@ -1,6 +1,7 @@
-import SceneContainer from '../../../scene/SceneContainer';
+import SceneContainer from '../../../engine/scene/SceneContainer';
 import BlockID from '../../../data/block-id';
 import BlockMeta from '../../../data/block-meta';
+import { SceneMessages } from '../../../engine/threads/ThreadMessages';
 
 export default function destroyBlock(block: any) {
     // @ts-ignore
@@ -15,8 +16,16 @@ export default function destroyBlock(block: any) {
         return;
     }
 
-    console.log(x, y, z, BlockID.AIR);
-    // world.setBlockId(x, y, z, BlockID.AIR);
+    SceneContainer.getScene().getWorld().setBlockId(x, y, z, BlockID.AIR);
+    SceneContainer.getWorldPort()?.postMessage({
+        action: SceneMessages.REQUEST_WORLD_CHANGE,
+        detail: {
+            x,
+            y,
+            z,
+            id: BlockID.AIR,
+        }
+    });
 
     // publish(new BlockDestroyedEvent(blockId, new Vector3(x, y, z)));
 }

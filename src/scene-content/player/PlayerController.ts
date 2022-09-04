@@ -1,10 +1,10 @@
-import type SceneWorld from '../../scene/SceneWorld';
-import type Entity from '../../scene/entity/Entity';
+import type SceneWorld from '../../engine/scene/world-helper/SceneWorld';
+import type Entity from '../../engine/scene/entity/Entity';
 import CameraInterface from '../camera/CameraInterface';
 import { Vector3 } from '../../shared/math';
 import { onLeftClick, onRightClick } from './mouse-controls';
-import SceneChunk from '../../scene/SceneChunk';
-import SceneContainer from '../../scene/SceneContainer';
+import SceneChunk from '../../engine/scene/world-helper/SceneChunk';
+import SceneContainer from '../../engine/scene/SceneContainer';
 import { SceneMessages } from '../../engine/threads/ThreadMessages';
 
 enum ControlMap {

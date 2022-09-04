@@ -1,6 +1,6 @@
-import { ChunkDirections } from '../../data/chunk-faces';
-import Vector3 from '../math/Vector3';
-import SceneContainer from '../../scene/SceneContainer';
+import { ChunkDirections } from '../../../data/chunk-faces';
+import Vector3 from '../../../shared/math/Vector3';
+import SceneContainer from '../SceneContainer';
 
 function frac(dir: any, a: number) {
     return dir > 0 ? (1 - a % 1) : (a % 1);

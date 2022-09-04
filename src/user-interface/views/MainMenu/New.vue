@@ -32,8 +32,6 @@
 </template>
 
 <script lang="ts">
-import generateUUID from '../../../shared/utility/generate-uuid';
-
 export default {
     data() {
         return {
@@ -45,7 +43,7 @@ export default {
         onClickConfirm() {
             const { name, seed } = this;
 
-            this.$router.push({ name: 'game-setup', query: { name, seed, id: generateUUID() }});
+            this.$router.push({ name: 'game-setup', query: { name, seed, isNew: true }});
         },
     }
 }

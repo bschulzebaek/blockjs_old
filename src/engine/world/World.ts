@@ -1,4 +1,4 @@
-import BlockID from '../data/block-id';
+import BlockID from '../../data/block-id';
 import Chunk from './chunk/Chunk';
 
 export default class World {
@@ -30,8 +30,16 @@ export default class World {
         return this.map.get(Chunk.getFormattedId(x, z)) ?? null;
     }
 
+    public getChunkById(id: string) {
+        return this.map.get(id);
+    }
+
     public getChunks(): Chunk[] {
         return Array.from(this.map.values());
+    }
+
+    public getChunkIds(): string[] {
+        return Array.from(this.map.keys());
     }
 
     public getChunkData() {

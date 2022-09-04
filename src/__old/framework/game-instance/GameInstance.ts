@@ -10,7 +10,7 @@ export interface SetupDataInterface {
 }
 
 export default class GameInstance {
-    static DEFAULT_NAME = 'New WorldService';
+    static DEFAULT_NAME = 'New World';
 
     private id: string;
     private name: string;

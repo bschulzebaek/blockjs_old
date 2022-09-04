@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { createInstance } from '../../../engine';
+import Fullscreen from '../../../shared/utility/Fullscreen';
 
 export default {
     props: {
@@ -15,7 +16,9 @@ export default {
         },
     },
     mounted() {
-        createInstance(this.canvas);
+        Fullscreen.enter();
+
+        createInstance(this.canvas, this.$router.currentRoute.value.query);
         // this.$stateMachine.GameSetup_GameDefault();
     },
 }

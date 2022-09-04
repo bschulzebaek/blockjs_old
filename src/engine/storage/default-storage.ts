@@ -1,11 +1,18 @@
-// import ChunkRepository from '../../world/chunk/ChunkRepository';
+import ChunkRepository from '../world/chunk/ChunkRepository';
+import GameConfigRepository from '../game-config/GameConfigRepository';
 // import EntityRepository from '../entity/EntityRepository';
-// import GameConfigRepository from '../game-config/GameConfigRepository';
 // import InventoryRepository from '../../items/inventory/InventoryRepository';
 
-export default []
+export default [{
+    name: GameConfigRepository.STORE_NAME,
+    keyPath: GameConfigRepository.STORE_IDENTIFIER,
+}, {
+    name: ChunkRepository.STORE_NAME,
+    keyPath: ChunkRepository.STORE_IDENTIFIER,
+}]
 
-// export default [{
+// export default [
+// {
 //     name: ChunkRepository.STORE_NAME,
 //     keyPath: ChunkRepository.STORE_IDENTIFIER,
 // }, {

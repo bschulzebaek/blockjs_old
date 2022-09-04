@@ -19,6 +19,7 @@ export enum SceneMessages {
     SETUP = 'setup',
     SYNC_WORLD = 'sync-world',
     REQUEST_WORLD_UPDATE = 'request-world-update',
+    REQUEST_WORLD_CHANGE = 'request-world-change',
 }
 
 export enum WorldMessages {

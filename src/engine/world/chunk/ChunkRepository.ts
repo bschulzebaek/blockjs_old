@@ -1,6 +1,6 @@
-import Repository from '../../__old/framework/storage/Repository';
-import StorageAdapter from '../../__old/framework/storage/StorageAdapter';
 import Chunk from './Chunk';
+import Repository from '../../storage/Repository';
+import StorageAdapter from '../../storage/StorageAdapter';
 
 export default class ChunkRepository extends Repository {
     static STORE_NAME = 'chunk';

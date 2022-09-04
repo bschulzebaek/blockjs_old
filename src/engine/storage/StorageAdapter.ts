@@ -15,7 +15,7 @@ export default class StorageAdapter {
 
     static DATABASE_VERSION = 1;
 
-    private name: string;
+    private readonly name: string;
 
     constructor(name: string) {
         this.name = name;
@@ -42,12 +42,12 @@ export default class StorageAdapter {
     }
 
     private getDatabase() {
-        return window.indexedDB.open(this.name, StorageAdapter.DATABASE_VERSION);
+        return indexedDB.open(this.name, StorageAdapter.DATABASE_VERSION);
     }
 
     private getConnection(): Promise<IDBDatabase> {
         return new Promise((resolve) => {
-            const request = window.indexedDB.open(this.name, StorageAdapter.DATABASE_VERSION);
+            const request = indexedDB.open(this.name, StorageAdapter.DATABASE_VERSION);
 
             request.onsuccess = (event: any) => {
                 resolve(event.target.result as IDBDatabase);

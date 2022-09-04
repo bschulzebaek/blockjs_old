@@ -1,4 +1,4 @@
-import { ChunkDirections, ChunkFaces, ChunkIndex, ChunkUV } from '../../../data/chunk-faces';
+import { ChunkDirections, ChunkFaces, ChunkIndex, ChunkUV } from '../../../../data/chunk-faces';
 import Chunk from '../Chunk';
 
 function addArrayObject(chunk: Chunk, index: number, s1x: number, s1y: number, s1z: number, s2x: number, s2y: number, s2z: number, cx: number, cy: number, cz: number, debug: boolean = false) {

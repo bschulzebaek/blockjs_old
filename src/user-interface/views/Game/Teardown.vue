@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { discardInstance } from '../../../engine';
+import Fullscreen from '../../../shared/utility/Fullscreen';
 
 export default {
     created() {
@@ -13,6 +14,7 @@ export default {
     },
     methods: {
         async teardownGame() {
+            Fullscreen.exit();
             await discardInstance();
             // await this.$container.teardown();
             //

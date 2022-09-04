@@ -16,9 +16,9 @@ class ThreadManager {
     }
 
     public createThreads() {
-        this.threads.set(ThreadNames.RENDER, new Worker(new URL('./RenderThread.ts', import.meta.url), { type: 'module' }));
-        this.threads.set(ThreadNames.SCENE, new Worker(new URL('./SceneThread.ts', import.meta.url), { type: 'module' }));
-        this.threads.set(ThreadNames.WORLD, new Worker(new URL('./WorldThread.ts', import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.RENDER, new Worker(new URL('../renderer/RenderThread.ts', import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.SCENE, new Worker(new URL('../scene/SceneThread.ts', import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.WORLD, new Worker(new URL('../world/WorldThread.ts', import.meta.url), { type: 'module' }));
     }
 
     public discardThreads() {

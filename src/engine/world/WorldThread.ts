@@ -1,6 +1,7 @@
-import { BroadcastMessages, GeneralMessages, SceneMessages, WorldMessages } from './ThreadMessages';
-import MessagePayloadInterface from './MessagePayloadInterface';
-import WorldService from '../../world/WorldService';
+import { BroadcastMessages, GeneralMessages, SceneMessages, WorldMessages } from '../threads/ThreadMessages';
+import MessagePayloadInterface from '../threads/MessagePayloadInterface';
+import WorldService from './WorldService';
+import WorldContainer from './WorldContainer';
 
 const worldService = new WorldService();
 
@@ -15,7 +16,9 @@ onmessage = (event: MessageEvent<MessagePayloadInterface>) => {
         case BroadcastMessages.STOP:
             break;
         case WorldMessages.CREATE:
-            worldService.create(event.data.detail);
+            WorldContainer.createChunkRepository(event.data.detail.id);
+            WorldContainer.setSeed(event.data.detail.seed);
+            worldService.create(event.data.detail.isNew);
             break;
         case BroadcastMessages.DISCARD:
             console.log('[WorldThread:discard]');
@@ -29,11 +32,11 @@ onmessage = (event: MessageEvent<MessagePayloadInterface>) => {
 const connect = (event: MessageEvent<MessagePayloadInterface>) => {
     switch (event.data.detail.thread) {
         case 'render':
-            worldService.setRenderPort(event.ports[0]);
+            WorldContainer.setRenderPort(event.ports[0]);
             break;
         case 'scene':
             event.ports[0].onmessage = sceneHandler;
-            worldService.setScenePort(event.ports[0]);
+            WorldContainer.setScenePort(event.ports[0]);
             break;
         default:
             throw new Error('Unhandled connection!');
@@ -44,6 +47,10 @@ const sceneHandler = (event: MessageEvent<MessagePayloadInterface>) => {
     switch (event.data.action) {
         case SceneMessages.REQUEST_WORLD_UPDATE:
             worldService.updateChunkGrid(event.data.detail);
+            break;
+        case SceneMessages.REQUEST_WORLD_CHANGE:
+            const { x, y, z, id } = event.data.detail;
+            worldService.setBlockId(x, y, z, id);
             break;
         default:
             throw new Error('Unhandled message!');

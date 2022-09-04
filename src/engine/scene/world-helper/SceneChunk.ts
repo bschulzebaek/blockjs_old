@@ -1,7 +1,7 @@
-
-import BlockID from '../data/block-id';
-import { ChunkFaces } from '../data/chunk-faces';
-import BlockInterface from '../world/chunk/BlockInterface';
+import BlockID from '../../../data/block-id';
+import { ChunkFaces } from '../../../data/chunk-faces';
+import BlockInterface from '../../world/chunk/BlockInterface';
+import SceneContainer from '../SceneContainer';
 
 export default class SceneChunk  {
     static WIDTH = 16;
@@ -40,6 +40,16 @@ export default class SceneChunk  {
         const block = this.blocks.get(SceneChunk.getBlockPosition(x, y, z));
 
         return block ? block.id : BlockID.AIR;
+    }
+
+    public setBlockId(x: number, y: number, z: number, newId: BlockID) {
+        const position = SceneChunk.getBlockPosition(x, y, z);
+
+        const newBlock = {
+            id: newId,
+        };
+
+        this.blocks.set(position, newBlock);
     }
 
     public getFacingBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {

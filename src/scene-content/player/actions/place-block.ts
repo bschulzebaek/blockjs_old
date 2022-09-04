@@ -1,6 +1,7 @@
+import SceneContainer from '../../../engine/scene/SceneContainer';
 import type PlayerController from '../PlayerController';
-import SceneContainer from '../../../scene/SceneContainer';
 import { ChunkFaces } from '../../../data/chunk-faces';
+import { SceneMessages } from '../../../engine/threads/ThreadMessages';
 
 export default function placeBlock(block: any) {
     const scene = SceneContainer.getScene();
@@ -31,8 +32,16 @@ export default function placeBlock(block: any) {
         return;
     }
 
-    console.log(x, y, z, selectedItem.itemId);
-    // world.setBlockId(x, y, z, selectedItem.itemId);
+    SceneContainer.getScene().getWorld().setBlockId(x, y, z, selectedItem.itemId);
+    SceneContainer.getWorldPort()?.postMessage({
+        action: SceneMessages.REQUEST_WORLD_CHANGE,
+        detail: {
+            x,
+            y,
+            z,
+            id: selectedItem.itemId
+        }
+    });
 
     // publish(new BlockPlacedEvent(selectedItem.itemId, new Vector3(x, y, z), playerInventory));
 }

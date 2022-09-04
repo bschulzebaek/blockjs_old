@@ -1,5 +1,5 @@
 import SceneChunk from './SceneChunk';
-import BlockID from '../data/block-id';
+import BlockID from '../../../data/block-id';
 
 export default class SceneWorld {
 
@@ -34,5 +34,19 @@ export default class SceneWorld {
 
     public chunkExists(x: number, z: number): boolean {
         return !!this.getChunk(x, z);
+    }
+
+    public setBlockId(x: number, y: number, z: number, blockId: BlockID): void {
+        const chunk = this.getChunk(x, z);
+
+        if (!chunk) {
+            return;
+        }
+
+        const blockX = Math.floor(x) - chunk.getX(),
+            blockY = Math.floor(y),
+            blockZ = Math.floor(z) - chunk.getZ();
+
+        chunk.setBlockId(blockX, blockY, blockZ, blockId);
     }
 }

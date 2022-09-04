@@ -1,5 +1,6 @@
 import ThreadManager, { ThreadNames } from './threads/ThreadManager';
 import { GeneralMessages } from './threads/ThreadMessages';
+import router from '../user-interface/router';
 
 let threads: ThreadNames[] = [];
 
@@ -26,7 +27,7 @@ function discardEventTunnel() {
 }
 
 function passKeyboardEvent(event: KeyboardEvent) {
-    if (!document.fullscreenElement) {
+    if (!isInGame()) {
         return;
     }
 
@@ -42,7 +43,7 @@ function passKeyboardEvent(event: KeyboardEvent) {
 }
 
 function passPointerEvent(event: MouseEvent) {
-    if (!document.fullscreenElement) {
+    if (!isInGame()) {
         return;
     }
 
@@ -58,7 +59,7 @@ function passPointerEvent(event: MouseEvent) {
 }
 
 function passMouseEvent(event: MouseEvent) {
-    if (!document.fullscreenElement) {
+    if (!isInGame()) {
         return;
     }
 
@@ -77,6 +78,10 @@ function sendInputEvent(eventDetail: any) {
     threads.forEach((thread) => {
         ThreadManager.send(thread, GeneralMessages.INPUT_EVENT, eventDetail);
     });
+}
+
+function isInGame() {
+    return router.currentRoute.value.name === 'game-default';
 }
 
 export {

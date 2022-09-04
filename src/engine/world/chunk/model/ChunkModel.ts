@@ -3,9 +3,9 @@ import buildFaces from './build-faces';
 import { getFaceFn, getSkipFn} from './add-face-fn';
 import Chunk from '../Chunk';
 import Model from '../../../scene/model/Model';
-import BlockID from '../../../data/block-id';
-import { ChunkFaces } from '../../../data/chunk-faces';
-import BlockUV from '../../../data/block-model';
+import BlockID from '../../../../data/block-id';
+import { ChunkFaces } from '../../../../data/chunk-faces';
+import BlockUV from '../../../../data/block-model';
 import RawMesh from '../../../scene/model/RawMesh';
 
 export enum ChunkModelType {

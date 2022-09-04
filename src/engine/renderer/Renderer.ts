@@ -33,8 +33,9 @@ export default class Renderer {
         this.loop.stop();
     }
 
+    // @ts-ignore
     private render(delta: number): void {
-        console.debug((1 / delta).toFixed(1))
+        // console.debug((1 / delta).toFixed(1))
         const { projection, view } = this;
 
         Object.values(this.worldObjects).forEach((cro) => {

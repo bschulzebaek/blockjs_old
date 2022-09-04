@@ -1,4 +1,4 @@
-import { Transform, Vector3 } from '../../shared/math';
+import { Transform, Vector3 } from '../../../shared/math';
 import ModelInterface from '../model/ModelInterface';
 import type SceneWorld from '../SceneWorld';
 

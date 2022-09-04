@@ -1,14 +1,14 @@
 import SceneObjectInterface from './SceneObjectInterface';
-import Camera from '../scene-content/camera/Camera';
-import Skybox from '../scene-content/skybox/Skybox';
-import { RenderMessages } from '../engine/threads/ThreadMessages';
-import Loop from '../shared/utility/Loop';
-import { Vector3 } from '../shared/math';
-import SceneWorld from './SceneWorld';
-import PlayerController from '../scene-content/player/PlayerController';
+import Camera from '../../scene-content/camera/Camera';
+import Skybox from '../../scene-content/skybox/Skybox';
+import { RenderMessages } from '../threads/ThreadMessages';
+import Loop from '../../shared/utility/Loop';
+import { Vector3 } from '../../shared/math';
+import SceneWorld from './world-helper/SceneWorld';
+import PlayerController from '../../scene-content/player/PlayerController';
 import Entity from './entity/Entity';
 import SceneContainer from './SceneContainer';
-import Cursor from '../scene-content/cursor/Cursor';
+import Cursor from '../../scene-content/cursor/Cursor';
 
 export default class Scene {
     private camera!: Camera;
@@ -34,9 +34,7 @@ export default class Scene {
         this.world.setChunks(data);
     }
 
-    // @ts-ignore
-    public start({ isNew }: { isNew: boolean }) {
-        // console.log(isNew)
+    public start() {
         this.loop.start();
     }
 
@@ -108,8 +106,10 @@ export default class Scene {
     }
 
     public update(delta: number): void {
+        // console.debug((1 / delta).toFixed(1))
+
         this.camera.update();
-        //
+
         this.sceneObjects.forEach((sceneObject) => {
             sceneObject.update(delta);
         });

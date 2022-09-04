@@ -1,8 +1,9 @@
 import ChunkModel, { ChunkModelType } from './model/ChunkModel';
 import BlockInterface from './BlockInterface';
-import BlockID from '../../data/block-id';
-import { ChunkFaces } from '../../data/chunk-faces';
+import BlockID from '../../../data/block-id';
+import { ChunkFaces } from '../../../data/chunk-faces';
 import ModelInterface from '../../scene/model/ModelInterface';
+import StoreClass from '../../storage/StoreClass';
 
 export interface ChunkRawInterface {
     id: string;
@@ -11,7 +12,8 @@ export interface ChunkRawInterface {
     worldZ: number;
 }
 
-export default class Chunk  {
+export default class Chunk extends StoreClass {
+    static STORAGE_IDENTIFIER = 'id';
     static STORAGE_FIELDS = [
         'id',
         'blocks',
@@ -31,6 +33,8 @@ export default class Chunk  {
     private glassModel!: ModelInterface;
 
     constructor(chunkX: number, chunkZ: number, blocks = Chunk.getEmptyBlocks()) {
+        super(Chunk.STORAGE_IDENTIFIER, Chunk.STORAGE_FIELDS);
+
         this.id = Chunk.getId(chunkX, chunkZ);
         this.blocks = blocks;
         this.worldX = chunkX * Chunk.WIDTH;

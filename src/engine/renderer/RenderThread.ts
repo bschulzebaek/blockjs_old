@@ -1,23 +1,25 @@
-import { BroadcastMessages, GeneralMessages, SceneMessages } from './ThreadMessages';
-import MessagePayloadInterface from './MessagePayloadInterface';
-import SceneContainer from '../../scene/SceneContainer';
+import { BroadcastMessages, GeneralMessages, RenderMessages } from '../threads/ThreadMessages';
+import MessagePayloadInterface from '../threads/MessagePayloadInterface';
+import Renderer from './Renderer';
+
+let renderer: Renderer | null = null;
 
 onmessage = (event: MessageEvent<MessagePayloadInterface>) => {
     switch (event.data.action) {
         case GeneralMessages.CONNECT:
             connect(event);
             break;
-        case GeneralMessages.INPUT_EVENT:
-            inputHandler(event);
+        case RenderMessages.SET_CANVAS:
+            renderer = new Renderer(event.data.detail);
             break;
         case BroadcastMessages.START:
-            SceneContainer.getScene().start(event.data.detail);
+            renderer?.start();
             break;
         case BroadcastMessages.STOP:
-            SceneContainer.getScene().stop();
+            renderer?.stop();
             break;
         case BroadcastMessages.DISCARD:
-            console.log('[SceneThread:discard]');
+            console.log('[RenderThread:discard]');
             self.close();
             break;
         default:
@@ -27,11 +29,10 @@ onmessage = (event: MessageEvent<MessagePayloadInterface>) => {
 
 const connect = (event: MessageEvent<MessagePayloadInterface>) => {
     switch (event.data.detail.thread) {
-        case 'render':
-            SceneContainer.setRenderPort(event.ports[0]);
+        case 'scene':
+            event.ports[0].onmessage = sceneHandler;
             break;
         case 'world':
-            SceneContainer.setWorldPort(event.ports[0]);
             event.ports[0].onmessage = worldHandler;
             break;
         default:
@@ -39,16 +40,20 @@ const connect = (event: MessageEvent<MessagePayloadInterface>) => {
     }
 }
 
-const inputHandler = (event: MessageEvent<MessagePayloadInterface>) => {
-    const { detail } = event.data;
-
-    dispatchEvent(new CustomEvent(detail.type, { detail }));
+const sceneHandler = (event: MessageEvent<MessagePayloadInterface>) => {
+    switch (event.data.action) {
+        case RenderMessages.SYNC_SCENE:
+            renderer?.syncSceneObjects(event.data.detail);
+            break;
+        default:
+            throw new Error('Unhandled message!');
+    }
 }
 
 const worldHandler = (event: MessageEvent<MessagePayloadInterface>) => {
     switch (event.data.action) {
-        case SceneMessages.SYNC_WORLD:
-            SceneContainer.getScene().syncWorld(event.data.detail);
+        case RenderMessages.SYNC_WORLD:
+            renderer?.syncWorld(event.data.detail);
             break;
         default:
             throw new Error('Unhandled message!');

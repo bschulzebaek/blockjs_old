@@ -37,7 +37,7 @@ export default class RenderObject {
     }
 
     private bindIndices(context: WebGL2RenderingContext, indices: Uint16Array) {
-        if (!indices || !indices.length) {
+        if (!indices) {
             return;
         }
 
@@ -48,7 +48,7 @@ export default class RenderObject {
     }
 
     private bindVertices(context: WebGL2RenderingContext, vertices: Float32Array) {
-        if (!vertices || !vertices.length) {
+        if (!vertices) {
             return;
         }
         this.vertexCount = vertices.length / this.vertexComponentSize;
@@ -60,7 +60,7 @@ export default class RenderObject {
     }
 
     private bindNormals(context: WebGL2RenderingContext, normals: Float32Array) {
-        if (!normals || !normals.length) {
+        if (!normals) {
             return;
         }
 
@@ -71,7 +71,7 @@ export default class RenderObject {
     }
 
     private bindUvs(context: WebGL2RenderingContext, uvs: Float32Array) {
-        if (!uvs || !uvs.length) {
+        if (!uvs) {
             return;
         }
 
@@ -82,7 +82,7 @@ export default class RenderObject {
     }
 
     private bindFaces(context: WebGL2RenderingContext, faces: Float32Array) {
-        if (!faces || !faces.length) {
+        if (!faces) {
             return;
         }
 
@@ -93,7 +93,7 @@ export default class RenderObject {
     }
 
     private bindArrayObject(context: WebGL2RenderingContext, arrayObject: Float32Array) {
-        if (!arrayObject || !arrayObject.length) {
+        if (!arrayObject) {
             return;
         }
 

@@ -1,13 +1,15 @@
 import ThreadManager, { ThreadNames } from './threads/ThreadManager';
 import { RenderMessages, WorldMessages } from './threads/ThreadMessages';
 import { createEventTunnel } from './create-event-tunnel';
-import generateUUID from '../shared/utility/generate-uuid';
-import generateSeed from '../shared/utility/generate-seed';
 import router from '../user-interface/router';
 import { Views } from '../user-interface/router/routes';
+import RawGameConfigInterface from './game-config/RawGameConfigInterface';
+import GameConfigService from './game-config/GameConfigService';
 
-function createInstance(canvas: HTMLCanvasElement) {
-    const offscreen = canvas.transferControlToOffscreen();
+async function createInstance(canvas: HTMLCanvasElement, config: RawGameConfigInterface) {
+    const gameConfigService = new GameConfigService(config),
+          gameConfig = await gameConfigService.getConfig(),
+          offscreen = canvas.transferControlToOffscreen();
 
     ThreadManager.createThreads();
 
@@ -18,13 +20,17 @@ function createInstance(canvas: HTMLCanvasElement) {
 
     createEventTunnel([ ThreadNames.SCENE ]);
 
-    ThreadManager.send(ThreadNames.WORLD, WorldMessages.CREATE, { id: generateUUID(), seed: generateSeed() });
+    ThreadManager.send(ThreadNames.WORLD, WorldMessages.CREATE, {
+        id: gameConfig.getId(),
+        seed: gameConfig.getSeed(),
+        isNew: typeof config.isNew !== 'undefined',
+    });
 
     const worldThread = ThreadManager.get(ThreadNames.WORLD);
 
     worldThread.onmessage = (event) => {
         if (event.data.action === 'ready') {
-            router.push({ name: Views.GAME_DEFAULT, query: event.data.detail });
+            router.push({ name: Views.GAME_DEFAULT });
         }
     }
 }
