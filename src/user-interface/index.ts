@@ -6,12 +6,12 @@ import McButton from './components/mc-button.vue';
 import McBackground from './components/mc-background.vue';
 import ItemSlot from './components/item-slot.vue';
 import getAssetUrl from '../shared/utility/get-asset-url';
-import { Views } from './router/routes';
 import { store } from './store';
 
 import StateMachine from '../main-thread/StateMachine';
 import MainContainer from '../main-thread/MainContainer';
 import './helper/prevent-defaults';
+import { Views } from '../data/views';
 
 const app = createApp(RootComponent)
     .use(router)

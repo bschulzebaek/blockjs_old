@@ -1,13 +1,10 @@
 import EntityRepository from './EntityRepository';
 import Entity from './Entity';
 import StorageAdapter from '../../shared/storage/StorageAdapter';
+import { PLAYER_ENTITY_ID } from '../../data/player-data';
 
 export default class EntityService {
-    static PLAYER_ID = 'player';
-    static PLAYER_POSITION = '0:32:0';
-
     private repository: EntityRepository;
-
     private entities: Map<string, Entity> = new Map();
 
     constructor(adapter: StorageAdapter) {
@@ -31,11 +28,11 @@ export default class EntityService {
     }
 
     public getPlayer() {
-        if (!this.entities.has(EntityService.PLAYER_ID)) {
+        if (!this.entities.has(PLAYER_ENTITY_ID)) {
             throw new Error('[EntityService] player entity undefined!');
         }
 
-        return this.entities.get(EntityService.PLAYER_ID)!;
+        return this.entities.get(PLAYER_ENTITY_ID)!;
     }
 
     public getAll() {

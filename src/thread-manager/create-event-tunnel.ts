@@ -1,8 +1,8 @@
 import ThreadManager, { ThreadNames } from './ThreadManager';
 import { GeneralMessages } from './ThreadMessages';
 import StateMachine from '../main-thread/StateMachine';
-import { Views } from '../user-interface/router/routes';
 import MainContainer from '../main-thread/MainContainer';
+import { Views } from '../data/views';
 
 let threads: ThreadNames[] = [];
 

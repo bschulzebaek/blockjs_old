@@ -1,6 +1,6 @@
 import router from '../../user-interface/router';
-import { Views } from '../../user-interface/router/routes';
 import StateMachine from '../StateMachine';
+import { Views } from '../../data/views';
 
 const keyMap: Map<string, boolean> = new Map();
 

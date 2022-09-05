@@ -1,7 +1,6 @@
 import Camera from './Camera';
 
 export default class ControlledCamera extends Camera {
-
     static ROTATE_RATE_X = -120;
     static ROTATE_RATE_Y = -135;
 
@@ -17,8 +16,8 @@ export default class ControlledCamera extends Camera {
               rotation = this.getTransform().getRotation();
 
         rotation.add(
-            movementY * (ControlledCamera.ROTATE_RATE_X / 1600),// / window.screen.availHeight),
-            movementX * (ControlledCamera.ROTATE_RATE_Y / 900),// / window.screen.availWidth),
+            movementY * (ControlledCamera.ROTATE_RATE_X / innerWidth),
+            movementX * (ControlledCamera.ROTATE_RATE_Y / innerHeight),
             0
         );
 

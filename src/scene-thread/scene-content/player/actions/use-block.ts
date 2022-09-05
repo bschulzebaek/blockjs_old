@@ -1,6 +1,6 @@
 import BlockID from '../../../../data/block-id';
 import { SceneMessages } from '../../../../thread-manager/ThreadMessages';
-import { Views } from '../../../../user-interface/router/routes';
+import { Views } from '../../../../data/views';
 
 export default function useBlock(block: any) {
     const { x, y, z, blockId } = block,
@@ -22,7 +22,7 @@ export default function useBlock(block: any) {
             postMessage({
                 action: SceneMessages.TO_VIEW,
                 detail: {
-                    name: Views.GAME_CRAFTING_TABLE
+                    name: Views.GAME_CRAFTING_TABLE,
                 }
             });
             break;

@@ -24,7 +24,7 @@
     animation: bumpLogo 5s 5s ease-in-out infinite;
 }
 
-@media only screen and (max-width: 980px) {
+@media only screen and (max-width: 768px) {
     .main-menu-index .logo__image {
         max-width: 100vw;
     }

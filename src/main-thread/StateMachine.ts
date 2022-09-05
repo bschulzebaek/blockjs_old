@@ -1,5 +1,4 @@
 import router from '../user-interface/router';
-import { Views } from '../user-interface/router/routes';
 import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 import Fullscreen from '../shared/utility/Fullscreen';
 import { createInstance, discardInstance } from '../thread-manager';
@@ -8,6 +7,7 @@ import ThreadManager, { ThreadNames } from '../thread-manager/ThreadManager';
 import { BroadcastMessages } from '../thread-manager/ThreadMessages';
 import * as UIControls from './helper/ui-controls';
 import { createEventTunnel, discardEventTunnel } from '../thread-manager/create-event-tunnel';
+import { Views } from '../data/views';
 
 class StateMachine {
     constructor() {

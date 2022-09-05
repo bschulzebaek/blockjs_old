@@ -1,10 +1,15 @@
 import { BroadcastMessages, GeneralMessages } from './ThreadMessages';
-import spawnThread from './spawn-thread';
 
 export enum ThreadNames {
     RENDER = 'render',
     SCENE = 'scene',
     WORLD = 'world',
+}
+
+enum ThreadPaths {
+    RENDER = '../render-thread/RenderThread.ts',
+    SCENE = '../scene-thread/SceneThread.ts',
+    WORLD = '../world-thread/WorldThread.ts',
 }
 
 class ThreadManager {
@@ -13,13 +18,17 @@ class ThreadManager {
     private channel: Map<string, MessageChannel> = new Map();
 
     public createThreads() {
-        this.threads.set(ThreadNames.RENDER, spawnThread('../render-thread/RenderThread.ts'));
-        this.threads.set(ThreadNames.SCENE,  spawnThread('../scene-thread/SceneThread.ts'));
-        this.threads.set(ThreadNames.WORLD,  spawnThread('../world-thread/WorldThread.ts'));
+        this.threads.set(ThreadNames.RENDER, new Worker(new URL(ThreadPaths.RENDER, import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.SCENE,  new Worker(new URL(ThreadPaths.SCENE,  import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.WORLD,  new Worker(new URL(ThreadPaths.WORLD,  import.meta.url), { type: 'module' }));
 
         this.connect(ThreadNames.RENDER, ThreadNames.SCENE);
         this.connect(ThreadNames.RENDER, ThreadNames.WORLD);
         this.connect(ThreadNames.WORLD, ThreadNames.SCENE);
+    }
+
+    public add(name: ThreadNames, worker: Worker) {
+        this.threads.set(name, worker);
     }
 
     public discardThreads() {
@@ -30,7 +39,7 @@ class ThreadManager {
 
     public get(name: string) {
         if (!this.threads.has(name)) {
-            throw new Error(name);
+            throw new Error(`[ThreadManager] Undefined thread "${name}"!`);
         }
 
         return this.threads.get(name)!;

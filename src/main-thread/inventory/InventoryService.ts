@@ -3,10 +3,9 @@ import Inventory from './Inventory';
 import generateUUID from '../../shared/utility/generate-uuid';
 import StorageAdapter from '../../shared/storage/StorageAdapter';
 import fillDebugInventory from './fill-debug-inventory';
+import { PLAYER_INVENTORY_ID } from '../../data/player-data';
 
 export default class InventoryService {
-    static PLAYER_ID = 'player';
-
     private repository: InventoryRepository;
     private inventories: Map<string, Inventory> = new Map();
 
@@ -15,11 +14,11 @@ export default class InventoryService {
     }
 
     public async new() {
-        this.createInventory(InventoryService.PLAYER_ID);
+        this.createInventory(PLAYER_INVENTORY_ID);
 
-        await this.saveInventory(InventoryService.PLAYER_ID);
+        await this.saveInventory(PLAYER_INVENTORY_ID);
 
-        fillDebugInventory(await this.inventories.get(InventoryService.PLAYER_ID)!);
+        fillDebugInventory(await this.inventories.get(PLAYER_INVENTORY_ID)!);
     }
 
     public async load() {
@@ -59,7 +58,7 @@ export default class InventoryService {
     }
 
     public async loadPlayerInventory() {
-        await this.loadInventory(InventoryService.PLAYER_ID);
+        await this.loadInventory(PLAYER_INVENTORY_ID);
     }
 
     public async saveInventory(inventoryId: string) {
@@ -73,11 +72,11 @@ export default class InventoryService {
     }
 
     public getPlayerInventory() {
-        if (!this.inventories.has(InventoryService.PLAYER_ID)) {
-            throw new Error(`[InventoryService] Inventory "${InventoryService.PLAYER_ID}" does not exist!`);
+        if (!this.inventories.has(PLAYER_INVENTORY_ID)) {
+            throw new Error(`[InventoryService] Inventory "${PLAYER_INVENTORY_ID}" does not exist!`);
         }
 
-        return this.inventories.get(InventoryService.PLAYER_ID)!;
+        return this.inventories.get(PLAYER_INVENTORY_ID)!;
     }
 
     public async deleteInventory(id: string): Promise<void> {

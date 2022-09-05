@@ -7,6 +7,6 @@ export default defineConfig({
         extensions: ['.ts', '.vue'],
     },
     build: {
-        outDir: 'dist'
-    }
+        outDir: 'dist',
+    },
 })

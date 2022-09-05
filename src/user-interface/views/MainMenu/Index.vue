@@ -46,7 +46,17 @@
         </main>
 
         <footer>
-            This project is not affiliated with (or supported by) Mojang AB, Minecraft, or Microsoft in any way.<br> Any assets from Minecraft are used non-commercially under fair use and in accordance with <a cross-origin="anonymous" href="https://account.mojang.com/documents/minecraft_eula" target="_blank" rel="noopener" style="color: white;">Minecraft's EULA.</a>
+            This project is not affiliated with (or supported by) Mojang AB, Minecraft, or Microsoft in any way.<br>
+            Any assets from Minecraft are used non-commercially under fair use and in accordance with
+            <a
+                cross-origin="anonymous"
+                href="https://account.mojang.com/documents/minecraft_eula"
+                target="_blank"
+                rel="noopener"
+                style="color: white;"
+            >
+                Minecraft's EULA.
+            </a>
         </footer>
     </div>
 </template>
