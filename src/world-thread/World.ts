@@ -1,0 +1,91 @@
+import BlockID from '../data/block-id';
+import Chunk from './chunk/Chunk';
+
+export default class World {
+    static SCENE_ID = 'world';
+
+    private readonly map: Map<string, Chunk>;
+
+    constructor(chunks: Map<string, Chunk> = new Map()) {
+        this.map = chunks;
+    }
+
+    public getId() {
+        return World.SCENE_ID;
+    }
+
+    public createModel() {
+        this.getChunks().forEach((chunk) => chunk.buildModel());
+    }
+
+    public getMap() {
+        return this.map;
+    }
+
+    public chunkExists(x: number, z: number): boolean {
+        return !!this.getChunk(x, z);
+    }
+
+    public getChunk(x: number, z: number): Chunk | null {
+        return this.map.get(Chunk.getFormattedId(x, z)) ?? null;
+    }
+
+    public getChunkById(id: string) {
+        return this.map.get(id);
+    }
+
+    public getChunks(): Chunk[] {
+        return Array.from(this.map.values());
+    }
+
+    public getChunkIds(): string[] {
+        return Array.from(this.map.keys());
+    }
+
+    public getChunkData() {
+        return this.getChunks().map((chunk) => ({
+           id: chunk.getId(),
+           blocks: chunk.getBlocks()
+        }));
+    }
+
+    public pushChunk(chunk: Chunk): void {
+        this.map.set(chunk.getId(), chunk);
+    }
+
+    public popChunk(key: string): Chunk {
+        const chunk = this.map.get(key);
+
+        this.map.delete(key);
+
+        return chunk as Chunk;
+    }
+
+    public getBlockId(x: number, y: number, z: number): BlockID {
+        const chunk = this.getChunk(x, z);
+
+        if (!chunk) {
+            return BlockID.AIR;
+        }
+
+        const blockX = Math.floor(x) - chunk.getX(),
+              blockY = Math.floor(y),
+              blockZ = Math.floor(z) - chunk.getZ();
+
+        return chunk.getBlockId(blockX, blockY, blockZ);
+    }
+
+    public setBlockId(x: number, y: number, z: number, blockId: BlockID): void {
+        const chunk = this.getChunk(x, z);
+
+        if (!chunk) {
+            return;
+        }
+
+        const blockX = Math.floor(x) - chunk.getX(),
+              blockY = Math.floor(y),
+              blockZ = Math.floor(z) - chunk.getZ();
+
+        chunk.setBlockId(blockX, blockY, blockZ, blockId);
+    }
+}

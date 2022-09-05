@@ -1,20 +1,7 @@
-import Container from './framework/container/Container';
-import './framework/state-machine/StateMachine';
-import './common/utility/prevent-defaults';
-import './client/user-interface';
+import './user-interface';
+import './main-thread';
 
-import './common/utility/preload-assets';
-import './subscriber';
+import spawnThread from './thread-manager/spawn-thread';
 
 // @ts-ignore
-window.$container = Container;
-
-const testWorker = new Worker(new URL('./worker-test.ts', import.meta.url));
-
-
-testWorker.addEventListener('message', message => {
-    console.log(message);
-});
-
-
-testWorker.postMessage('to testWorker');
+window.__TEST_WORKER__ = spawnThread('../test-worker.ts');

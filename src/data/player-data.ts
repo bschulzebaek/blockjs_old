@@ -1,0 +1,1 @@
+export const PLAYER_ENTITY_ID = 'player';
