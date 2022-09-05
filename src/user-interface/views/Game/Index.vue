@@ -5,64 +5,22 @@
         <router-view
             v-if="canvas"
             :canvas="canvas"
-            :inventory="inventory"
+            :inventory="$store.inventory"
         ></router-view>
     </div>
 </template>
 
 <script lang="ts">
-
-import { navigationControlKeyDown, navigationControlKeyUp } from '../../helper/InGameNavigationControl';
-
 export default {
+    inject: ['$store'],
     data() {
         return {
-            keyMap: {},
-            canvas: null,
-            inventory: null,
+            canvas: null
         }
     },
     mounted() {
         this.canvas = this.$refs.canvas;
-
-        // this.$stateMachine.game_play(this.canvas);
-        // this.getPlayerInventory();
-        window.addEventListener('fullscreenchange', this.onFullscreenChange);
-        window.addEventListener('keydown', this.onKeyDown);
-        window.addEventListener('keyup', this.onKeyUp);
     },
-    beforeUnmount() {
-        window.removeEventListener('fullscreenchange', this.onFullscreenChange);
-        window.removeEventListener('keydown', this.onKeyDown);
-        window.removeEventListener('keyup', this.onKeyUp);
-    },
-    methods: {
-        getPlayerInventory() {
-            // this.inventory = this.$container.getService('inventory').getPlayerInventory();
-        },
-        onFullscreenChange() {
-            if (!document.fullscreenElement) {
-                this.$router.push({ name: 'game-pause' });
-            }
-        },
-        onKeyDown(event) {
-            if (this.keyMap[event.key]) {
-                return;
-            }
-
-            this.keyMap[event.key] = true;
-
-            navigationControlKeyDown(event, this.$router);
-        },
-        onKeyUp(event) {
-            if (!this.keyMap[event.key]) {
-                return;
-            }
-
-            this.keyMap[event.key] = false;
-            navigationControlKeyUp(event, this.$router);
-        }
-    }
 }
 </script>
 

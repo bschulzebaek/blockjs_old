@@ -2,19 +2,17 @@
     <div class="game-default">
         <span class="crosshair center-absolute">x</span>
 
-<!--        <toolbar-->
-<!--            :key="inventoryKey"-->
-<!--            :inventory="inventory"-->
-<!--        />-->
+        <toolbar
+            :key="inventoryKey"
+            :inventory="inventory"
+        />
     </div>
 </template>
 
 <script lang="ts">
 import Toolbar from '../../components/toolbar.vue';
-import ThreadManager from '../../../engine/threads/ThreadManager';
-import { BroadcastMessages } from '../../../engine/threads/ThreadMessages';
-// import { subscribe, unsubscribe } from '../../../../common/utility/event-helper';
-// import Events from '../../../../data/events';
+import { subscribe, unsubscribe } from '../../../shared/utility/event-helper';
+import Events from '../../../data/events';
 
 export default {
     components: {
@@ -36,20 +34,10 @@ export default {
         }
     },
     mounted() {
-        this.canvas.requestPointerLock();
-        // console.log(this.$router.currentRoute.value.query)
-
-        ThreadManager.broadcast(BroadcastMessages.START);
-        // this.$stateMachine.game_resume(this.canvas);
-        //
-        // subscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
+        subscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
     },
     beforeUnmount() {
-        document.exitPointerLock();
-        ThreadManager.broadcast(BroadcastMessages.STOP);
-        // this.$stateMachine.game_pause(this.canvas);
-        //
-        // unsubscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
+        unsubscribe(Events.INVENTORY_UPDATE, this.onInventoryUpdate);
     },
     methods: {
         onInventoryUpdate() {

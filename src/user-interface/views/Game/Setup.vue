@@ -5,9 +5,6 @@
 </template>
 
 <script lang="ts">
-import { createInstance } from '../../../engine';
-import Fullscreen from '../../../shared/utility/Fullscreen';
-
 export default {
     props: {
         canvas: {
@@ -16,10 +13,7 @@ export default {
         },
     },
     mounted() {
-        Fullscreen.enter();
-
-        createInstance(this.canvas, this.$router.currentRoute.value.query);
-        // this.$stateMachine.GameSetup_GameDefault();
+        this.$stateMachine.on_Setup(this.canvas);
     },
 }
 </script>

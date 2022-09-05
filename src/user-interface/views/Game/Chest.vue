@@ -73,9 +73,9 @@ export default {
         },
     },
     async mounted() {
-        this.chestInventory = await this.$container.services.inventory.getInventory(
-            this.$router.currentRoute.value.params.id
-        );
+        const { id } = this.$router.currentRoute.value.params;
+
+        this.chestInventory = await this.$mainContainer.getInventoryService().loadInventory(id);
     },
     methods: {
         getItem(index: number) {

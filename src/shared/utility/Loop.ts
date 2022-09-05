@@ -28,10 +28,7 @@ export default class Loop {
             return;
         }
 
-        const delta = this.getDelta(time, lastTime);
-        // console.log((1 / delta).toFixed(1));
-
-        this.loopFn(delta);
+        this.loopFn(this.getDelta(time, lastTime));
         requestAnimationFrame((newTime) => this.loop(newTime, time));
     }
 

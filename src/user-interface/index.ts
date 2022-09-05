@@ -7,13 +7,22 @@ import McBackground from './components/mc-background.vue';
 import ItemSlot from './components/item-slot.vue';
 import getAssetUrl from '../shared/utility/get-asset-url';
 import { Views } from './router/routes';
+import { store } from './store';
+
+import StateMachine from '../main-thread/StateMachine';
+import MainContainer from '../main-thread/MainContainer';
+import './helper/prevent-defaults';
 
 const app = createApp(RootComponent)
     .use(router)
     .component('mc-button', McButton)
     .component('mc-background', McBackground)
     .component('item-slot', ItemSlot)
+    .provide('$store', store)
     .provide('$getAssetUrl', getAssetUrl);
+
+app.config.globalProperties.$stateMachine = StateMachine;
+app.config.globalProperties.$mainContainer = MainContainer;
 
 router.push({ name: Views.MAIN_MENU });
 

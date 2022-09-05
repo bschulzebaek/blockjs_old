@@ -1,0 +1,1 @@
+export const WORLD_OCEAN_LEVEL = 4;
