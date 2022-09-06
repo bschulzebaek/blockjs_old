@@ -1,29 +1,35 @@
-import router from '../user-interface/router';
 import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
-import Fullscreen from '../shared/utility/Fullscreen';
-import { createInstance, discardInstance } from '../thread-manager';
-import RawGameConfigInterface from './game-config/RawGameConfigInterface';
-import ThreadManager, { ThreadNames } from '../thread-manager/ThreadManager';
-import { BroadcastMessages } from '../thread-manager/ThreadMessages';
+import MainContainer from './MainContainer';
+import ThreadManager, { ThreadNames } from './game-instance/ThreadManager';
+import { BroadcastMessages } from '../shared/messages/ThreadMessages';
+import { createInstance, discardInstance } from './game-instance';
+import { createEventTunnel, discardEventTunnel } from './helper/create-event-tunnel';
 import * as UIControls from './helper/ui-controls';
-import { createEventTunnel, discardEventTunnel } from '../thread-manager/create-event-tunnel';
+import Fullscreen from './helper/Fullscreen';
 import { Views } from '../data/views';
+import logger from '../shared/utility/logger';
 
 class StateMachine {
+    private router = MainContainer.getRouter();
+
     constructor() {
-        router.beforeEach(this.onBeforeRoute.bind(this));
+        this.router.beforeEach(this.onBeforeRoute.bind(this));
     }
 
     private onBeforeRoute(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
-        console.debug(to)
-        this.handleFrom(from);
+        logger(to);
+
+        this.handleFrom(to, from);
         this.handleTo(to, next);
     }
 
-    private handleFrom(from: RouteLocationNormalized) {
+    private handleFrom(to: RouteLocationNormalized, from: RouteLocationNormalized) {
         switch (from.name) {
             case Views.GAME_DEFAULT:
                 this.from_Default();
+                break;
+            case Views.GAME_PAUSE:
+                this.from_Pause(to);
                 break;
         }
     }
@@ -33,39 +39,52 @@ class StateMachine {
             case Views.GAME_DEFAULT:
                 this.to_Default(next);
                 break;
+            case Views.GAME_PAUSE:
+                this.to_Pause(next);
+                break;
             default:
                 next();
         }
     }
 
+    private to_Pause(next: NavigationGuardNext) {
+        ThreadManager.broadcast(BroadcastMessages.STOP);
+
+        next();
+    }
+
+    private from_Pause(to: RouteLocationNormalized) {
+        if (to.name === Views.GAME_TEARDOWN) {
+            return;
+        }
+
+        ThreadManager.broadcast(BroadcastMessages.START);
+    }
+
     private from_Default() {
         document.exitPointerLock();
-        ThreadManager.broadcast(BroadcastMessages.STOP);
     }
 
     private to_Default(next: NavigationGuardNext) {
         document.body.requestPointerLock();
         Fullscreen.enter();
-        ThreadManager.broadcast(BroadcastMessages.START);
 
         next();
     }
 
     public to_View(options: any) {
-        router.push({
-            name: options.name,
-            params: options.params,
-        });
+        this.pushTransition(options.name, options.query, options.params);
     }
 
     public on_InstanceReady() {
         createEventTunnel([ ThreadNames.SCENE ]);
         this.pushTransition(Views.GAME_DEFAULT);
+        ThreadManager.broadcast(BroadcastMessages.START);
     }
 
-    public on_Setup(canvas: HTMLCanvasElement) {
+    public on_Setup() {
         Fullscreen.enter();
-        createInstance(canvas, router.currentRoute.value.query as unknown as RawGameConfigInterface);
+        createInstance();
         this.registerInGameEvents();
     }
 
@@ -80,32 +99,37 @@ class StateMachine {
 
     private registerInGameEvents() {
         addEventListener('fullscreenchange', this.onFullscreenChange);
+        addEventListener('blur', this.onBlur);
         addEventListener('keydown', UIControls.onKeyDown);
         addEventListener('keyup', UIControls.onKeyUp);
     }
 
     private unregisterInGameEvents() {
         removeEventListener('fullscreenchange', this.onFullscreenChange);
+        removeEventListener('blur', this.onBlur);
         removeEventListener('keydown', UIControls.onKeyDown);
         removeEventListener('keyup', UIControls.onKeyUp);
     }
 
-    private onFullscreenChange() {
+    private onFullscreenChange = () => {
         if (!document.fullscreenElement) {
             this.pushTransition(Views.GAME_PAUSE);
         }
     }
+    private onBlur = () => {
+        this.pushTransition(Views.GAME_PAUSE);
+    }
 
-    private pushTransition(name: Views) {
-        router.push({ name })
+    private pushTransition(name: Views, query = {}, params = {}) {
+        this.router.push({ name, query, params })
     }
 
     public isRoute(name: Views) {
-        return router.currentRoute.value.name === name;
+        return this.router.currentRoute.value.name === name;
     }
 
     public isInGame() {
-        const { path, name } = router.currentRoute.value;
+        const { path, name } = this.router.currentRoute.value;
 
         return path.startsWith('/game') && name !== Views.GAME_SETUP && name !== Views.GAME_TEARDOWN;
     }

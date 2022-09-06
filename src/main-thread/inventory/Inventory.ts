@@ -4,7 +4,6 @@ import InventorySlotInterface from './InventorySlotInterface';
 import { publish } from '../../shared/utility/event-helper';
 import InventoryUpdateEvent from './InventoryUpdateEvent';
 import BlockMeta from '../../data/block-meta';
-import MainContainer from '../MainContainer';
 
 export interface InventoryRawInterface {
     id: string;
@@ -150,8 +149,6 @@ export default class Inventory extends StoreClass implements InventoryInterface 
     }
 
     private async dispatchUpdate() {
-        MainContainer.getInventoryService().saveInventory(this.getId());
-
         publish(new InventoryUpdateEvent(this));
     }
 }

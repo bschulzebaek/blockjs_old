@@ -7,6 +7,5 @@ export default async function(id: string) {
     const entityRepository = new EntityRepository(new StorageAdapter(id)),
           player           = new Entity(PLAYER_ENTITY_ID);
 
-
     await entityRepository.write(player);
 }

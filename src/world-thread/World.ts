@@ -1,33 +1,24 @@
 import BlockID from '../data/block-id';
 import Chunk from './chunk/Chunk';
+import WorldInterface from './WorldInterface';
 
-export default class World {
-    static SCENE_ID = 'world';
-
+export default class World implements WorldInterface {
     private readonly map: Map<string, Chunk>;
 
     constructor(chunks: Map<string, Chunk> = new Map()) {
         this.map = chunks;
     }
 
-    public getId() {
-        return World.SCENE_ID;
-    }
-
-    public createModel() {
-        this.getChunks().forEach((chunk) => chunk.buildModel());
-    }
-
     public getMap() {
         return this.map;
     }
 
-    public chunkExists(x: number, z: number): boolean {
-        return !!this.getChunk(x, z);
+    public getChunkIds() {
+        return Array.from(this.map.keys());
     }
 
-    public getChunk(x: number, z: number): Chunk | null {
-        return this.map.get(Chunk.getFormattedId(x, z)) ?? null;
+    public getChunk(x: number, z: number) {
+        return this.map.get(Chunk.getFormattedId(x, z));
     }
 
     public getChunkById(id: string) {
@@ -38,25 +29,14 @@ export default class World {
         return Array.from(this.map.values());
     }
 
-    public getChunkIds(): string[] {
-        return Array.from(this.map.keys());
-    }
-
-    public getChunkData() {
-        return this.getChunks().map((chunk) => ({
-           id: chunk.getId(),
-           blocks: chunk.getBlocks()
-        }));
-    }
-
-    public pushChunk(chunk: Chunk): void {
+    public pushChunk(chunk: Chunk) {
         this.map.set(chunk.getId(), chunk);
     }
 
-    public popChunk(key: string): Chunk {
-        const chunk = this.map.get(key);
+    public popChunk(id: string): Chunk {
+        const chunk = this.map.get(id);
 
-        this.map.delete(key);
+        this.map.delete(id);
 
         return chunk as Chunk;
     }
@@ -75,7 +55,7 @@ export default class World {
         return chunk.getBlockId(blockX, blockY, blockZ);
     }
 
-    public setBlockId(x: number, y: number, z: number, blockId: BlockID): void {
+    public setBlockId(x: number, y: number, z: number, blockId: BlockID) {
         const chunk = this.getChunk(x, z);
 
         if (!chunk) {

@@ -1,1 +1,1 @@
-export const WORLD_OCEAN_LEVEL = 4;
+export const WORLD_SEA_LEVEL = 4;

@@ -1,7 +1,7 @@
 import SceneContainer from '../../../SceneContainer';
 import type PlayerController from '../PlayerController';
 import { ChunkFaces } from '../../../../data/chunk-faces';
-import { SceneMessages } from '../../../../thread-manager/ThreadMessages';
+import { SceneMessages } from '../../../../shared/messages/ThreadMessages';
 import InventorySlotInterface from '../../../../main-thread/inventory/InventorySlotInterface';
 
 export default function placeBlock(block: any, activeItem: InventorySlotInterface) {

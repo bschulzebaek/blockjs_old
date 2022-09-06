@@ -1,6 +1,6 @@
-import AttributeInterface from '../../AttributeInterface';
-import createShaderProgram from '../../utility/create-program';
-import getShaderUniforms from '../../utility/get-uniforms';
+import ShaderAttributeInterface from '../ShaderAttributeInterface';
+import createShaderProgram from '../utility/create-program';
+import getShaderUniforms from '../utility/get-uniforms';
 import fss from './fss';
 import vss from './vss';
 import RenderObject from '../../RenderObject';
@@ -12,7 +12,7 @@ export default class ItemDropShader {
 
     private context: WebGL2RenderingContext;
     private program: WebGLProgram;
-    private uniforms: Record<string, AttributeInterface>;
+    private uniforms: Record<string, ShaderAttributeInterface>;
 
     constructor(context: WebGL2RenderingContext) {
         this.context = context;

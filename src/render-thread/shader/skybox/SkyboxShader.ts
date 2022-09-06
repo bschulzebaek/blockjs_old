@@ -1,8 +1,7 @@
-import AttributeInterface from '../../AttributeInterface';
-// import ShaderInterface from '../../ShaderInterface';
-import createCubemap from '../../utility/create-cubemap';
-import createShaderProgram from '../../utility/create-program';
-import getShaderUniforms from '../../utility/get-uniforms';
+import ShaderAttributeInterface from '../ShaderAttributeInterface';
+import createCubemap from '../utility/create-cubemap';
+import createShaderProgram from '../utility/create-program';
+import getShaderUniforms from '../utility/get-uniforms';
 import fss from './fss';
 import vss from './vss';
 import type RenderObject from '../../RenderObject';
@@ -12,7 +11,7 @@ export default class SkyboxShader {
 
     private readonly context: WebGL2RenderingContext;
     private readonly program: WebGLProgram;
-    private readonly uniforms: Record<string, AttributeInterface>;
+    private readonly uniforms: Record<string, ShaderAttributeInterface>;
     private readonly texture: WebGLTexture;
 
     constructor(context: WebGL2RenderingContext) {

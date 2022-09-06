@@ -1,9 +1,7 @@
-import ChunkModel, { ChunkModelType } from './model/ChunkModel';
 import BlockInterface from './BlockInterface';
 import BlockID from '../../data/block-id';
-import { ChunkFaces } from '../../data/chunk-faces';
-import ModelInterface from '../../scene-thread/model/ModelInterface';
 import StoreClass from '../../shared/storage/StoreClass';
+import { ChunkFaces } from '../../data/chunk-faces';
 
 export interface ChunkRawInterface {
     id: string;
@@ -24,13 +22,11 @@ export default class Chunk extends StoreClass {
     static LENGTH = 16;
     static HEIGHT = 64;
 
-    private id: string;
-    private blocks: Map<string, BlockInterface>;
-    private worldX: number;
-    private worldZ: number;
-
-    private solidModel!: ModelInterface;
-    private glassModel!: ModelInterface;
+    private readonly id: string;
+    private readonly blocks: Map<string, BlockInterface>;
+    private readonly worldX: number;
+    private readonly worldZ: number;
+    private readonly changedBlockIDs: Set<BlockID> = new Set();
 
     constructor(chunkX: number, chunkZ: number, blocks = Chunk.getEmptyBlocks()) {
         super(Chunk.STORAGE_IDENTIFIER, Chunk.STORAGE_FIELDS);
@@ -39,6 +35,10 @@ export default class Chunk extends StoreClass {
         this.blocks = blocks;
         this.worldX = chunkX * Chunk.WIDTH;
         this.worldZ = chunkZ * Chunk.LENGTH;
+    }
+
+    public getChangedBlockIDs() {
+        return this.changedBlockIDs;
     }
 
     public getX() {
@@ -63,17 +63,12 @@ export default class Chunk extends StoreClass {
         return block ? block.id : BlockID.AIR;
     }
 
-    public setBlockId(x: number, y: number, z: number, newId: BlockID) {
-        const position = Chunk.getBlockPosition(x, y, z),
-              currentBlock = this.blocks.get(position) ?? { id: BlockID.AIR };
+    public setBlockId(x: number, y: number, z: number, id: BlockID) {
+        const position = Chunk.getBlockPosition(x, y, z);
 
-        const newBlock = {
-            id: newId,
-        };
+        this.blocks.set(position, { id });
 
-        this.blocks.set(position, newBlock);
-
-        this.updateModel(newBlock.id, currentBlock.id);
+        this.changedBlockIDs.add(id);
     }
 
     public getFacingBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {
@@ -99,38 +94,6 @@ export default class Chunk extends StoreClass {
         facing.push(this.getBlockId(x, y, z + 1));
 
         return facing;
-    }
-
-    public isOutOfBounds(x: number, y: number, z: number): boolean {
-        return (
-            x < 0 ||
-            x > Chunk.WIDTH - 1 ||
-            y < 0 ||
-            y > Chunk.HEIGHT - 1 ||
-            z < 0 ||
-            z > Chunk.LENGTH - 1
-        );
-    }
-
-    public getGlassModel(): ModelInterface {
-        return this.glassModel;
-    }
-
-    public getSolidModel(): ModelInterface {
-        return this.solidModel;
-    }
-
-    public buildModel() {
-        this.rebuildSolidModel();
-        this.rebuildGlassModel();
-    }
-
-    private rebuildSolidModel() {
-        this.solidModel = ChunkModel.create(this, ChunkModelType.SOLID);
-    }
-
-    private rebuildGlassModel() {
-        this.glassModel = ChunkModel.create(this, ChunkModelType.GLASS);
     }
 
     static createFromRaw(raw: ChunkRawInterface) {
@@ -162,20 +125,6 @@ export default class Chunk extends StoreClass {
 
     static getEmptyBlocks(): Map<string, BlockInterface> {
         return new Map();
-    }
-
-    // @ts-ignore
-    private updateModel(newId: BlockID, previousId: BlockID) {
-        // ToDo: Get shader of both ids and rebuild accordingly
-
-        if (newId === BlockID.GLASS) {
-            this.rebuildGlassModel();
-        } if (newId === BlockID.AIR) {
-            this.rebuildGlassModel();
-            this.rebuildSolidModel();
-        } else {
-            this.rebuildSolidModel();
-        }
     }
 
     static getBlockPosition(x: number, y: number, z: number) {

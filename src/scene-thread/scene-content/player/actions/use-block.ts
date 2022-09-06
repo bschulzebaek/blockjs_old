@@ -1,5 +1,5 @@
 import BlockID from '../../../../data/block-id';
-import { SceneMessages } from '../../../../thread-manager/ThreadMessages';
+import { SceneMessages } from '../../../../shared/messages/ThreadMessages';
 import { Views } from '../../../../data/views';
 
 export default function useBlock(block: any) {

@@ -1,5 +1,5 @@
 export default class Loop {
-    private loopFn: (delta: number) => void;
+    private readonly loopFn: (delta: number) => void;
     private paused = true;
 
     constructor(loopFn: (delta: number) => void) {

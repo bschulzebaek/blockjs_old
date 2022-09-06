@@ -103,6 +103,13 @@ export default class Entity extends StoreClass {
         );
     }
 
+    public canFall() {
+        const world = this.getWorld(),
+            position = this.getPosition();
+
+        return (world.getBlockId(position.x, position.y -1, position.z) <= 0);
+    }
+
     public getRaw() {
         const { position, rotation } = this.transform;
 

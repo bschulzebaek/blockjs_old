@@ -1,7 +1,9 @@
-import ShaderRegistry from './ShaderRegistry';
+import ShaderRegistry from './shader/ShaderRegistry';
 import Loop from '../shared/utility/Loop';
 import RenderObject from './RenderObject';
 import prepareCanvas from './helper/prepare-canvas';
+import './subscriber';
+import syncChunk from './render-object/sync-chunk';
 
 interface ChunkRenderObject {
     glass: RenderObject | null;
@@ -9,20 +11,29 @@ interface ChunkRenderObject {
 }
 
 export default class Renderer {
-    private loop = new Loop(this.render.bind(this));
+    static FPS_THRESHOLD = 59.5;
 
+    private readonly loop = new Loop(this.render.bind(this));
     private readonly context: WebGL2RenderingContext;
+    private readonly shaderRegistry = new ShaderRegistry();
+
     private projection: Float32Array = new Float32Array();
     private view: Float32Array = new Float32Array();
     private sceneObjects: RenderObject[] = [];
     private worldObjects: Record<string, ChunkRenderObject> = {};
 
-    private shaderRegistry = new ShaderRegistry();
-
     constructor(canvas: OffscreenCanvas) {
         prepareCanvas(canvas);
         this.context = canvas.getContext('webgl2')!;
         this.shaderRegistry.compileShaders(this.context);
+    }
+
+    public getContext() {
+        return this.context;
+    }
+
+    public getWorldObjects() {
+        return this.worldObjects;
     }
 
     public start() {
@@ -36,16 +47,14 @@ export default class Renderer {
     private render(delta: number): void {
         const { projection, view } = this;
 
+        const glassShader = this.shaderRegistry.get('chunk-glass'),
+              solidShader = this.shaderRegistry.get('chunk-solid');
+
         Object.values(this.worldObjects).forEach((cro) => {
             const { glass, solid } = cro;
 
-            if (glass) {
-                this.shaderRegistry.get(glass.shader).run(glass, projection, view);
-            }
-
-            if (solid) {
-                this.shaderRegistry.get(solid.shader).run(solid, projection, view);
-            }
+            glassShader.run(glass, projection, view);
+            solidShader.run(solid, projection, view);
         })
 
         this.sceneObjects.forEach((ro) => {
@@ -62,30 +71,23 @@ export default class Renderer {
         this.sceneObjects = data.objects.map((obj: any) => new RenderObject(this.context, obj));
     }
 
-    public syncWorld(data: any) {
-        data.remove.forEach((chunkId: string) => {
+    public syncChunk(data: any) {
+        syncChunk(data);
+    }
+
+    public removeChunks(chunkIds: string[]) {
+        chunkIds.forEach((chunkId) => {
             if (this.worldObjects[chunkId]) {
                 delete this.worldObjects[chunkId];
             }
-        });
-
-        const { context } = this,
-            newChunks = Object.entries(data.add);
-
-        newChunks.forEach(([ id, chunkData ]: [ id: string, chunkData: any ]) => {
-            if (!this.worldObjects[id]) {
-                this.worldObjects[id] = { solid: null, glass: null };
-            }
-
-            this.worldObjects[id].glass = new RenderObject(context, chunkData.glass);
-            this.worldObjects[id].solid = new RenderObject(context, chunkData.solid);
         });
     }
 
     private logFps(delta: number) {
         const fps = parseFloat((1 / delta).toFixed(1));
 
-        if (fps < 59.5) {
+        // @ts-ignore
+        if (fps < FPS_THRESHOLD && self.__DEBUG__) {
             console.warn('FPS: ' + fps);
         }
     }

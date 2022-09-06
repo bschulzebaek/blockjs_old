@@ -59,7 +59,7 @@ class SceneContainer {
             throw new Error('[SceneContainer] worldPort undefined!');
         }
 
-        return this.worldPort;
+        return this.worldPort!;
     }
 
     public getEntityService() {
@@ -95,12 +95,6 @@ class SceneContainer {
         }
 
         return this.scene;
-    }
-
-    public async discard() {
-        await this.entityService?.save();
-        console.log('[SceneThread:discard]');
-        self.close();
     }
 }
 

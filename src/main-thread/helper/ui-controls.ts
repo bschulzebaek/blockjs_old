@@ -1,4 +1,4 @@
-import router from '../../user-interface/router';
+import router from '../user-interface/router';
 import StateMachine from '../StateMachine';
 import { Views } from '../../data/views';
 

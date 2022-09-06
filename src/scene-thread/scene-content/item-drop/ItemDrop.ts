@@ -7,7 +7,7 @@ import SceneContainer from '../../SceneContainer';
 import ItemDropModel from './model/ItemDropModel';
 import type Entity from '../../entity/Entity';
 import { distance } from '../../../shared/math';
-import { SceneMessages } from '../../../thread-manager/ThreadMessages';
+import { SceneMessages } from '../../../shared/messages/ThreadMessages';
 
 export default class ItemDrop implements SceneObjectInterface {
     static SHADER_NAME = 'item-drop';
@@ -16,15 +16,15 @@ export default class ItemDrop implements SceneObjectInterface {
 
     private id = generateUUID();
 
-    public model: Model;
-    private player: Entity;
     private world: SceneWorld;
+    private player: Entity;
+    public model: Model;
 
     // @ts-ignore
-    private itemId: BlockID;
-    private x: number;
-    private y: number;
-    private z: number;
+    private readonly itemId: BlockID;
+    private readonly x: number;
+    private readonly y: number;
+    private readonly z: number;
 
     constructor(itemId: BlockID, x: number, y: number, z: number) {
         this.itemId = itemId;

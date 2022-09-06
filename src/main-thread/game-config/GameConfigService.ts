@@ -9,8 +9,8 @@ import createDefaultStorage from '../../shared/storage/default-storage';
 export default class GameConfigService  {
     static DEFAULT_NAME = 'New World';
 
-    private rawConfig: RawGameConfigInterface;
-    private repository: GameConfigRepository;
+    private readonly rawConfig: RawGameConfigInterface;
+    private readonly repository: GameConfigRepository;
     private config?: GameConfig;
 
     constructor(rawConfig: RawGameConfigInterface) {

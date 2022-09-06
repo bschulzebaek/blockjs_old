@@ -2,13 +2,24 @@ import ChunkRepository from './chunk/ChunkRepository';
 import StorageAdapter from '../shared/storage/StorageAdapter';
 import World from './World';
 import GameConfig from '../main-thread/game-config/GameConfig';
+import MissingContainerPropertyError from '../shared/exceptions/MissingContainerPropertyError';
+import WorldService from './WorldService';
 
 class WorldContainer {
+    private readonly worldService: WorldService;
     private config?: GameConfig;
     private renderPort?: MessagePort;
     private scenePort?: MessagePort;
     private chunkRepository?: ChunkRepository;
     private world = new World();
+
+    constructor() {
+        this.worldService = new WorldService();
+    }
+
+    public getWorldService() {
+        return this.worldService;
+    }
 
     public setConfig(config: any) {
         this.config = new GameConfig(config.id, config.name, config.seed, config.isNew);
@@ -21,7 +32,7 @@ class WorldContainer {
 
     public getRenderPort() {
         if (!this.renderPort) {
-            throw new Error('[WorldContainer] renderPort undefined!');
+            throw new MissingContainerPropertyError('WorldContainer', 'renderPort');
         }
 
         return this.renderPort!;
@@ -32,8 +43,8 @@ class WorldContainer {
     }
 
     public getScenePort() {
-        if (!this.renderPort) {
-            throw new Error('[WorldContainer] scenePort undefined!');
+        if (!this.scenePort) {
+            throw new MissingContainerPropertyError('WorldContainer', 'scenePort');
         }
 
         return this.scenePort!;
@@ -41,7 +52,7 @@ class WorldContainer {
 
     public getChunkRepository() {
         if (!this.chunkRepository) {
-            throw new Error('[WorldContainer] chunkRepository undefined!');
+            throw new MissingContainerPropertyError('WorldContainer', 'chunkRepository');
         }
 
         return this.chunkRepository;
@@ -49,7 +60,7 @@ class WorldContainer {
 
     public getConfig() {
         if (!this.config) {
-            throw new Error('[WorldContainer] config undefined!');
+            throw new MissingContainerPropertyError('WorldContainer', 'config');
         }
 
         return this.config;

@@ -1,14 +1,14 @@
-import AttributeInterface from '../../AttributeInterface';
-import createShaderProgram from '../../utility/create-program';
-import createTexture from '../../utility/create-texture';
-import getShaderUniforms from '../../utility/get-uniforms';
+import ShaderAttributeInterface from '../ShaderAttributeInterface';
+import createShaderProgram from '../utility/create-program';
+import createTexture from '../utility/create-texture';
+import getShaderUniforms from '../utility/get-uniforms';
 import RenderObject from '../../RenderObject';
 
 export default class BaseShader {
     static TEXTURE = 'textures.png';
 
     protected context: WebGL2RenderingContext;
-    private uniforms: Record<string, AttributeInterface>;
+    private uniforms: Record<string, ShaderAttributeInterface>;
     private readonly texture: WebGLTexture;
     private readonly program: WebGLProgram;
 

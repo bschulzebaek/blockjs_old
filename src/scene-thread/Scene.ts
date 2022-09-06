@@ -1,7 +1,7 @@
 import SceneObjectInterface from './SceneObjectInterface';
 import Camera from './scene-content/camera/Camera';
 import Skybox from './scene-content/skybox/Skybox';
-import { RenderMessages } from '../thread-manager/ThreadMessages';
+import { RenderMessages } from '../shared/messages/ThreadMessages';
 import Loop from '../shared/utility/Loop';
 import { Vector3 } from '../shared/math';
 import SceneContainer from './SceneContainer';
@@ -82,11 +82,11 @@ export default class Scene {
     }
 
     public async discard(): Promise<void> {
-        const sceneObjcets = Array.from(this.sceneObjects.values());
+        const sceneObjects = Array.from(this.sceneObjects.values());
 
-        Promise.allSettled(sceneObjcets.map((sceneObjcet) => {
-            if (sceneObjcet.discard) {
-                return sceneObjcet.discard();
+        Promise.allSettled(sceneObjects.map((sceneObject) => {
+            if (sceneObject.discard) {
+                return sceneObject.discard();
             }
 
             return undefined;

@@ -1,7 +1,7 @@
 import SceneContainer from '../../../SceneContainer';
 import BlockID from '../../../../data/block-id';
 import BlockMeta from '../../../../data/block-meta';
-import { SceneMessages } from '../../../../thread-manager/ThreadMessages';
+import { SceneMessages } from '../../../../shared/messages/ThreadMessages';
 // import ItemDrop from '../../item-drop/ItemDrop';
 
 export default function destroyBlock(block: any) {
@@ -26,7 +26,6 @@ export default function destroyBlock(block: any) {
         }
     });
 
-    console.warn('ToDo: ItemDrop shader causes lags!');
     // new ItemDrop(blockId, x, y, z);
 
     // publish(new BlockDestroyedEvent(blockId, new Vector3(x, y, z)));

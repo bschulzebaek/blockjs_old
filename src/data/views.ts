@@ -21,7 +21,7 @@ enum Paths {
     MAIN_MENU_NEW = '/new',
     MAIN_MENU_SETTINGS = '/settings',
     GAME = '/game',
-    GAME_DEFAULT = '',
+    GAME_DEFAULT = '/game/default',
     GAME_PAUSE = '/game/pause',
     GAME_INVENTORY = '/game/inventory',
     GAME_CHEST = '/game/chest/:id',

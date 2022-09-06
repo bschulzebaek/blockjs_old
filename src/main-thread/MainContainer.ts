@@ -1,32 +1,48 @@
-import InventoryService from './inventory/InventoryService';
+import { type Router } from 'vue-router';
+import router from './user-interface/router';
+import { store, ApplicationStoreInterface } from './user-interface/store';
+import type InventoryService from './inventory/InventoryService';
 import type GameConfig from './game-config/GameConfig';
-import { store } from '../user-interface/store';
+import MissingContainerPropertyError from '../shared/exceptions/MissingContainerPropertyError';
 
 class MainContainer {
+    static NAME = 'Main';
+
+    private readonly store: ApplicationStoreInterface;
+    private readonly router: Router;
     private config?: GameConfig;
     private inventoryService?: InventoryService;
 
-    public async create(config: GameConfig) {
-        this.config = config;
-        this.inventoryService = new InventoryService(config.getId());
-
-        if (config.getIsNew()) {
-            await this.inventoryService.new();
-        } else {
-            await this.inventoryService.loadPlayerInventory();
-        }
-
-        store.inventory = await this.inventoryService.getPlayerInventory();
+    constructor() {
+        this.store = store;
+        this.router = router;
     }
 
-    public discard() {
+    public setConfig(config: GameConfig) {
+        this.config = config;
+    }
+
+    public setInventoryService(inventoryService: InventoryService) {
+        this.inventoryService = inventoryService;
+    }
+
+    public reset() {
         delete this.config;
         delete this.inventoryService;
+        this.store.inventory = null;
+    }
+
+    public getStore() {
+        return this.store;
+    }
+
+    public getRouter() {
+        return this.router;
     }
 
     public getConfig() {
         if (!this.config) {
-            throw new Error('[MainContainer] config undefined!');
+            throw new MissingContainerPropertyError(MainContainer.NAME, 'config');
         }
 
         return this.config;
@@ -34,10 +50,18 @@ class MainContainer {
 
     public getInventoryService() {
         if (!this.inventoryService) {
-            throw new Error('[MainContainer] inventoryService undefined!');
+            throw new MissingContainerPropertyError(MainContainer.NAME, 'inventoryService');
         }
 
         return this.inventoryService;
+    }
+
+    public getCanvas() {
+        if (!this.store.canvas) {
+            throw new MissingContainerPropertyError(MainContainer.NAME, 'store.canvas');
+        }
+
+        return this.store.canvas;
     }
 }
 
