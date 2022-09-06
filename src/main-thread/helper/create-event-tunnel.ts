@@ -4,28 +4,22 @@ import StateMachine from '../StateMachine';
 import MainContainer from '../MainContainer';
 import { Views } from '../../data/views';
 
-let threads: ThreadNames[] = [];
-
-function createEventTunnel(threadNames: ThreadNames[]) {
+function createSceneEventTunnel() {
     addEventListener('keypress', passKeyboardEvent);
     addEventListener('keydown', passKeyboardEvent);
     addEventListener('keyup', passKeyboardEvent);
     addEventListener('click', passPointerEvent);
     addEventListener('contextmenu', passPointerEvent);
     addEventListener('mousemove', passMouseEvent);
-
-    threads = threadNames;
 }
 
-function discardEventTunnel() {
+function discardSceneEventTunnel() {
     removeEventListener('keypress', passKeyboardEvent);
     removeEventListener('keydown', passKeyboardEvent);
     removeEventListener('keyup', passKeyboardEvent);
     removeEventListener('click', passPointerEvent);
     removeEventListener('contextmenu', passPointerEvent);
     removeEventListener('mousemove', passMouseEvent);
-
-    threads = [];
 }
 
 function passKeyboardEvent(event: KeyboardEvent) {
@@ -77,17 +71,13 @@ function passMouseEvent(event: MouseEvent) {
 }
 
 function sendInputEvent(eventDetail: object) {
-
-
-    threads.forEach((thread) => {
-        ThreadManager.send(thread, GeneralMessages.INPUT_EVENT, {
-            ...eventDetail,
-            activeItem: MainContainer.getInventoryService().getPlayerInventory().getActiveItem(),
-        });
+    ThreadManager.send(ThreadNames.SCENE, GeneralMessages.INPUT_EVENT, {
+        ...eventDetail,
+        activeItem: MainContainer.getInventoryService().getPlayerInventory().getActiveItem(),
     });
 }
 
 export {
-    createEventTunnel,
-    discardEventTunnel,
+    createSceneEventTunnel,
+    discardSceneEventTunnel,
 }

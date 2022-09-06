@@ -12,6 +12,8 @@ import StateMachine from '../StateMachine';
 import MainContainer from '../MainContainer';
 import { Views } from '../../data/views';
 
+import './helper/prevent-defaults';
+
 const app = createApp(RootComponent)
     .use(router)
     .component('mc-button', McButton)

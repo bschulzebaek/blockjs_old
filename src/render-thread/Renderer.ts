@@ -87,7 +87,7 @@ export default class Renderer {
         const fps = parseFloat((1 / delta).toFixed(1));
 
         // @ts-ignore
-        if (fps < FPS_THRESHOLD && self.__DEBUG__) {
+        if (self.__DEBUG__ && fps < Renderer.FPS_THRESHOLD ) {
             console.warn('FPS: ' + fps);
         }
     }

@@ -1,9 +1,9 @@
 import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 import MainContainer from './MainContainer';
-import ThreadManager, { ThreadNames } from './game-instance/ThreadManager';
+import ThreadManager from './game-instance/ThreadManager';
 import { BroadcastMessages } from '../shared/messages/ThreadMessages';
 import { createInstance, discardInstance } from './game-instance';
-import { createEventTunnel, discardEventTunnel } from './helper/create-event-tunnel';
+import { createSceneEventTunnel, discardSceneEventTunnel } from './helper/create-event-tunnel';
 import * as UIControls from './helper/ui-controls';
 import Fullscreen from './helper/Fullscreen';
 import { Views } from '../data/views';
@@ -77,7 +77,7 @@ class StateMachine {
     }
 
     public on_InstanceReady() {
-        createEventTunnel([ ThreadNames.SCENE ]);
+        createSceneEventTunnel();
         this.pushTransition(Views.GAME_DEFAULT);
         ThreadManager.broadcast(BroadcastMessages.START);
     }
@@ -91,7 +91,7 @@ class StateMachine {
     public async on_Teardown() {
         Fullscreen.exit();
         this.unregisterInGameEvents();
-        discardEventTunnel();
+        discardSceneEventTunnel();
         await discardInstance();
 
         this.pushTransition(Views.MAIN_MENU);
@@ -120,7 +120,7 @@ class StateMachine {
         this.pushTransition(Views.GAME_PAUSE);
     }
 
-    private pushTransition(name: Views, query = {}, params = {}) {
+    public pushTransition(name: Views, query = {}, params = {}) {
         this.router.push({ name, query, params })
     }
 

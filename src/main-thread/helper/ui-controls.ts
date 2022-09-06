@@ -1,4 +1,3 @@
-import router from '../user-interface/router';
 import StateMachine from '../StateMachine';
 import { Views } from '../../data/views';
 
@@ -40,17 +39,17 @@ function onKeyUp(event: KeyboardEvent) {
 
 function onKeyPause() {
     if (StateMachine.isRoute(Views.GAME_PAUSE) || StateMachine.isRoute(Views.GAME_CHEST) || StateMachine.isRoute(Views.GAME_CRAFTING_TABLE) || StateMachine.isRoute(Views.GAME_INVENTORY)) {
-        router.push({ name: Views.GAME_DEFAULT });
+        StateMachine.pushTransition(Views.GAME_DEFAULT);
     } else {
-        router.push({ name: Views.GAME_PAUSE });
+        StateMachine.pushTransition(Views.GAME_PAUSE);
     }
 }
 
 function onKeyInventory() {
     if (StateMachine.isRoute(Views.GAME_CHEST) || StateMachine.isRoute(Views.GAME_CRAFTING_TABLE) || StateMachine.isRoute(Views.GAME_INVENTORY)) {
-        router.push({ name: Views.GAME_DEFAULT });
+        StateMachine.pushTransition(Views.GAME_DEFAULT);
     } else if (StateMachine.isRoute(Views.GAME_DEFAULT)) {
-        router.push({ name: Views.GAME_INVENTORY });
+        StateMachine.pushTransition(Views.GAME_INVENTORY);
     }
 }
 
