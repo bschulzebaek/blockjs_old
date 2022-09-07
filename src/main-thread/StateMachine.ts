@@ -65,9 +65,9 @@ class StateMachine {
         document.exitPointerLock();
     }
 
-    private to_Default(next: NavigationGuardNext) {
+    private async to_Default(next: NavigationGuardNext) {
         document.body.requestPointerLock();
-        Fullscreen.enter();
+        await Fullscreen.enter();
 
         next();
     }
@@ -82,8 +82,8 @@ class StateMachine {
         ThreadManager.broadcast(BroadcastMessages.START);
     }
 
-    public on_Setup() {
-        Fullscreen.enter();
+    public async on_Setup() {
+        await Fullscreen.enter();
         createInstance();
         this.registerInGameEvents();
     }

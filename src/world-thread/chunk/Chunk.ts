@@ -27,6 +27,7 @@ export default class Chunk extends StoreClass {
     private readonly worldX: number;
     private readonly worldZ: number;
     private readonly changedBlockIDs: Set<BlockID> = new Set();
+    private changed = false;
 
     constructor(chunkX: number, chunkZ: number, blocks = Chunk.getEmptyBlocks()) {
         super(Chunk.STORAGE_IDENTIFIER, Chunk.STORAGE_FIELDS);
@@ -57,6 +58,10 @@ export default class Chunk extends StoreClass {
         return this.blocks;
     }
 
+    public getChanged() {
+        return this.changed;
+    }
+
     public getBlockId(x: number, y: number, z: number) {
         const block = this.blocks.get(Chunk.getBlockPosition(x, y, z));
 
@@ -69,6 +74,7 @@ export default class Chunk extends StoreClass {
         this.blocks.set(position, { id });
 
         this.changedBlockIDs.add(id);
+        this.changed = true;
     }
 
     public getFacingBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {

@@ -1,5 +1,5 @@
-import vss from './vss';
-import fss from './fss';
+import vss from './vss.glsl?raw';
+import fss from './fss.glsl?raw';
 import BaseShader from '../BaseShader';
 
 export default class GlassShader extends BaseShader {
@@ -8,12 +8,15 @@ export default class GlassShader extends BaseShader {
         super(context, vss, fss);
     }
 
-    protected preRender() {
+    protected childSetup() {
         const { context } = this;
 
-        context.enable(context.DEPTH_TEST);
-        context.enable(context.BLEND);
         context.disable(context.CULL_FACE);
-        context.blendFunc(context.ONE, context.ONE_MINUS_SRC_ALPHA);
+    }
+
+    protected childCleanup() {
+        const { context } = this;
+
+        context.enable(context.CULL_FACE);
     }
 }

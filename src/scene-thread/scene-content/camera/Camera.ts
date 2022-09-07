@@ -1,4 +1,7 @@
 import { Transform, degree2Radians, Matrix4, Ray, Vector3 } from '../../../shared/math';
+import Message from '../../../shared/utility/Message';
+import { RenderMessages } from '../../../shared/messages/ThreadMessages';
+import SceneContainer from '../../SceneContainer';
 
 export default class Camera  {
     static SCENE_ID = 'camera';
@@ -86,7 +89,22 @@ export default class Camera  {
         this.transform = transform;
     }
 
-    public update(): void {
+    public update = (): void => {
         this.updateViewMatrix();
+        this.syncToRenderer();
+    }
+
+    private syncToRenderer() {
+        const data = {
+            projection: new Float32Array(this.projectionMatrix),
+            view: new Float32Array(this.view),
+        };
+
+        Message.send(
+            RenderMessages.SYNC_CAMERA,
+            data,
+            SceneContainer.getRenderPort(),
+            [ data.view.buffer, data.projection.buffer ]
+        );
     }
 }

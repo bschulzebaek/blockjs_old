@@ -2,7 +2,7 @@ import SceneContainer from '../../../SceneContainer';
 import BlockID from '../../../../data/block-id';
 import BlockMeta from '../../../../data/block-meta';
 import { SceneMessages } from '../../../../shared/messages/ThreadMessages';
-// import ItemDrop from '../../item-drop/ItemDrop';
+import ItemDrop from '../../item-drop/ItemDrop';
 
 export default function destroyBlock(block: any) {
     const x = block.x,
@@ -26,7 +26,9 @@ export default function destroyBlock(block: any) {
         }
     });
 
-    // new ItemDrop(blockId, x, y, z);
+    new ItemDrop(blockId, x, y, z);
 
-    // publish(new BlockDestroyedEvent(blockId, new Vector3(x, y, z)));
+    if (blockId === BlockID.CHEST) {
+        SceneContainer.getInventoryService().deleteInventory(`${x}:${y}:${z}`);
+    }
 }

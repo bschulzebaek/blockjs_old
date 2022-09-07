@@ -292,4 +292,8 @@ export default class PlayerController {
 
         this.entity.getTransform().getRotation().set(rotation.x, rotation.y, rotation.z);
     }
+
+    public updateRO() {
+
+    }
 }

@@ -11,7 +11,7 @@ import unloadChunks from './world-access/unload-chunks';
 import getInitialPosition from './utility/get-player-offset';
 
 export default class WorldService {
-    static VIEW_DISTANCE = 3;
+    static VIEW_DISTANCE = 5;
 
     public async create() {
         await this.createWorld(await getInitialPosition());

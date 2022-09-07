@@ -48,6 +48,15 @@ export default class MessageHandler {
             case RenderMessages.SYNC_SCENE:
                 RenderContainer.getRenderer().syncSceneObjects(event.data.detail);
                 break;
+            case RenderMessages.DELETE_SCENE_OBJECTS:
+                RenderContainer.getRenderer().removeSceneObjects(event.data.detail);
+                break;
+            case RenderMessages.SYNC_SCENE_OBJECT:
+                RenderContainer.getRenderer().syncSceneObject(event.data.detail);
+                break;
+            case RenderMessages.SYNC_CAMERA:
+                RenderContainer.getRenderer().syncCamera(event.data.detail);
+                break;
             default:
                 throw new UnhandledMessageError(event.data.action);
         }

@@ -1,47 +1,49 @@
-import ShaderAttributeInterface from '../ShaderAttributeInterface';
-import createShaderProgram from '../utility/create-program';
 import createTexture from '../utility/create-texture';
-import getShaderUniforms from '../utility/get-uniforms';
 import RenderObject from '../../RenderObject';
+import Shader from '../Shader';
 
-export default class BaseShader {
+export default class BaseShader extends Shader {
     static TEXTURE = 'textures.png';
 
-    protected context: WebGL2RenderingContext;
-    private uniforms: Record<string, ShaderAttributeInterface>;
     private readonly texture: WebGLTexture;
-    private readonly program: WebGLProgram;
 
     constructor(context: WebGL2RenderingContext, vss: string, fss: string) {
-        this.context = context;
-        this.program = createShaderProgram(context, vss, fss);
-        this.uniforms = getShaderUniforms(context, this.program);
+        super(context, vss, fss);
+
         this.texture = createTexture(context, BaseShader.TEXTURE);
-
-        this.context.useProgram(this.program);
-        this.context.useProgram(null);
     }
 
-    public run(ro: RenderObject, projection: Float32Array, view: Float32Array): void {
-        this.context.useProgram(this.program);
-        this.context.uniformMatrix4fv(this.uniforms.proj.loc, false, projection);
-        this.context.uniformMatrix4fv(this.uniforms.camera.loc, false, view);
-        this.context.activeTexture(this.context.TEXTURE0);
-        this.context.bindTexture(this.context.TEXTURE_2D, this.texture);
-        this.context.uniform1i(this.uniforms.tex0.loc, 0);
+    protected setup(projection: Float32Array, view: Float32Array) {
+        const { context, uniforms, texture } = this;
 
-        this.preRender();
-        this.render(ro);
+        context.uniformMatrix4fv(uniforms.proj.loc, false, projection);
+        context.uniformMatrix4fv(uniforms.camera.loc, false, view);
+        context.activeTexture(context.TEXTURE0);
+        context.bindTexture(context.TEXTURE_2D, texture);
+        context.uniform1i(uniforms.tex0.loc, 0);
+
+        this.childSetup();
     }
 
-    private render(ro: RenderObject): void {
+    protected drawBatch(batch: RenderObject[]): void {
         const { context } = this;
-        context.uniformMatrix4fv(this.uniforms.view.loc, false, ro.view);
-        context.bindVertexArray(ro.vao);
-        context.drawElements(context.TRIANGLES, ro.indexCount, context.UNSIGNED_SHORT, 0);
+
+        batch.forEach((ro) => {
+            context.uniformMatrix4fv(this.uniforms.view.loc, false, ro.view);
+            context.bindVertexArray(ro.vao);
+            context.drawElements(context.TRIANGLES, ro.indexCount, context.UNSIGNED_SHORT, 0);
+        });
     }
 
-    protected preRender() {
+    protected cleanup() {
+        this.childCleanup();
+    }
+
+    protected childSetup() {
+        throw new Error('Must be implemented!');
+    }
+
+    protected childCleanup() {
         throw new Error('Must be implemented!');
     }
 }

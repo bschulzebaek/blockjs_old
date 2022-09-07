@@ -1,45 +1,38 @@
-import ShaderAttributeInterface from '../ShaderAttributeInterface';
-import createShaderProgram from '../utility/create-program';
-import getShaderUniforms from '../utility/get-uniforms';
-import fss from './fss';
-import vss from './vss';
+import fss from './fss.glsl?raw';
+import vss from './vss.glsl?raw';
 import RenderObject from '../../RenderObject';
+import Shader from '../Shader';
 
-export default class CursorShader {
+export default class CursorShader extends Shader {
 
     static COLOR = [1.0, 1.0, 1.0, 0.3];
 
-    private context: WebGL2RenderingContext;
-    private program: WebGLProgram;
-    private uniforms: Record<string, ShaderAttributeInterface>;
-
     constructor(context: WebGL2RenderingContext) {
-        this.context = context;
-        this.program = createShaderProgram(context, vss, fss);
-        this.uniforms = getShaderUniforms(context, this.program);
-        this.context.useProgram(this.program);
+        super(context, vss, fss);
 
-        this.context.uniform4fv(this.uniforms['color'].loc, CursorShader.COLOR);
+        this.context.uniform4fv(this.uniforms.color.loc, CursorShader.COLOR);
     }
 
-    public run(ro: RenderObject, projection: Float32Array, view: Float32Array): void {
-        this.context.useProgram(this.program);
-        this.context.uniformMatrix4fv(this.uniforms['proj'].loc, false, projection);
-        this.context.uniformMatrix4fv(this.uniforms['camera'].loc, false, view);
-        this.context.uniformMatrix4fv(this.uniforms['view'].loc, false, ro.view);
+    protected setup(projection: Float32Array, view: Float32Array) {
+        const { context, uniforms } = this;
 
-        this.render(ro);
+        context.uniformMatrix4fv(uniforms.proj.loc, false, projection);
+        context.uniformMatrix4fv(uniforms.camera.loc, false, view);
+        context.enable(context.BLEND);
     }
 
-    public render(ro: RenderObject): void {
+
+    protected drawBatch(batch: RenderObject[]) {
         const { context } = this;
 
-        context.blendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
+        batch.forEach((ro) => {
+            context.uniformMatrix4fv(this.uniforms.view.loc, false, ro.view);
+            context.bindVertexArray(ro.vao);
+            context.drawElements(context.TRIANGLES, ro.indexCount, context.UNSIGNED_SHORT, 0);
+        });
+    }
 
-        context.bindVertexArray(ro.vao);
-        context.enable(context.BLEND);
-        context.enable(context.CULL_FACE);
-
-        context.drawElements(context.TRIANGLES, ro.indexCount, context.UNSIGNED_SHORT, 0);
+    protected cleanup() {
+        this.context.disable(this.context.BLEND);
     }
 }

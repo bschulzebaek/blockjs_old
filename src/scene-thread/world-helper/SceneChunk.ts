@@ -5,7 +5,7 @@ import BlockInterface from '../../world-thread/chunk/BlockInterface';
 export default class SceneChunk  {
     static WIDTH = 16;
     static LENGTH = 16;
-    static HEIGHT = 64;
+    static HEIGHT = 256;
 
     private readonly id: string;
     private readonly blocks: Map<string, BlockInterface>;

@@ -1,4 +1,4 @@
-const fss = `#version 300 es
+#version 300 es
 precision lowp float;
 
 uniform sampler2D tex0;
@@ -12,6 +12,3 @@ out vec4 col;
 void main() {
     col = texture(tex0, texCoord);
 }
-`;
-
-export default fss;

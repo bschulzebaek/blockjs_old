@@ -85,6 +85,10 @@ class SceneContainer {
         return this.config;
     }
 
+    public getCamera() {
+        return this.scene.getCamera();
+    }
+
     public getWorld() {
         return this.world;
     }

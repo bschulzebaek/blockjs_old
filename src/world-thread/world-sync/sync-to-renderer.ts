@@ -13,14 +13,10 @@ export default function syncToRenderer(newChunks: string[] = [], removeChunks: s
         WorldContainer.getRenderPort(),
     );
 
-    if (!newChunks.length) {
-        newChunks = WorldContainer.getWorld().getChunkIds();
-    }
-
-    sortChunksByDistance(newChunks).forEach(syncChunk);
+    sortChunks(newChunks).forEach(syncChunk);
 }
 
-function sortChunksByDistance(chunkIds: string[]) {
+function sortChunks(chunkIds: string[]) {
     let sorted: string[] = [];
 
     while (chunkIds.length) {
@@ -36,37 +32,46 @@ function sortChunksByDistance(chunkIds: string[]) {
 }
 
 function syncChunk(chunkId: string) {
-    const world            = WorldContainer.getWorld(),
-          chunk            = world.getChunkById(chunkId)!,
-          changedBlocks    = chunk.getChangedBlockIDs();
+    setTimeout(() => {
+        const world = WorldContainer.getWorld(),
+              chunk = world.getChunkById(chunkId)!;
 
-    if (changedBlocks.size || !registry[chunkId]) {
-        const solid = ChunkModel.create(chunk, ChunkModelType.SOLID),
-              glass = ChunkModel.create(chunk, ChunkModelType.GLASS);
+        if (!chunk) {
+            return;
+        }
 
-        registry[chunkId] = {
-            id: chunkId,
-        };
+        const changedBlocks = chunk.getChangedBlockIDs();
 
-        registry[chunkId].solid = {
-            shader: 'chunk-solid',
-            ...getModelData(solid),
-        };
+        if (changedBlocks.size || !registry[chunkId]) {
+            const solid = ChunkModel.create(chunk, ChunkModelType.SOLID),
+                glass = ChunkModel.create(chunk, ChunkModelType.GLASS);
+
+            registry[chunkId] = {
+                id: chunkId,
+            };
+
+            registry[chunkId].solid = {
+                id: chunkId,
+                shader: 'chunk-solid',
+                ...getModelData(solid),
+            };
 
 
-        registry[chunkId].glass = {
-            shader: 'chunk-glass',
-            ...getModelData(glass),
-        };
-    }
+            registry[chunkId].glass = {
+                id: chunkId,
+                shader: 'chunk-glass',
+                ...getModelData(glass),
+            };
+        }
 
-    changedBlocks.clear();
+        changedBlocks.clear();
 
-    Message.send(
-        RenderMessages.SYNC_CHUNK,
-        registry[chunkId],
-        WorldContainer.getRenderPort()
-    );
+        Message.send(
+            RenderMessages.SYNC_CHUNK,
+            registry[chunkId],
+            WorldContainer.getRenderPort()
+        );
+    });
 }
 
 function getModelData(model: ModelInterface) {

@@ -6,8 +6,16 @@ export default class SceneWorld {
 
     private readonly map: Map<string, SceneChunk> = new Map();
 
-    public setChunks(chunks: any[]) {
-        chunks.forEach(({ id, blocks }: { id: string, blocks: any }) => {
+    public setChunks = (chunks: { id: string, blocks: any, changed: boolean }[]) => {
+        chunks.forEach(this.setChunk);
+    }
+
+    public setChunk = ({ id, blocks, changed }: { id: string, blocks: any, changed: boolean }) => {
+        setTimeout(() => {
+            if (!changed && this.map.has(id)) {
+                return;
+            }
+
             const [x, z] = id.split(':');
 
             this.map.set(id, new SceneChunk(x, z, blocks));

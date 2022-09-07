@@ -3,12 +3,8 @@ import Loop from '../shared/utility/Loop';
 import RenderObject from './RenderObject';
 import prepareCanvas from './helper/prepare-canvas';
 import './subscriber';
-import syncChunk from './render-object/sync-chunk';
-
-interface ChunkRenderObject {
-    glass: RenderObject | null;
-    solid: RenderObject | null;
-}
+import RawRenderObjectInterface from './render-object/RawRenderObjectInterface';
+import groupByShader from './utility/group-by-shader';
 
 export default class Renderer {
     static FPS_THRESHOLD = 59.5;
@@ -19,8 +15,10 @@ export default class Renderer {
 
     private projection: Float32Array = new Float32Array();
     private view: Float32Array = new Float32Array();
-    private sceneObjects: RenderObject[] = [];
-    private worldObjects: Record<string, ChunkRenderObject> = {};
+
+    public renderObjects: Map<string, RenderObject> = new Map();
+    public chunkSolidObjects: Map<string, RenderObject> = new Map();
+    public chunkGlassObjects: Map<string, RenderObject> = new Map();
 
     constructor(canvas: OffscreenCanvas) {
         prepareCanvas(canvas);
@@ -30,10 +28,6 @@ export default class Renderer {
 
     public getContext() {
         return this.context;
-    }
-
-    public getWorldObjects() {
-        return this.worldObjects;
     }
 
     public start() {
@@ -47,39 +41,56 @@ export default class Renderer {
     private render(delta: number): void {
         const { projection, view } = this;
 
+        // ToDo: Set proj and view uniforms before render loop, not per shader execution!
+
         const glassShader = this.shaderRegistry.get('chunk-glass'),
-              solidShader = this.shaderRegistry.get('chunk-solid');
+            solidShader = this.shaderRegistry.get('chunk-solid');
 
-        Object.values(this.worldObjects).forEach((cro) => {
-            const { glass, solid } = cro;
+        solidShader.run(Array.from(this.chunkSolidObjects.values()), projection, view);
+        glassShader.run(Array.from(this.chunkGlassObjects.values()), projection, view);
 
-            glassShader.run(glass, projection, view);
-            solidShader.run(solid, projection, view);
-        })
-
-        this.sceneObjects.forEach((ro) => {
-            this.shaderRegistry.get(ro.shader).run(ro, projection, view);
+        groupByShader(this.renderObjects).forEach((ros, shader) => {
+            this.shaderRegistry.get(shader)!.run(ros, projection, view);
         });
 
         this.logFps(delta);
     }
 
-    public syncSceneObjects(data: any) {
+    public syncCamera(data: { projection: Float32Array, view: Float32Array }) {
         this.projection = data.projection;
         this.view = data.view;
+    }
 
-        this.sceneObjects = data.objects.map((obj: any) => new RenderObject(this.context, obj));
+    public syncSceneObjects(data: RawRenderObjectInterface[]) {
+        data.forEach(this.syncSceneObject);
+    }
+
+    public syncSceneObject = (data: RawRenderObjectInterface) => {
+        setTimeout(() => {
+            new RenderObject(this.context, data);
+        });
     }
 
     public syncChunk(data: any) {
-        syncChunk(data);
+        setTimeout(() => { new RenderObject(this.context, data.glass )});
+        setTimeout(() => { new RenderObject(this.context, data.solid )});
     }
 
     public removeChunks(chunkIds: string[]) {
         chunkIds.forEach((chunkId) => {
-            if (this.worldObjects[chunkId]) {
-                delete this.worldObjects[chunkId];
+            if (this.chunkSolidObjects.has(chunkId)) {
+                this.chunkSolidObjects.delete(chunkId);
             }
+
+            if (this.chunkGlassObjects.has(chunkId)) {
+                this.chunkGlassObjects.delete(chunkId);
+            }
+        });
+    }
+
+    public removeSceneObjects(ids: string[]) {
+        ids.forEach((id) => {
+            this.renderObjects.delete(id);
         });
     }
 
@@ -87,7 +98,7 @@ export default class Renderer {
         const fps = parseFloat((1 / delta).toFixed(1));
 
         // @ts-ignore
-        if (self.__DEBUG__ && fps < Renderer.FPS_THRESHOLD ) {
+        if (self.__DEBUG__ && fps < Renderer.FPS_THRESHOLD) {
             console.warn('FPS: ' + fps);
         }
     }

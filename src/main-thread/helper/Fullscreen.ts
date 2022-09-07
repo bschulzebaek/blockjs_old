@@ -4,7 +4,7 @@ export default class Fullscreen {
             return;
         }
 
-        document.body.requestFullscreen();
+        return document.body.requestFullscreen();
     }
 
     static exit() {
@@ -12,7 +12,7 @@ export default class Fullscreen {
             return;
         }
 
-        document.exitFullscreen();
+        return document.exitFullscreen();
     }
 
     static active() {

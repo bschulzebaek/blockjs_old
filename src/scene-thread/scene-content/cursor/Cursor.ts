@@ -1,21 +1,16 @@
 import SceneObjectInterface from '../../SceneObjectInterface';
 import Model from '../../model/Model';
-import CameraInterface from '../camera/CameraInterface';
 import CubeModel from '../../model/cube/CubeModel';
 import SceneContainer from '../../SceneContainer';
 import getBlockFromRay from '../../world-helper/get-block-from-ray';
+import { ShaderName } from '../../../render-thread/shader/ShaderRegistry';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
-    static SHADER = 'cursor';
+    static SHADER = ShaderName.CURSOR;
     static OFFSET = 0.5;
 
     public model?: Model;
-    private camera: CameraInterface;
-
-    constructor(camera: CameraInterface) {
-        this.camera = camera;
-    }
 
     public getId() {
         return Cursor.SCENE_ID;
@@ -39,15 +34,15 @@ export default class Cursor implements SceneObjectInterface {
             throw new Error('[Scene:Cursor] Missing required property "WorldService"!');
         }
 
-        const { model, camera } = this,
-              block = getBlockFromRay(camera.getTransform().getPosition(), camera.getRay().fromScreen().ray);
+        const camera = SceneContainer.getCamera();
+        const block = getBlockFromRay(camera.getTransform().getPosition(), camera.getRay().fromScreen().ray);
 
         if (!block || block.blockId < 1) {
             return this.remove();
         }
 
-        if (!model) {
-           this.createModel();
+        if (!this.model) {
+            this.createModel();
         }
 
         this.updatePosition(block);

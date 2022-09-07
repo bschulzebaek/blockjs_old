@@ -95,7 +95,7 @@ export default class Entity extends StoreClass {
 
     public isBlocked() {
         const world = this.getWorld(),
-              position = this.getPosition();
+            position = this.getPosition();
 
         return (
             world.getBlockId(position.x, position.y, position.z) > 0 ||
@@ -107,7 +107,7 @@ export default class Entity extends StoreClass {
         const world = this.getWorld(),
             position = this.getPosition();
 
-        return (world.getBlockId(position.x, position.y -1, position.z) <= 0);
+        return (world.getBlockId(position.x, position.y - 1, position.z) <= 0);
     }
 
     public getRaw() {

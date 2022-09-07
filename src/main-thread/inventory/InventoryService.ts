@@ -80,6 +80,7 @@ export default class InventoryService {
     }
 
     public async deleteInventory(id: string): Promise<void> {
+        this.inventories.delete(id);
         await this.repository.delete(id);
     }
 }

@@ -1,3 +1,6 @@
+import RawRenderObjectInterface from './render-object/RawRenderObjectInterface';
+import { ShaderName } from './shader/ShaderRegistry';
+
 enum ATTRIBUTE_LOCATIONS {
     POSITION = 0,
     NORMAL = 1,
@@ -7,7 +10,8 @@ enum ATTRIBUTE_LOCATIONS {
 }
 
 export default class RenderObject {
-    public shader: string;
+    public id: string;
+    public shader: ShaderName;
     public view: Float32Array;
     public vao: WebGLVertexArrayObject;
 
@@ -15,9 +19,10 @@ export default class RenderObject {
     public vertexCount = 0;
     public vertexComponentSize = 3;
 
-    constructor(context: WebGL2RenderingContext, config: any) {
-        const { shader, view, arrayObj, faces, indices, normals, uvs, vertices } = config;
+    constructor(context: WebGL2RenderingContext, config: RawRenderObjectInterface) {
+        const { id, shader, view, arrayObj, faces, indices, normals, uvs, vertices } = config;
 
+        this.id = id!;
         this.shader = shader;
         this.view = view;
 
@@ -34,6 +39,8 @@ export default class RenderObject {
         context.bindVertexArray(null);
         context.bindBuffer(context.ARRAY_BUFFER, null);
         context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, null);
+
+        dispatchEvent(new CustomEvent('render-object-ready', { detail: this }));
     }
 
     private bindIndices(context: WebGL2RenderingContext, indices: Uint16Array) {

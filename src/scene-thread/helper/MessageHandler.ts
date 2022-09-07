@@ -52,6 +52,9 @@ export default class MessageHandler {
             case SceneMessages.SYNC_WORLD:
                 SceneContainer.getWorld().setChunks(event.data.detail);
                 break;
+            case SceneMessages.SYNC_CHUNK:
+                SceneContainer.getWorld().setChunk(event.data.detail);
+                break;
             default:
                 throw new UnhandledMessageError(event.data.action);
         }

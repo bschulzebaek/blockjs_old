@@ -5,7 +5,7 @@ import UnhandledMessageError from '../../shared/exceptions/UnhandledMessageError
 import WorldContainer from '../WorldContainer';
 import Message from '../../shared/utility/Message';
 import setBlock from '../world-access/set-block';
-import worldSync from '../world-sync';
+import { worldSyncAll } from '../world-sync';
 
 export default class MessageHandler {
     static onMessage(event: MessageEvent<MessagePayloadInterface>) {
@@ -17,7 +17,7 @@ export default class MessageHandler {
                 WorldContainer.setConfig(event.data.detail);
                 break;
             case BroadcastMessages.START:
-                worldSync();
+                worldSyncAll();
                 break;
             case BroadcastMessages.STOP:
                 break;

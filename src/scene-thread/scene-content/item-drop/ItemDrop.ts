@@ -7,10 +7,12 @@ import SceneContainer from '../../SceneContainer';
 import ItemDropModel from './model/ItemDropModel';
 import type Entity from '../../entity/Entity';
 import { distance } from '../../../shared/math';
-import { SceneMessages } from '../../../shared/messages/ThreadMessages';
+import { RenderMessages, SceneMessages } from '../../../shared/messages/ThreadMessages';
+import Message from '../../../shared/utility/Message';
+import { ShaderName } from '../../../render-thread/shader/ShaderRegistry';
 
 export default class ItemDrop implements SceneObjectInterface {
-    static SHADER_NAME = 'item-drop';
+    static SHADER_NAME = ShaderName.ITEM_DROP;
     static ROTATE_RATE = 0.5;
     static FALL_RATE = 0.05;
 
@@ -49,7 +51,7 @@ export default class ItemDrop implements SceneObjectInterface {
     }
 
     public createModel() {
-        const model = ItemDropModel.create(); // this.itemId, this.x, this.y, this.z
+        const model = ItemDropModel.create(); // this.itemId
 
         model.position.set(this.x, this.y, this.z);
 
@@ -68,6 +70,14 @@ export default class ItemDrop implements SceneObjectInterface {
         this.updatePosition();
     }
 
+    public discard() {
+        Message.send(
+            RenderMessages.DELETE_SCENE_OBJECTS,
+            [ this.id ],
+            SceneContainer.getRenderPort(),
+        );
+    }
+
     private updatePosition() {
         this.model.rotation.add(0, ItemDrop.ROTATE_RATE, 0);
         const { x, y, z } = this.model.getPosition();
@@ -79,13 +89,10 @@ export default class ItemDrop implements SceneObjectInterface {
         this.model.update();
     }
 
-    public getModel() {
-        return this.model;
-    }
 
     private triggerPickup() {
         SceneContainer.getScene().deleteSceneObject(this.id);
 
-        postMessage({ action: SceneMessages.PICKUP_ITEM, detail: { itemId: this.id }});
+        postMessage({ action: SceneMessages.PICKUP_ITEM, detail: { itemId: this.itemId }});
     }
 }
