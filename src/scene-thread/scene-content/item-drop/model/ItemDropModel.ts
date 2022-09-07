@@ -65,7 +65,7 @@ export default class ItemDropModel {
         return new Model(mesh);
     }
 
-    public static createMesh(name: string, width = 1, height = 1, depth = 1, uvs) {
+    public static createMesh(name: string, width = 1, height = 1, depth = 1, uvs: number[]) {
         return new RawMesh(name, CubeIndices, CubeVertices(width, height, depth, 0, 0, 0), CubeNormals, uvs);
     }
 }
