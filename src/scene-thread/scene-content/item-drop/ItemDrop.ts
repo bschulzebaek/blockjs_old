@@ -51,7 +51,7 @@ export default class ItemDrop implements SceneObjectInterface {
     }
 
     public createModel() {
-        const model = ItemDropModel.create(); // this.itemId
+        const model = ItemDropModel.create(this.itemId);
 
         model.position.set(this.x, this.y, this.z);
 

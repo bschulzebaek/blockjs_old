@@ -15,8 +15,8 @@ export default class ItemDropShader extends Shader {
     }
 
     protected setup(projection: Float32Array, view: Float32Array) {
-        const { context, program, uniforms } = this;
-        context.useProgram(program);
+        const { context, uniforms } = this;
+
         context.uniformMatrix4fv(uniforms.proj.loc, false, projection);
         context.uniformMatrix4fv(uniforms.camera.loc, false, view);
     }

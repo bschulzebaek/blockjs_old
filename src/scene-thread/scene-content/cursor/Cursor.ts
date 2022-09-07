@@ -4,6 +4,8 @@ import CubeModel from '../../model/cube/CubeModel';
 import SceneContainer from '../../SceneContainer';
 import getBlockFromRay from '../../world-helper/get-block-from-ray';
 import { ShaderName } from '../../../render-thread/shader/ShaderRegistry';
+import Message from '../../../shared/utility/Message';
+import { RenderMessages } from '../../../shared/messages/ThreadMessages';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
@@ -69,6 +71,12 @@ export default class Cursor implements SceneObjectInterface {
 
     public remove(): void {
         delete this.model;
+
+        Message.send(
+            RenderMessages.DELETE_SCENE_OBJECTS,
+            [ this.getId() ],
+            SceneContainer.getRenderPort(),
+        );
     }
 
     public getModel() {

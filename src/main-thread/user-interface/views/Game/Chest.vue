@@ -75,12 +75,14 @@ export default {
     async mounted() {
         const { id } = this.$router.currentRoute.value.params;
 
+        this.chestInventory = await this.$mainContainer.getInventoryService().getOrLoadInventory(id);
+    },
+    async beforeUpdate() {
+        const { id } = this.$router.currentRoute.value.params;
+
         this.chestInventory = await this.$mainContainer.getInventoryService().loadInventory(id);
     },
     methods: {
-        getItem(index: number) {
-            return this.inventory.slots[index - 1];
-        },
         onDragStart(index: number, inventory) {
             this.fromIndex = index;
             this.fromInv = inventory;

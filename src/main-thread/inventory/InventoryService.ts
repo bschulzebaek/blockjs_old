@@ -41,20 +41,36 @@ export default class InventoryService {
         return inventory.getId();
     }
 
-    public async loadInventory(inventoryId: string) {
-        if (this.inventories.has(inventoryId)) {
-            return this.inventories.get(inventoryId);
+    public async getInventory(inventoryId: string) {
+        const inventory = this.inventories.get(inventoryId);
+
+        if (!inventory) {
+            throw new Error(`[InventoryService] Inventory "${inventoryId}" does not exist!`);
         }
 
-        this.createInventory(inventoryId);
+        return inventory;
+    }
 
-        const inventory = await this.repository.read(inventoryId);
+    public async loadInventory(inventoryId: string) {
+        let inventory = await this.repository.read(inventoryId);
 
-        if (inventory) {
+        if (!inventory) {
+            inventory = new Inventory(inventoryId);
+        }
+
+        this.inventories.set(inventoryId, inventory);
+        return inventory;
+    }
+
+    public async getOrLoadInventory(inventoryId: string) {
+        let inventory = this.inventories.get(inventoryId);
+
+        if (!inventory) {
+            inventory = new Inventory(inventoryId);
             this.inventories.set(inventoryId, inventory);
         }
 
-        return this.inventories.get(inventoryId);
+        return inventory;
     }
 
     public async loadPlayerInventory() {
