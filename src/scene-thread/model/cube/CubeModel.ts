@@ -10,22 +10,13 @@ const CubeNormals = [
     0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0,
 ];
 
-const CubeUvs = [
-    0, 0, 0, 1, 1, 1, 1, 0,
-    0, 0, 0, 1, 1, 1, 1, 0,
-    0, 0, 0, 1, 1, 1, 1, 0,
-    0, 0, 0, 1, 1, 1, 1, 0,
-    0, 0, 0, 1, 1, 1, 1, 0,
-    0, 0, 0, 1, 1, 1, 1, 0
-];
-
 const CubeIndices = [
-    0, 1, 2, 0, 2, 3,
-    4, 5, 6, 4, 6, 7,
-    8, 9, 10, 8, 10, 11,
-    12, 13, 14, 12, 14, 15,
-    16, 17, 18, 16, 18, 19,
-    20, 21, 22, 20, 22, 23
+    0,  1,  2,      0,  2,  3,    // front
+    4,  5,  6,      4,  6,  7,    // back
+    8,  9,  10,     8,  10, 11,   // top
+    12, 13, 14,     12, 14, 15,   // bottom
+    16, 17, 18,     16, 18, 19,   // right
+    20, 21, 22,     20, 22, 23,   // left
 ];
 
 const CubeVertices = (width: number, height: number, depth: number, x: number, y: number, z: number): number[] => {
@@ -56,6 +47,6 @@ export default class CubeModel {
     }
 
     public static createMesh(name: string, width = 1, height = 1, depth = 1, x = 0, y = 0, z = 0) {
-        return new RawMesh(name, CubeIndices, CubeVertices(width, height, depth, x, y, z), CubeNormals, CubeUvs);
+        return new RawMesh(name, CubeIndices, CubeVertices(width, height, depth, x, y, z), CubeNormals);
     }
 }

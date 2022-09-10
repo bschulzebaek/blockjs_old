@@ -2,23 +2,27 @@ import fss from './fss.glsl?raw';
 import vss from './vss.glsl?raw';
 import RenderObject from '../../RenderObject';
 import Shader from '../Shader';
+import createTexture from '../utility/create-texture';
 
 export default class ItemDropShader extends Shader {
-    static COLOR = [0.0, 0.0, 1.0, 0.7];
-
     static TEXTURE = 'textures.png';
+
+    private readonly texture: WebGLTexture;
 
     constructor(context: WebGL2RenderingContext) {
         super(context, vss, fss);
 
-        this.context.uniform4fv(this.uniforms.color.loc, ItemDropShader.COLOR);
+        this.texture = createTexture(context, ItemDropShader.TEXTURE);
     }
 
     protected setup(projection: Float32Array, view: Float32Array) {
-        const { context, uniforms } = this;
+        const { context, uniforms, texture } = this;
 
         context.uniformMatrix4fv(uniforms.proj.loc, false, projection);
         context.uniformMatrix4fv(uniforms.camera.loc, false, view);
+        context.activeTexture(context.TEXTURE0);
+        context.bindTexture(context.TEXTURE_2D, texture);
+        context.uniform1i(uniforms.tex0.loc, 0);
     }
 
     protected drawBatch(batch: RenderObject[]) {

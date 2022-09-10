@@ -7,7 +7,7 @@ export default class RawMesh {
     public faces: Float32Array;
     public arrayObj: Float32Array;
 
-    constructor(name: string, indices: number[], vertices: number[], normals: number[], uvs: number[], faces: number[] = [], arrayObj: number[] = []) {
+    constructor(name: string, indices: number[], vertices: number[], normals: number[], uvs: number[] = [], faces: number[] = [], arrayObj: number[] = []) {
         this.name = name;
 
         this.indices = new Uint16Array(indices);

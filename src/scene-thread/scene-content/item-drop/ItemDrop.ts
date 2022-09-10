@@ -63,7 +63,7 @@ export default class ItemDrop implements SceneObjectInterface {
 
         if (distanceToPlayer > 20) {
             return;
-        } else if (distanceToPlayer < 1.0) {
+        } else if (distanceToPlayer < 1.3) {
             this.triggerPickup();
         }
 

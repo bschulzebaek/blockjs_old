@@ -33,7 +33,7 @@ function appendQuad(faceDir: number, x: number, y: number, z: number, verts: num
     }
 
     for (let i = 0; i < 4; i++) {
-        verts.push(v[i * 3 + 0] + x, v[i * 3 + 1] + y, v[i * 3 + 2] + z);
+        verts.push(v[i * 3] + x, v[i * 3 + 1] + y, v[i * 3 + 2] + z);
         normals.push(...face.n);
     }
 
