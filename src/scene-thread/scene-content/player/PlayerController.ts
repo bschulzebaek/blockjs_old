@@ -1,9 +1,10 @@
-import type SceneWorld from '../../world-helper/SceneWorld';
+import type World from '../../world/World';
 import type Entity from '../../entity/Entity';
 import CameraInterface from '../camera/CameraInterface';
 import { Vector3 } from '../../../shared/math';
 import { onLeftClick, onRightClick } from './mouse-controls';
 import requestWorldUpdate from './helper/request-world-update';
+import SceneObjectInterface from '../../scene/SceneObjectInterface';
 
 enum ControlMap {
     WALK_FORWARD = 'w',
@@ -14,19 +15,19 @@ enum ControlMap {
     SPRINT = 'Control',
 }
 
-export default class PlayerController {
+export default class PlayerController implements SceneObjectInterface {
     static SCENE_ID = 'player-controller';
     static DEFAULT_HEIGHT = 1.7;
     static DEFAULT_WIDTH = 0.6;
     static DEFAULT_SPEED = 6;
     static SPRINT_FACTOR = 1.6;
-    static JUMP_ACCELERATION = 0.18;
+    static JUMP_ACCELERATION = 0.3;
     static ROTATE_RATE_X = -120;
     static ROTATE_RATE_Y = -135;
 
     private camera: CameraInterface;
     private entity: Entity;
-    private world: SceneWorld;
+    private world: World;
 
     private acc = new Vector3();
     private vel = new Vector3();
@@ -36,7 +37,7 @@ export default class PlayerController {
 
     private keyDownMap: Map<string, null> = new Map();
 
-    constructor(camera: CameraInterface, entity: Entity, world: SceneWorld) {
+    constructor(camera: CameraInterface, entity: Entity, world: World) {
         this.camera = camera;
         this.entity = entity;
         this.world = world;
@@ -51,6 +52,14 @@ export default class PlayerController {
 
     public getId() {
         return PlayerController.SCENE_ID;
+    }
+
+    public getShader() {
+        return null; // this.entity.getShader
+    }
+
+    public getRenderData() {
+        return null; // this.entity.getRenderData
     }
 
     public setPosition(position: Vector3) {
@@ -95,7 +104,7 @@ export default class PlayerController {
         }
 
         vel.y += acc.y;
-        vel.y -= delta * 0.75;
+        vel.y -= delta * 0.999;
         yo = vel.y;
 
         this.getSurroundingCoordinates().forEach(({ x, y, z, top }) => {
@@ -166,10 +175,6 @@ export default class PlayerController {
     }
 
     private onKeyDown = (event: KeyboardEvent) => {
-        if (!this.isGameRunning()) {
-            return;
-        }
-
         event.preventDefault();
 
         // @ts-ignore
@@ -204,10 +209,6 @@ export default class PlayerController {
     }
 
     private onClick = (event: MouseEvent) => {
-        if (!this.isGameRunning()) {
-            return;
-        }
-
         // @ts-ignore
         const { button } = event.detail;
 
@@ -269,15 +270,7 @@ export default class PlayerController {
         }
     }
 
-    private isGameRunning() {
-        return true; //Container.isRunning();
-    }
-
     private onMouseMove = (event: MouseEvent): void => {
-        if (!this.isGameRunning()) {
-            return;
-        }
-
         // @ts-ignore
         const { movementX, movementY } = event.detail,
               rotation = this.camera.getTransform().getRotation();
@@ -291,9 +284,5 @@ export default class PlayerController {
         rotation.x = Math.max(-90, Math.min(90, rotation.x));
 
         this.entity.getTransform().getRotation().set(rotation.x, rotation.y, rotation.z);
-    }
-
-    public updateRO() {
-
     }
 }

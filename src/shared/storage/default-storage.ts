@@ -1,6 +1,6 @@
 import { IDBPDatabase, openDB } from 'idb';
 
-import ChunkRepository from '../../world-thread//chunk/ChunkRepository';
+import ChunkRepository from '../../scene-thread/world/chunk/ChunkRepository';
 import GameConfigRepository from '../../main-thread/game-config/GameConfigRepository';
 import EntityRepository from '../../scene-thread/entity/EntityRepository';
 import InventoryRepository from '../../main-thread/inventory/InventoryRepository';

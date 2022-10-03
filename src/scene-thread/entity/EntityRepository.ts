@@ -2,7 +2,7 @@ import Entity from './Entity';
 import generateUUID from '../../shared/utility/generate-uuid';
 import Repository from '../../shared/storage/Repository';
 import StorageAdapter from '../../shared/storage/StorageAdapter';
-import WorldInterface from '../../world-thread/WorldInterface';
+import WorldInterface from '../world/WorldInterface';
 import { Vector3 } from '../../shared/math';
 
 export default class EntityRepository extends Repository {

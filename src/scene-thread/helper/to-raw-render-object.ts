@@ -1,16 +1,17 @@
-import SceneObjectInterface from '../SceneObjectInterface';
+import SceneObjectInterface from '../scene/SceneObjectInterface';
 import RawRenderObjectInterface from '../../render-thread/render-object/RawRenderObjectInterface';
 
 export default function toRawRenderObject(sceneObject: SceneObjectInterface): RawRenderObjectInterface | undefined {
-    const model = sceneObject.model!;
+    const model  = sceneObject.model!,
+          shader = sceneObject.getShader();
 
-    if (!model) {
+    if (!model || !shader) {
         return;
     }
 
     return {
         id: sceneObject.getId(),
-        shader: sceneObject.getShader(),
+        shader,
         view: new Float32Array(model.view!),
         indices: model.mesh.indices,
         vertices: model.mesh.vertices,

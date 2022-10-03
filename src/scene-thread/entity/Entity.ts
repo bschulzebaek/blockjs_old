@@ -1,6 +1,6 @@
 import { Transform, Vector3 } from '../../shared/math';
 import ModelInterface from '../model/ModelInterface';
-import WorldInterface from '../../world-thread/WorldInterface';
+import WorldInterface from '../world/WorldInterface';
 import StoreClass from '../../shared/storage/StoreClass';
 
 export interface EntityRawInterface {

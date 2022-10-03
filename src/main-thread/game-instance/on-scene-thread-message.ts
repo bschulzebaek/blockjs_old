@@ -15,5 +15,8 @@ export default function onSceneThreadMessage(event: MessageEvent<MessagePayloadI
             const { itemId } = event.data.detail;
             MainContainer.getInventoryService().getPlayerInventory().pushItem({ itemId, quantity: 1 });
             break;
+        case SceneMessages.READY:
+            StateMachine.on_InstanceReady();
+            break;
     }
 }

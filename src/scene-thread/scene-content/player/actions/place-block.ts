@@ -6,6 +6,7 @@ import InventorySlotInterface from '../../../../main-thread/inventory/InventoryS
 
 export default function placeBlock(block: any, activeItem: InventorySlotInterface) {
     const world  = SceneContainer.getWorld(),
+          worldService = SceneContainer.getWorldService(),
           player = SceneContainer.getScene().getSceneObject('player-controller') as unknown as PlayerController;
 
     if (!activeItem || !activeItem.quantity) {
@@ -29,17 +30,7 @@ export default function placeBlock(block: any, activeItem: InventorySlotInterfac
         return;
     }
 
-    world.setBlockId(x, y, z, activeItem.itemId);
-
-    SceneContainer.getWorldPort()?.postMessage({
-        action: SceneMessages.REQUEST_WORLD_CHANGE,
-        detail: {
-            x,
-            y,
-            z,
-            id: activeItem.itemId
-        }
-    });
+    worldService.setBlock(x, y, z, activeItem.itemId);
 
     postMessage({ action: SceneMessages.REDUCE_QUANTITY });
 }

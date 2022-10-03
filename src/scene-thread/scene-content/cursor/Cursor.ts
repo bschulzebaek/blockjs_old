@@ -1,11 +1,11 @@
-import SceneObjectInterface from '../../SceneObjectInterface';
+import SceneObjectInterface from '../../scene/SceneObjectInterface';
 import Model from '../../model/Model';
 import CubeModel from '../../model/cube/CubeModel';
 import SceneContainer from '../../SceneContainer';
 import getBlockFromRay from '../../world-helper/get-block-from-ray';
 import { ShaderName } from '../../../render-thread/shader/ShaderRegistry';
-import Message from '../../../shared/utility/Message';
-import { RenderMessages } from '../../../shared/messages/ThreadMessages';
+import toRawRenderObject from '../../helper/to-raw-render-object';
+import RawRenderObjectInterface from '../../../render-thread/render-object/RawRenderObjectInterface';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
@@ -13,6 +13,10 @@ export default class Cursor implements SceneObjectInterface {
     static OFFSET = 0.5;
 
     public model?: Model;
+
+    constructor() {
+        this.createModel();
+    }
 
     public getId() {
         return Cursor.SCENE_ID;
@@ -30,12 +34,6 @@ export default class Cursor implements SceneObjectInterface {
     }
 
     public update(): void {
-        const world = SceneContainer.getWorld();
-
-        if (!world) {
-            throw new Error('[Scene:Cursor] Missing required property "WorldService"!');
-        }
-
         const camera = SceneContainer.getCamera();
         const block = getBlockFromRay(camera.getTransform().getPosition(), camera.getRay().fromScreen().ray);
 
@@ -71,15 +69,13 @@ export default class Cursor implements SceneObjectInterface {
 
     public remove(): void {
         delete this.model;
-
-        Message.send(
-            RenderMessages.DELETE_SCENE_OBJECTS,
-            [ this.getId() ],
-            SceneContainer.getRenderPort(),
-        );
     }
 
     public getModel() {
-        return this.model!;
+        return this.model;
+    }
+
+    public getRenderData(): RawRenderObjectInterface | undefined {
+        return toRawRenderObject(this);
     }
 }

@@ -1,7 +1,6 @@
 import SceneContainer from '../../../SceneContainer';
 import BlockID from '../../../../data/block-id';
 import BlockMeta from '../../../../data/block-meta';
-import { SceneMessages } from '../../../../shared/messages/ThreadMessages';
 import ItemDrop from '../../item-drop/ItemDrop';
 
 export default function destroyBlock(block: any) {
@@ -15,16 +14,7 @@ export default function destroyBlock(block: any) {
         return;
     }
 
-    SceneContainer.getWorld().setBlockId(x, y, z, BlockID.AIR);
-    SceneContainer.getWorldPort()?.postMessage({
-        action: SceneMessages.REQUEST_WORLD_CHANGE,
-        detail: {
-            x,
-            y,
-            z,
-            id: BlockID.AIR,
-        }
-    });
+    SceneContainer.getWorldService().setBlock(x, y, z, BlockID.AIR);
 
     new ItemDrop(blockId, x, y, z);
 

@@ -32,43 +32,24 @@ export default class MessageHandler {
 
     static onConnect(event: MessageEvent<MessagePayloadInterface>) {
         switch (event.data.detail.thread) {
-            case 'scene':
-                event.ports[0].onmessage = MessageHandler.onScenePort;
-                break;
-            case 'world':
-                event.ports[0].onmessage = MessageHandler.onWorldPort;
+            case 'render-pipeline':
+                event.ports[0].onmessage = MessageHandler.onRenderPipelinePort;
                 break;
             default:
                 throw new UnhandledMessageError(event.data.action);
         }
     }
 
-    static onScenePort(event: MessageEvent<MessagePayloadInterface>) {
+    static onRenderPipelinePort(event: MessageEvent<MessagePayloadInterface>) {
         switch (event.data.action) {
-            case RenderMessages.SYNC_SCENE:
-                RenderContainer.getRenderer().syncSceneObjects(event.data.detail);
-                break;
-            case RenderMessages.DELETE_SCENE_OBJECTS:
-                RenderContainer.getRenderer().removeSceneObjects(event.data.detail);
-                break;
-            case RenderMessages.SYNC_SCENE_OBJECT:
-                RenderContainer.getRenderer().syncSceneObject(event.data.detail);
-                break;
             case RenderMessages.SYNC_CAMERA:
-                RenderContainer.getRenderer().syncCamera(event.data.detail);
+                RenderContainer.getRenderService().syncCamera(event.data.detail);
                 break;
-            default:
-                throw new UnhandledMessageError(event.data.action);
-        }
-    }
-
-    static onWorldPort(event: MessageEvent<MessagePayloadInterface>) {
-        switch (event.data.action) {
-            case RenderMessages.SYNC_CHUNK:
-                RenderContainer.getRenderer().syncChunk(event.data.detail);
+            case RenderMessages.DELETE_RENDER_OBJECT:
+                RenderContainer.getRenderService().delete(event.data.detail);
                 break;
-            case RenderMessages.POP_CHUNKS:
-                RenderContainer.getRenderer().removeChunks(event.data.detail);
+            case RenderMessages.UPSERT_RENDER_OBJECT:
+                RenderContainer.getRenderService().upsert(event.data.detail);
                 break;
             default:
                 throw new UnhandledMessageError(event.data.action);

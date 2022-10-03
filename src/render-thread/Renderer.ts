@@ -2,8 +2,6 @@ import ShaderRegistry from './shader/ShaderRegistry';
 import Loop from '../shared/utility/Loop';
 import RenderObject from './RenderObject';
 import prepareCanvas from './helper/prepare-canvas';
-import './subscriber';
-import RawRenderObjectInterface from './render-object/RawRenderObjectInterface';
 import groupByShader from './utility/group-by-shader';
 
 export default class Renderer {
@@ -31,6 +29,14 @@ export default class Renderer {
     }
 
     public start() {
+        if (!this.projection ||
+            !this.projection.length ||
+            !this.view ||
+            !this.view.length
+        ) {
+            throw new Error();
+        }
+
         this.loop.start();
     }
 
@@ -43,12 +49,6 @@ export default class Renderer {
 
         // ToDo: Set proj and view uniforms before render loop, not per shader execution!
 
-        const glassShader = this.shaderRegistry.get('chunk-glass'),
-            solidShader = this.shaderRegistry.get('chunk-solid');
-
-        solidShader.run(Array.from(this.chunkSolidObjects.values()), projection, view);
-        glassShader.run(Array.from(this.chunkGlassObjects.values()), projection, view);
-
         groupByShader(this.renderObjects).forEach((ros, shader) => {
             this.shaderRegistry.get(shader)!.run(ros, projection, view);
         });
@@ -59,16 +59,6 @@ export default class Renderer {
     public syncCamera(data: { projection: Float32Array, view: Float32Array }) {
         this.projection = data.projection;
         this.view = data.view;
-    }
-
-    public syncSceneObjects(data: RawRenderObjectInterface[]) {
-        data.forEach(this.syncSceneObject);
-    }
-
-    public syncSceneObject = (data: RawRenderObjectInterface) => {
-        setTimeout(() => {
-            new RenderObject(this.context, data);
-        });
     }
 
     public syncChunk(data: any) {

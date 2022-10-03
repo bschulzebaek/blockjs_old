@@ -11,27 +11,22 @@ export enum GeneralMessages {
 }
 
 export enum RenderMessages {
-    SYNC_SCENE = 'sync-scene',
-    SYNC_SCENE_OBJECT = 'sync-scene-object',
-    DELETE_SCENE_OBJECTS = 'delete-scene-objects',
+    UPSERT_RENDER_OBJECT = 'upsert-render-object',
+    DELETE_RENDER_OBJECT = 'delete-render-object',
+
     SYNC_CAMERA = 'sync-camera',
-    SYNC_CHUNK = 'sync-chunk',
-    POP_CHUNKS = 'pop-chunks',
     SET_CANVAS = 'set-canvas',
 }
 
+export enum RenderPipelineMessages {
+    UPSERT_RENDER_OBJECT = 'upsert-render-object',
+    DELETE_RENDER_OBJECT = 'delete-render-object',
+}
+
 export enum SceneMessages {
-    SETUP = 'setup',
-    SYNC_WORLD = 'sync-world',
-    SYNC_CHUNK = 'sync-chunk',
-    REQUEST_WORLD_UPDATE = 'request-world-update',
-    REQUEST_WORLD_CHANGE = 'request-world-change',
     REDUCE_QUANTITY = 'reduce-quantity',
     TO_VIEW = 'to-view',
     PICKUP_ITEM = 'pickup',
-}
-
-export enum WorldMessages {
-    CREATE = 'create',
     READY = 'ready',
+    CREATE = 'create',
 }

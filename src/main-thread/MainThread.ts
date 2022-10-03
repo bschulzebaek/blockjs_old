@@ -2,11 +2,12 @@ import type GameConfig from './game-config/GameConfig';
 import MainContainer from './MainContainer';
 import InventoryService from './inventory/InventoryService';
 import createPlayerEntity from './helper/create-player-entity';
+import StorageAdapter from '../shared/storage/StorageAdapter';
 
 export default class MainThread {
     static async create(config: GameConfig) {
         MainContainer.setConfig(config);
-        const inventoryService = new InventoryService(config.getId());
+        const inventoryService = new InventoryService(new StorageAdapter(config.getId()));
         MainContainer.setInventoryService(inventoryService);
 
         if (config.getIsNew()) {

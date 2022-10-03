@@ -11,7 +11,23 @@ export default class EntityService {
         this.repository = new EntityRepository(adapter);
     }
 
-    public async load() {
+    public async read(id: string) {
+        if (this.entities.has(id)) {
+            return this.entities.get(id);
+        }
+
+        const entity = await this.repository.read(id);
+
+        if (!entity) {
+            throw new Error(`[EntityService] entity "${id}" undefined!`);
+        }
+
+        this.entities.set(id, entity);
+
+        return this.entities.get(id);
+    }
+
+    public async readAll() {
         const entities = await this.repository.readAll();
 
         entities.forEach((entity) => {
@@ -19,8 +35,8 @@ export default class EntityService {
         });
     }
 
-    public async save() {
-        await this.repository.writeList(this.getAll());
+    public async save(entities = this.getAll()) {
+        await this.repository.writeList(entities);
     }
 
     public async discard() {

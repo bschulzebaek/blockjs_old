@@ -1,8 +1,10 @@
 import MessagePayloadInterface from '../../shared/messages/MessagePayloadInterface';
-import { BroadcastMessages, GeneralMessages, SceneMessages, WorldMessages } from '../../shared/messages/ThreadMessages';
+import { BroadcastMessages, GeneralMessages, SceneMessages } from '../../shared/messages/ThreadMessages';
 import SceneContainer from '../SceneContainer';
 import UnhandledMessageError from '../../shared/exceptions/UnhandledMessageError';
-import logger from '../../shared/utility/logger';
+import createInstance from '../lifecycle/create-instance';
+import Message from '../../shared/utility/Message';
+import discardInstance from '../lifecycle/discard-instance';
 
 export default class MessageHandler {
     static onMessage(event: MessageEvent<MessagePayloadInterface>) {
@@ -23,7 +25,10 @@ export default class MessageHandler {
                 SceneContainer.getScene().stop();
                 break;
             case BroadcastMessages.DISCARD:
-                MessageHandler.onClose();
+                discardInstance();
+                break;
+            case SceneMessages.CREATE:
+                createInstance();
                 break;
             default:
                 throw new UnhandledMessageError(event.data.action);
@@ -32,28 +37,8 @@ export default class MessageHandler {
 
     static onConnect(event: MessageEvent<MessagePayloadInterface>) {
         switch (event.data.detail.thread) {
-            case 'render':
-                SceneContainer.setRenderPort(event.ports[0]);
-                break;
-            case 'world':
-                SceneContainer.setWorldPort(event.ports[0]);
-                event.ports[0].onmessage = MessageHandler.onWorldPort;
-                break;
-            default:
-                throw new UnhandledMessageError(event.data.action);
-        }
-    }
-
-    static onWorldPort(event: MessageEvent<MessagePayloadInterface>) {
-        switch (event.data.action) {
-            case WorldMessages.READY:
-                SceneContainer.createScene();
-                break;
-            case SceneMessages.SYNC_WORLD:
-                SceneContainer.getWorld().setChunks(event.data.detail);
-                break;
-            case SceneMessages.SYNC_CHUNK:
-                SceneContainer.getWorld().setChunk(event.data.detail);
+            case 'render-pipeline':
+                SceneContainer.setRenderPipelinePort(event.ports[0]);
                 break;
             default:
                 throw new UnhandledMessageError(event.data.action);
@@ -65,10 +50,7 @@ export default class MessageHandler {
 
         dispatchEvent(new CustomEvent(detail.type, { detail }));
     }
-
-    static async onClose() {
-        logger('[SceneThread:discard]');
-        await SceneContainer.getEntityService().save();
-        self.close();
+    static dispatchReady() {
+        Message.send(SceneMessages.READY);
     }
 }

@@ -9,8 +9,8 @@ export default class InventoryService {
     private repository: InventoryRepository;
     private inventories: Map<string, Inventory> = new Map();
 
-    constructor(id: string) {
-        this.repository = new InventoryRepository(new StorageAdapter(id));
+    constructor(adapter: StorageAdapter) {
+        this.repository = new InventoryRepository(adapter);
     }
 
     public async new() {

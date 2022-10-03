@@ -1,9 +1,7 @@
 import { Transform, degree2Radians, Matrix4, Ray, Vector3 } from '../../../shared/math';
-import Message from '../../../shared/utility/Message';
-import { RenderMessages } from '../../../shared/messages/ThreadMessages';
-import SceneContainer from '../../SceneContainer';
+import SceneObjectInterface from '../../scene/SceneObjectInterface';
 
-export default class Camera  {
+export default class Camera implements SceneObjectInterface {
     static SCENE_ID = 'camera';
 
     protected projectionMatrix: Matrix4;
@@ -15,7 +13,7 @@ export default class Camera  {
     protected aspectRatio: number;
     protected ray: Ray;
 
-    constructor(fov = 70, near = 0.1, far = 300.0) {
+    constructor(fov = 70, near = 0.1, far = 300.0, position = new Vector3(0, 0, 0)) {
         this.aspectRatio = this.getAspectRatio();
         this.fov = fov;
         this.near = near;
@@ -26,6 +24,7 @@ export default class Camera  {
 
         this.ray = new Ray(this);
         this.projectionMatrix = this.createProjectionMatrix();
+        this.setPosition(position);
     }
 
     public getId() {
@@ -34,14 +33,6 @@ export default class Camera  {
 
     protected createProjectionMatrix(): Matrix4 {
         return Matrix4.perspective(this.fov, this.aspectRatio, this.near, this.far);
-    }
-
-    public createModel(): void {
-
-    }
-
-    public createShader(): void {
-
     }
 
     public getProjectionMatrix() {
@@ -91,20 +82,16 @@ export default class Camera  {
 
     public update = (): void => {
         this.updateViewMatrix();
-        this.syncToRenderer();
     }
 
-    private syncToRenderer() {
-        const data = {
+    public getShader() {
+        return null;
+    }
+
+    public getRenderData() {
+        return {
             projection: new Float32Array(this.projectionMatrix),
             view: new Float32Array(this.view),
-        };
-
-        Message.send(
-            RenderMessages.SYNC_CAMERA,
-            data,
-            SceneContainer.getRenderPort(),
-            [ data.view.buffer, data.projection.buffer ]
-        );
+        }
     }
 }

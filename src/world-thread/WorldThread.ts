@@ -1,4 +1,4 @@
-import MessageHandler from './helper/MessageHandler';
+import MessageHandler from './MessageHandler';
 
 onmessage = MessageHandler.onMessage;
 

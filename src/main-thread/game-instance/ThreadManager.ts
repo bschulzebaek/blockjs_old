@@ -3,12 +3,14 @@ import ThreadNotFoundError from '../../shared/exceptions/ThreadNotFoundError';
 
 export enum ThreadNames {
     RENDER = 'render',
+    RENDER_PIPELINE = 'render-pipeline',
     SCENE = 'scene',
     WORLD = 'world',
 }
 
 enum ThreadPaths {
     RENDER = '../../render-thread/RenderThread.ts',
+    RENDER_PIPELINE = '../../render-pipeline-thread/RenderPipelineThread.ts',
     SCENE = '../../scene-thread/SceneThread.ts',
     WORLD = '../../world-thread/WorldThread.ts',
 }
@@ -19,12 +21,14 @@ class ThreadManager {
 
     public createThreads() {
         this.threads.set(ThreadNames.RENDER, new Worker(new URL(ThreadPaths.RENDER, import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.RENDER_PIPELINE, new Worker(new URL(ThreadPaths.RENDER_PIPELINE, import.meta.url), { type: 'module' }));
         this.threads.set(ThreadNames.SCENE,  new Worker(new URL(ThreadPaths.SCENE,  import.meta.url), { type: 'module' }));
-        this.threads.set(ThreadNames.WORLD,  new Worker(new URL(ThreadPaths.WORLD,  import.meta.url), { type: 'module' }));
+        // this.threads.set(ThreadNames.WORLD,  new Worker(new URL(ThreadPaths.WORLD,  import.meta.url), { type: 'module' }));
 
-        this.connect(ThreadNames.RENDER, ThreadNames.SCENE);
-        this.connect(ThreadNames.RENDER, ThreadNames.WORLD);
-        this.connect(ThreadNames.WORLD, ThreadNames.SCENE);
+        // this.connect(ThreadNames.RENDER, ThreadNames.WORLD);
+        // this.connect(ThreadNames.WORLD, ThreadNames.SCENE);
+        this.connect(ThreadNames.SCENE, ThreadNames.RENDER_PIPELINE);
+        this.connect(ThreadNames.RENDER, ThreadNames.RENDER_PIPELINE);
     }
 
     public add(name: ThreadNames, worker: Worker) {

@@ -1,15 +1,16 @@
-import SceneObjectInterface from '../../SceneObjectInterface';
+import SceneObjectInterface from '../../scene/SceneObjectInterface';
 import generateUUID from '../../../shared/utility/generate-uuid';
 import Model from '../../model/Model';
-import type SceneWorld from '../../world-helper/SceneWorld';
 import BlockID from '../../../data/block-id';
 import SceneContainer from '../../SceneContainer';
 import ItemDropModel from './model/ItemDropModel';
 import type Entity from '../../entity/Entity';
 import { distance } from '../../../shared/math';
-import { RenderMessages, SceneMessages } from '../../../shared/messages/ThreadMessages';
-import Message from '../../../shared/utility/Message';
+import { SceneMessages } from '../../../shared/messages/ThreadMessages';
 import { ShaderName } from '../../../render-thread/shader/ShaderRegistry';
+import World from '../../world/World';
+import syncRenderObject, { SyncAction } from '../../helper/sync-render-object';
+import toRawRenderObject from '../../helper/to-raw-render-object';
 
 export default class ItemDrop implements SceneObjectInterface {
     static SHADER_NAME = ShaderName.ITEM_DROP;
@@ -18,11 +19,10 @@ export default class ItemDrop implements SceneObjectInterface {
 
     private id = generateUUID();
 
-    private world: SceneWorld;
+    private world: World;
     private player: Entity;
     public model: Model;
 
-    // @ts-ignore
     private readonly itemId: BlockID;
     private readonly x: number;
     private readonly y: number;
@@ -50,6 +50,10 @@ export default class ItemDrop implements SceneObjectInterface {
         return ItemDrop.SHADER_NAME;
     }
 
+    public getRenderData() {
+        return toRawRenderObject(this);
+    }
+
     public createModel() {
         const model = ItemDropModel.create(this.itemId);
 
@@ -71,11 +75,7 @@ export default class ItemDrop implements SceneObjectInterface {
     }
 
     public discard() {
-        Message.send(
-            RenderMessages.DELETE_SCENE_OBJECTS,
-            [ this.id ],
-            SceneContainer.getRenderPort(),
-        );
+        syncRenderObject(SyncAction.DELETE, this.getId());
     }
 
     private updatePosition() {

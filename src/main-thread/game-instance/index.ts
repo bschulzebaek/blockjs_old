@@ -1,9 +1,8 @@
 import ThreadManager, { ThreadNames } from './ThreadManager';
-import { BroadcastMessages, RenderMessages, WorldMessages } from '../../shared/messages/ThreadMessages';
+import { BroadcastMessages, RenderMessages, SceneMessages } from '../../shared/messages/ThreadMessages';
 import GameConfigService from '../game-config/GameConfigService';
 import MainContainer from '../MainContainer';
 import onSceneThreadMessage from './on-scene-thread-message';
-import onWorldThreadMessage from './on-world-thread-message';
 import CanvasNotFoundError from '../../shared/exceptions/CanvasNotFoundError';
 import ConfigNotFoundError from '../../shared/exceptions/ConfigNotFoundError';
 import MainThread from '../MainThread';
@@ -33,11 +32,10 @@ async function createInstance() {
         isNew: gameConfig.getIsNew(),
     });
 
-    ThreadManager.send(ThreadNames.RENDER, RenderMessages.SET_CANVAS, offscreen, [ offscreen ]);
-    ThreadManager.send(ThreadNames.WORLD, WorldMessages.CREATE);
-
-    ThreadManager.get(ThreadNames.WORLD).onmessage = onWorldThreadMessage;
     ThreadManager.get(ThreadNames.SCENE).onmessage = onSceneThreadMessage;
+
+    ThreadManager.send(ThreadNames.RENDER, RenderMessages.SET_CANVAS, offscreen, [ offscreen ]);
+    ThreadManager.send(ThreadNames.SCENE, SceneMessages.CREATE);
 }
 
 async function discardInstance() {
