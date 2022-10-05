@@ -1,7 +1,5 @@
 import BlockID from './block-id';
 
-// https://minecraft-ids.grahamedgecombe.com/
-
 // NORTH EAST SOUTH WEST UP DOWN
 
 const BlockUV: Record<string, [number, number, number, number, number, number, number, number, number, number, number, number]> = {

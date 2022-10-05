@@ -1,15 +1,15 @@
 import { IDBPDatabase, openDB } from 'idb';
 
-import ChunkRepository from '../../scene-thread/world/chunk/ChunkRepository';
-import GameConfigRepository from '../../main-thread/game-config/GameConfigRepository';
-import EntityRepository from '../../scene-thread/entity/EntityRepository';
-import InventoryRepository from '../../main-thread/inventory/InventoryRepository';
+import ChunkRepository from '../../components/chunk/ChunkRepository';
+import WorldConfigRepository from '../../components/world-config/WorldConfigRepository';
+import EntityRepository from '../../components/entity/EntityRepository';
+import InventoryRepository from '../../components/inventory/InventoryRepository';
 
 import StorageAdapter from './StorageAdapter';
 
 const DEFAULT_STORAGE = [{
-    name: GameConfigRepository.STORE_NAME,
-    keyPath: GameConfigRepository.STORE_IDENTIFIER,
+    name: WorldConfigRepository.STORE_NAME,
+    keyPath: WorldConfigRepository.STORE_IDENTIFIER,
 }, {
     name: ChunkRepository.STORE_NAME,
     keyPath: ChunkRepository.STORE_IDENTIFIER,

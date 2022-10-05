@@ -1,0 +1,43 @@
+.mc-button {
+	height: 50px;
+    width: 100%;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	user-select: none;
+    color: #fff;
+    padding: 0;
+	background: #999 url('../../../assets/button_background.png') center / cover;
+	image-rendering: pixelated;
+	border: 2px solid #000;
+    outline: none;
+    font-size: 0.8em;
+    letter-spacing: 2px;
+    border-radius: 2px;
+}
+
+.mc-button > div {
+    width: 100%;
+    height: 100%;
+    line-height: 50px;
+    color: #ddd;
+    text-shadow: 2px 2px #000a;
+    box-shadow: inset -2px -4px #0006, inset 2px 2px #fff7;
+    transition: all .15s ease;
+}
+
+.mc-button > div > span {
+    vertical-align: middle;
+}
+
+.mc-button:not([disabled]):active > div,
+.mc-button:not([disabled]):hover > div {
+    background-color: rgba(100, 100, 255, .45);
+    text-shadow: 2px 2px #202013cc;
+    color: #ffffa0;
+}
+
+.mc-button[disabled] {
+    opacity: .5;
+    cursor: default;
+}

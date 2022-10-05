@@ -1,3 +1,12 @@
+const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const SEED_LENGTH = 16;
+
 export default function generateSeed(): string {
-    return '0123456789ABCDEF';
+    let seed = '';
+
+    for (let i = 0; i < SEED_LENGTH; i++) {
+        seed += CHARACTERS.charAt(Math.floor(Math.random() * CHARACTERS.length));
+    }
+
+    return seed;
 }
