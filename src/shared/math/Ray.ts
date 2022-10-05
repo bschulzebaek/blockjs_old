@@ -1,8 +1,8 @@
 import { Matrix4, transformVector, multiply, Vector4, Vector3 } from './index';
-import CameraInterface from '../../scene-thread/scene-content/camera/CameraInterface';
+import CameraInterface from '../../components/camera/CameraInterface';
 
 export default class Ray {
-    public camera: CameraInterface;
+    private readonly camera: CameraInterface;
 
     constructor(camera: CameraInterface) {
         this.camera = camera;

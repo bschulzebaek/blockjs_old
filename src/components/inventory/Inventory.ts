@@ -20,9 +20,7 @@ export default class Inventory extends StoreClass implements InventoryInterface 
     static DEFAULT_SIZE = 36;
 
     private id: string;
-
     private slots: Array<InventorySlotInterface | null>;
-
     private activeIndex;
 
     constructor(id: string, slots = new Array(Inventory.DEFAULT_SIZE).fill(null), activeIndex: number = 0) {

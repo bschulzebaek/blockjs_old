@@ -57,7 +57,7 @@
 
 <script lang="ts">
 export default {
-    inject: ['$store'],
+    inject: ['$store', '$container'],
     data() {
         return {
             chestInventory: null,
@@ -75,12 +75,12 @@ export default {
     async mounted() {
         const { id } = this.$router.currentRoute.value.params;
 
-        // this.chestInventory = await this.$mainContainer.getInventoryService().getOrLoadInventory(id);
+        this.chestInventory = await this.$container.getInventoryService().getOrLoadInventory(id);
     },
     async beforeUpdate() {
         const { id } = this.$router.currentRoute.value.params;
 
-        // this.chestInventory = await this.$mainContainer.getInventoryService().loadInventory(id);
+        this.chestInventory = await this.$container.getInventoryService().loadInventory(id);
     },
     methods: {
         onDragStart(index: number, inventory) {

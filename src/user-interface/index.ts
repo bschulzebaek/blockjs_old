@@ -9,6 +9,7 @@ import getAssetUrl from '../shared/utility/get-asset-url';
 import { store } from './store';
 import { Views } from '../data/views';
 import StateMachine from '../threads/main/StateMachine';
+import Container from '../threads/main/Container';
 import './helper/prevent-defaults';
 
 StateMachine.setRouter(router);
@@ -19,6 +20,7 @@ const app = createApp(RootComponent)
     .component('mc-background', McBackground)
     .component('item-slot', ItemSlot)
     .provide('$store', store)
+    .provide('$container', Container)
     .provide('$getAssetUrl', getAssetUrl);
 
 router.push({ name: Views.MAIN_MENU });

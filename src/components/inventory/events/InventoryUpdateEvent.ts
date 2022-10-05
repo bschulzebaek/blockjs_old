@@ -1,11 +1,11 @@
-import InventoryInterface from '../InventoryInterface';
+import type Inventory from '../Inventory';
 
 export default class InventoryUpdateEvent extends Event {
     static NAME = 'inventory/update';
 
-    private readonly inventory: InventoryInterface;
+    private readonly inventory: Inventory;
 
-    constructor(inventory: InventoryInterface) {
+    constructor(inventory: Inventory) {
         super(InventoryUpdateEvent.NAME);
 
         this.inventory = inventory;

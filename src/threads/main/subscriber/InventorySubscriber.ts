@@ -1,6 +1,5 @@
 import InventoryUpdateEvent from '../../../components/inventory/events/InventoryUpdateEvent';
 import Container from '../Container';
-import { PLAYER_INVENTORY_ID } from '../../../data/player-data';
 
 class InventorySubscriber {
     constructor() {
@@ -9,17 +8,9 @@ class InventorySubscriber {
 
     private onInventoryUpdate = (event: InventoryUpdateEvent) => {
         const inventory = event.getInventory(),
-            id        = inventory.getId();
+            id = inventory.getId();
 
         Container.getInventoryService().saveInventory(id);
-
-        if (id !== PLAYER_INVENTORY_ID) {
-            return;
-        }
-
-        if (!Container.getStateMachine().isInGame()) {
-            return;
-        }
 
         Container.getStore().key++;
     }

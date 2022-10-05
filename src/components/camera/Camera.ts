@@ -22,8 +22,8 @@ export default class Camera implements SceneObjectInterface {
         this.transform = new Transform();
         this.view = Matrix4.identity();
 
-        this.ray = new Ray(this);
         this.projectionMatrix = this.createProjectionMatrix();
+        this.ray = new Ray(this);
         this.setPosition(position);
     }
 

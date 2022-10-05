@@ -1,1 +1,0 @@
-addEventListener('message', console.log);

@@ -1,4 +1,4 @@
-import SceneObjectInterface from '../../components/scene/SceneObjectInterface';
+import SceneObjectInterface from '../../threads/scene/scene/SceneObjectInterface';
 import RawRenderObjectInterface from './RawRenderObjectInterface';
 
 export default function toRawRenderObject(sceneObject: SceneObjectInterface): RawRenderObjectInterface | undefined {
