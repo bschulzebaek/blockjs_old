@@ -1,5 +1,5 @@
 import Shader from '../../../framework/shader/Shader';
-import createTexture from '../../../framework/shader/create-texture';
+import createTexture from '../../../framework/shader/utility/create-texture';
 import RenderObject from '../../../framework/shader/RenderObject';
 
 export default class BaseShader extends Shader {

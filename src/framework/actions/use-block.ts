@@ -1,6 +1,6 @@
-import BlockID from '../../../data/block-id';
-import { SceneMessages } from '../../../shared/messages/ThreadMessages';
-import { Views } from '../../../data/views';
+import BlockID from '../../data/block-id';
+import { SceneMessages } from '../../shared/messages/ThreadMessages';
+import { Views } from '../../data/views';
 
 export default function useBlock(block: any) {
     const { x, y, z, blockId } = block,

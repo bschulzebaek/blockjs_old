@@ -14,6 +14,8 @@ export default class BlockUpdatedEvent extends Event {
         this.position = new Vector3(x, y, z);
         this.oldId = oldId;
         this.newId = newId;
+
+        console.debug(this);
     }
 
     public getPosition = () => {

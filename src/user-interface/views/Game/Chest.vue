@@ -80,7 +80,7 @@ export default {
     async beforeUpdate() {
         const { id } = this.$router.currentRoute.value.params;
 
-        this.chestInventory = await this.$container.getInventoryService().loadInventory(id);
+        this.chestInventory = await this.$container.getInventoryService().getInventory(id);
     },
     methods: {
         onDragStart(index: number, inventory) {

@@ -1,6 +1,6 @@
-import BlockID from '../../../data/block-id';
-import BlockMeta from '../../../data/block-meta';
-import SetBlockEvent from '../../world/events/SetBlockEvent';
+import BlockID from '../../data/block-id';
+import BlockMeta from '../../data/block-meta';
+import SetBlockEvent from '../../components/world/events/SetBlockEvent';
 
 export default function destroyBlock(block: any) {
     const x = block.x,

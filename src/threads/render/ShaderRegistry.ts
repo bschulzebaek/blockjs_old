@@ -1,5 +1,4 @@
 import Shader from '../../framework/shader/Shader';
-import UnsupportedShaderError from '../../framework/shader/UnsupportedShaderError';
 import { ShaderName } from '../../framework/shader/shader-names';
 
 import SolidShader from '../../components/chunk/shader/solid/SolidShader';
@@ -7,6 +6,7 @@ import GlassShader from '../../components/chunk/shader/glass/GlassShader';
 import SkyboxShader from '../../components/skybox/shader/SkyboxShader';
 import CursorShader from '../../components/cursor/shader/CursorShader';
 import ItemDropShader from '../../components/item-drop/shader/ItemDropShader';
+import UnsupportedShaderError from '../../framework/shader/exceptions/UnsupportedShaderError';
 
 export default class ShaderRegistry {
     private registry: Map<string, Shader > = new Map();

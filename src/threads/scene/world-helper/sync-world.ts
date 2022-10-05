@@ -1,6 +1,5 @@
 import ChunkModel, { ChunkModelType } from '../../../components/chunk/model/ChunkModel';
 import SceneContainer from '../SceneContainer';
-import Model3DInterface from '../../../shared/model/Model3DInterface';
 import syncRenderObject, { SyncAction } from '../helper/sync-render-object';
 
 const registry: Record<string, any> = {}
@@ -53,24 +52,9 @@ function syncChunk(chunkId: string) {
         const changedBlocks = chunk.getChangedBlockIDs();
 
         if (changedBlocks.size || !registry[chunkId]) {
-            const solid = ChunkModel.create(chunk, ChunkModelType.SOLID),
-                  glass = ChunkModel.create(chunk, ChunkModelType.GLASS);
-
             registry[chunkId] = {
-                id: chunkId,
-            };
-
-            registry[chunkId].solid = {
-                id: `${chunkId}${ChunkSuffix.SOLID}`,
-                shader: 'chunk-solid',
-                ...getModelData(solid),
-            };
-
-
-            registry[chunkId].glass = {
-                id: `${chunkId}${ChunkSuffix.GLASS}`,
-                shader: 'chunk-glass',
-                ...getModelData(glass),
+                solid: ChunkModel.create(chunk, ChunkModelType.SOLID).toRawRenderObject(),
+                glass: ChunkModel.create(chunk, ChunkModelType.GLASS).toRawRenderObject(),
             };
         }
 
@@ -88,16 +72,4 @@ function syncChunk(chunkId: string) {
             registry[chunkId].glass,
         );
     });
-}
-
-function getModelData(model: Model3DInterface) {
-    return {
-        view: new Float32Array(model.view!),
-        indices: model.mesh.indices,
-        vertices: model.mesh.vertices,
-        normals: [],
-        uvs: model.mesh.uvs,
-        faces: model.mesh.faces,
-        arrayObj: model.mesh.arrayObj,
-    }
 }

@@ -1,6 +1,6 @@
-import BlockID from '../../data/block-id';
-import SceneContainer from '../../threads/scene/SceneContainer';
-import BlockUpdatedEvent from '../world/events/BlockUpdatedEvent';
+import BlockUpdatedEvent from '../../../components/world/events/BlockUpdatedEvent';
+import BlockID from '../../../data/block-id';
+import SceneContainer from '../SceneContainer';
 
 class InventorySubscriber {
     constructor() {

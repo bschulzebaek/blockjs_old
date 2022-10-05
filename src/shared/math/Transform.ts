@@ -5,7 +5,6 @@ export default class Transform {
     public scale: Vector3;
     public rotation: Vector3;
     public view: Matrix4;
-    public normal: Float32Array;
     public forward: Vector4;
     public up: Vector4;
     public right: Vector4;
@@ -15,7 +14,6 @@ export default class Transform {
         this.rotation = new Vector3();
         this.position = new Vector3();
         this.view = Matrix4.identity();
-        this.normal = new Float32Array(9);
         this.forward = new Vector4();
         this.up = new Vector4();
         this.right = new Vector4();

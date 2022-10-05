@@ -1,6 +1,6 @@
 import RenderObjectReadyEvent from './events/RenderObjectReadyEvent';
 import RenderContainer from './RenderContainer';
-import UnsupportedShaderError from '../../framework/shader/UnsupportedShaderError';
+import UnsupportedShaderError from '../../framework/shader/exceptions/UnsupportedShaderError';
 
 class RenderSubscriber {
     constructor() {

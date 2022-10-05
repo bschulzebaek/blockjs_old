@@ -2,7 +2,6 @@ import SceneObjectInterface from '../../threads/scene/scene/SceneObjectInterface
 import Model3DInterface from '../../shared/model/Model3DInterface';
 import CubeModel from '../../shared/model/cube/CubeModel';
 import { ShaderName } from '../../framework/shader/shader-names';
-import toRawRenderObject from '../../framework/shader/to-raw-render-object';
 import CameraInterface from '../camera/CameraInterface';
 
 export default class Skybox implements SceneObjectInterface {
@@ -37,10 +36,10 @@ export default class Skybox implements SceneObjectInterface {
     }
 
     public createModel(): void {
-        this.model = CubeModel.create(Skybox.SCENE_ID, Skybox.MESH_HEIGHT, Skybox.MESH_WIDTH, Skybox.MESH_LENGTH);
+        this.model = CubeModel.create(Skybox.SCENE_ID, Skybox.SHADER, Skybox.MESH_HEIGHT, Skybox.MESH_WIDTH, Skybox.MESH_LENGTH);
     }
 
     public getRenderData() {
-        return toRawRenderObject(this);
+        return this.model.toRawRenderObject();
     }
 }

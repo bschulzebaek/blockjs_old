@@ -1,5 +1,6 @@
 import Model3D from '../Model3D';
 import Mesh from '../Mesh';
+import { ShaderName } from '../../../framework/shader/shader-names';
 
 const CubeNormals = [
     0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
@@ -41,12 +42,15 @@ const CubeVertices = (width: number, height: number, depth: number, x: number, y
 }
 
 export default class CubeModel {
-
-    public static create(name = 'Cube', w?: number, h?: number, d?: number, x?: number, y?: number, z?: number): Model3D {
-        return new Model3D(CubeModel.createMesh(name, w, h, d, x, y, z));
+    public static create(sceneId: string, shader: ShaderName, w?: number, h?: number, d?: number, x?: number, y?: number, z?: number): Model3D {
+        return new Model3D(
+            sceneId,
+            CubeModel.createMesh(w, h, d, x, y, z),
+            shader,
+        );
     }
 
-    public static createMesh(name: string, width = 1, height = 1, depth = 1, x = 0, y = 0, z = 0) {
-        return new Mesh(name, CubeIndices, CubeVertices(width, height, depth, x, y, z), CubeNormals);
+    public static createMesh(width = 1, height = 1, depth = 1, x = 0, y = 0, z = 0) {
+        return new Mesh(CubeIndices, CubeVertices(width, height, depth, x, y, z), CubeNormals);
     }
 }

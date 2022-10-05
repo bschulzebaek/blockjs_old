@@ -1,7 +1,8 @@
-import BlockUV from '../../data/block-model';
-import BlockID from '../../data/block-id';
-import Model3D from '../../shared/model/Model3D';
-import Mesh from '../../shared/model/Mesh';
+import BlockUV from '../../../data/block-model';
+import BlockID from '../../../data/block-id';
+import Model3D from '../../../shared/model/Model3D';
+import Mesh from '../../../shared/model/Mesh';
+import ItemDrop from '../ItemDrop';
 
 const CubeNormals = [
     0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
@@ -56,7 +57,7 @@ export default class ItemDropModel {
     static HEIGHT = 0.3;
     static LENGTH = 0.3;
 
-    static create(itemId: BlockID) {
+    static create(sceneId: string, itemId: BlockID) {
         const uvs: number[] = [];
 
         const blockUv = BlockUV[itemId];
@@ -65,10 +66,14 @@ export default class ItemDropModel {
             uvs.push(...blockUv);
         }
 
-        return new Model3D(ItemDropModel.createMesh('item-drop', uvs));
+        return new Model3D(
+            sceneId,
+            ItemDropModel.createMesh(uvs),
+            ItemDrop.SHADER,
+        );
     }
 
-    public static createMesh(name: string, uvs: number[]) {
-        return new Mesh(name, CubeIndices, CubeVertices(), CubeNormals, uvs);
+    public static createMesh(uvs: number[]) {
+        return new Mesh(CubeIndices, CubeVertices(), CubeNormals, uvs);
     }
 }

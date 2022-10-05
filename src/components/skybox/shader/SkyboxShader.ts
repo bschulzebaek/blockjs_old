@@ -1,7 +1,7 @@
 import fss from './fss.glsl?raw';
 import vss from './vss.glsl?raw';
 import Shader from '../../../framework/shader/Shader';
-import createCubemap from '../../../framework/shader/create-cubemap';
+import createCubemap from '../../../framework/shader/utility/create-cubemap';
 import RenderObject from '../../../framework/shader/RenderObject';
 
 export default class SkyboxShader extends Shader {

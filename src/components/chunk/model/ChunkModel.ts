@@ -6,6 +6,7 @@ import Mesh from '../../../shared/model/Mesh';
 import BlockID from '../../../data/block-id';
 import { ChunkFaces } from '../../../data/chunk-faces';
 import BlockUV from '../../../data/block-model';
+import { ShaderName } from '../../../framework/shader/shader-names';
 
 export enum ChunkModelType {
     SOLID = 'solid',
@@ -16,6 +17,7 @@ export default class ChunkModel {
 
     static create(chunk: Chunk, type: ChunkModelType): Model3D {
         const model = new Model3D(
+            `${chunk.getId()}-${type}`,
             ChunkModel.buildMesh(
                 chunk,
                 getFaceFn(type),
@@ -25,7 +27,9 @@ export default class ChunkModel {
                 [],
                 [],
                 [],
-                [])
+                []
+            ),
+            `chunk-${type}` as ShaderName,
         );
 
         // @ts-ignore
@@ -82,6 +86,6 @@ export default class ChunkModel {
             }
         }
 
-        return new Mesh('chunk', inds, verts, normals, uvs, faces, arrayObject);
+        return new Mesh(inds, verts, normals, uvs, faces, arrayObject);
     }
 }

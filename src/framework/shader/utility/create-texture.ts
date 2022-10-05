@@ -1,4 +1,4 @@
-import getAssetUrl from '../../shared/utility/get-asset-url';
+import getAssetUrl from '../../../shared/utility/get-asset-url';
 
 const width = 1;
 const height = 1;

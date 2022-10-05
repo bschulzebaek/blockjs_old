@@ -1,5 +1,4 @@
 export default class Mesh {
-    public name: string;
     public indices: Uint16Array;
     public vertices: Float32Array;
     public normals: Float32Array;
@@ -7,9 +6,7 @@ export default class Mesh {
     public faces: Float32Array;
     public arrayObj: Float32Array;
 
-    constructor(name: string, indices: number[], vertices: number[], normals: number[], uvs: number[] = [], faces: number[] = [], arrayObj: number[] = []) {
-        this.name = name;
-
+    constructor(indices: number[], vertices: number[], normals: number[], uvs: number[] = [], faces: number[] = [], arrayObj: number[] = []) {
         this.indices = new Uint16Array(indices);
         this.vertices = new Float32Array(vertices);
         this.normals = new Float32Array(normals);

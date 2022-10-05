@@ -84,10 +84,6 @@ export default class Camera implements SceneObjectInterface {
         this.updateViewMatrix();
     }
 
-    public getShader() {
-        return null;
-    }
-
     public getRenderData() {
         return {
             projection: new Float32Array(this.projectionMatrix),

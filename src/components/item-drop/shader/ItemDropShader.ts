@@ -1,7 +1,7 @@
 import fss from './fss.glsl?raw';
 import vss from './vss.glsl?raw';
 import Shader from '../../../framework/shader/Shader';
-import createTexture from '../../../framework/shader/create-texture';
+import createTexture from '../../../framework/shader/utility/create-texture';
 import RenderObject from '../../../framework/shader/RenderObject';
 
 export default class ItemDropShader extends Shader {

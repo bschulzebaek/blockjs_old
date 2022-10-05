@@ -1,5 +1,5 @@
-import createShaderProgram from './create-program';
-import getShaderUniforms from './get-uniforms';
+import createShaderProgram from './utility/create-program';
+import getShaderUniforms from './utility/get-uniforms';
 import ShaderAttributeInterface from './ShaderAttributeInterface';
 import MissingImplementationError from '../../shared/exceptions/MissingImplementationError';
 import RenderObject from './RenderObject';

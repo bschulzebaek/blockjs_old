@@ -5,8 +5,8 @@ import CameraInterface from '../camera/CameraInterface';
 import CubeModel from '../../shared/model/cube/CubeModel';
 import getBlockFromRay from '../../shared/utility/get-block-from-ray';
 import RawRenderObjectInterface from '../../framework/shader/RawRenderObjectInterface';
-import toRawRenderObject from '../../framework/shader/to-raw-render-object';
 import SceneObjectInterface from '../../threads/scene/scene/SceneObjectInterface';
+import syncRenderObject, { SyncAction } from '../../threads/scene/helper/sync-render-object';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
@@ -32,7 +32,8 @@ export default class Cursor implements SceneObjectInterface {
     }
 
     public createModel() {
-        const model = CubeModel.create();
+        const model = CubeModel.create(Cursor.SCENE_ID, Cursor.SHADER);
+
         model.scale.set(1.001, 1.001, 1.001);
 
         this.model = model;
@@ -42,7 +43,10 @@ export default class Cursor implements SceneObjectInterface {
         const { camera, world } = this;
         const block = getBlockFromRay(
             world,
-            camera.getTransform().getPosition(), camera.getRay().fromScreen().ray);
+            camera.getTransform().getPosition(),
+            camera.getRay().fromScreen().ray,
+            8,
+        );
 
         if (!block || block.blockId < 1) {
             return this.remove();
@@ -66,7 +70,6 @@ export default class Cursor implements SceneObjectInterface {
     }
 
     private isNewPosition(block: any): boolean {
-
         return (
             this.model?.position.x !== block.x + Cursor.OFFSET ||
             this.model?.position.y !== block.y + Cursor.OFFSET ||
@@ -76,13 +79,19 @@ export default class Cursor implements SceneObjectInterface {
 
     public remove(): void {
         delete this.model;
+
+        // ToDo: Should be done using SceneEvents (tbi)
+        syncRenderObject(
+            SyncAction.DELETE,
+            this.getId(),
+        );
     }
 
-    public getModel() {
-        return this.model;
-    }
+    public getRenderData(): RawRenderObjectInterface | null {
+        if (!this.model) {
+            return null;
+        }
 
-    public getRenderData(): RawRenderObjectInterface | undefined {
-        return toRawRenderObject(this);
+        return this.model.toRawRenderObject();
     }
 }

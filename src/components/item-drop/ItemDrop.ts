@@ -1,57 +1,59 @@
-import ItemDropModel from './ItemDropModel';
+import ItemDropModel from './model/ItemDropModel';
 import SceneObjectInterface from '../../threads/scene/scene/SceneObjectInterface';
 import BlockID from '../../data/block-id';
-import type Entity from '../entity/Entity';
-import { distance } from '../../shared/math';
 import type Model3D from '../../shared/model/Model3D';
-import { ShaderName } from '../../framework/shader/shader-names';
 import type World from '../world/World';
-import toRawRenderObject from '../../framework/shader/to-raw-render-object';
 import generateUUID from '../../shared/utility/generate-uuid';
-import SceneContainer from '../../threads/scene/SceneContainer';
 import PickupItemEvent from './events/PickupItemEvent';
+import { ShaderName } from '../../framework/shader/shader-names';
+import RigidBody from '../../framework/physics/RigidBody';
+import CollisionShape from '../../framework/physics/CollisionShape';
+import { Transform } from '../../shared/math';
+import { PLAYER_ENTITY_ID } from '../../data/player-data';
+
+const OFFSET_BLOCK_CENTER = 0.5;
 
 export default class ItemDrop implements SceneObjectInterface {
-    static SHADER_NAME = ShaderName.ITEM_DROP;
     static ROTATE_RATE = 0.5;
-    static FALL_RATE = 0.05;
+    static PICKUP_DISTANCE = 1.2;
+    static ANIMATION_DISTANCE = 20;
+    static SHADER = ShaderName.ITEM_DROP;
 
-    private id = generateUUID();
-
-    private world: World;
-    private player: Entity;
-    public model: Model3D;
+    private readonly id = generateUUID();
+    private readonly transform: Transform;
+    private readonly model: Model3D;
+    private readonly rigidBody: RigidBody;
+    private readonly collisionShape: CollisionShape;
 
     private readonly itemId: BlockID;
     private readonly x: number;
     private readonly y: number;
     private readonly z: number;
 
-    constructor(itemId: BlockID, x: number, y: number, z: number) {
+    constructor(itemId: BlockID, x: number, y: number, z: number, world: World) {
         this.itemId = itemId;
-        this.x = x + 0.5;
-        this.y = y + 0.5;
-        this.z = z + 0.5;
+        this.x = x + OFFSET_BLOCK_CENTER;
+        this.y = y + OFFSET_BLOCK_CENTER;
+        this.z = z + OFFSET_BLOCK_CENTER;
 
-        this.player = SceneContainer.getPlayerEntity();
-        this.world = SceneContainer.getWorld();
+        this.transform = new Transform();
+        this.transform.setPosition(this.x, this.y, this.z);
+
         this.model = this.createModel();
+        this.collisionShape = new CollisionShape(this.id, this.transform, world, 0.3, 0.3, 0.3);
+        this.rigidBody = new RigidBody(this.transform, this.collisionShape);
     }
 
     public getId() {
         return this.id;
     }
 
-    public getShader() {
-        return ItemDrop.SHADER_NAME;
-    }
-
     public getRenderData() {
-        return toRawRenderObject(this);
+        return this.model.toRawRenderObject();
     }
 
     public createModel() {
-        const model = ItemDropModel.create(this.itemId);
+        const model = ItemDropModel.create(this.id, this.itemId);
 
         model.position.set(this.x, this.y, this.z);
 
@@ -59,25 +61,20 @@ export default class ItemDrop implements SceneObjectInterface {
     }
 
     public update(): void {
-        const distanceToPlayer = distance(this.model.getPosition(), this.player.getPosition());
+        const distanceToPlayer = this.collisionShape.distanceTo(PLAYER_ENTITY_ID);
 
-        if (distanceToPlayer > 20) {
+        if (distanceToPlayer > ItemDrop.ANIMATION_DISTANCE) {
             return;
-        } else if (distanceToPlayer < 1.3) {
+        }
+
+        if (distanceToPlayer < ItemDrop.PICKUP_DISTANCE) {
             dispatchEvent(new PickupItemEvent(this.id, this.itemId));
         }
 
-        this.updatePosition();
-    }
-
-    private updatePosition() {
+        this.rigidBody.update();
+        const position = this.transform.getPosition();
         this.model.rotation.add(0, ItemDrop.ROTATE_RATE, 0);
-        const { x, y, z } = this.model.getPosition();
-
-        if (this.world.getBlockId(x, y - 0.25, z) <= 0) {
-            this.model.position.add(0, -ItemDrop.FALL_RATE, 0);
-        }
-
+        this.model.setPosition(position.x, position.y + 0.18, position.z);
         this.model.update();
     }
 }

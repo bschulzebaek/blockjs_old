@@ -1,11 +1,12 @@
 import type World from '../world/World';
 import type Entity from '../entity/Entity';
 import CameraInterface from '../camera/CameraInterface';
-import { Vector3 } from '../../shared/math';
-import { onLeftClick, onRightClick } from './mouse-controls';
+import { Vector3 } from '../../shared/math'
 import SceneObjectInterface from '../../threads/scene/scene/SceneObjectInterface';
 import Chunk from '../chunk/Chunk';
 import UpdateGridEvent from '../world/events/UpdateGridEvent';
+import RigidBody from '../../framework/physics/RigidBody';
+import CollisionShape from '../../framework/physics/CollisionShape';
 
 enum ControlMap {
     WALK_FORWARD = 'w',
@@ -14,41 +15,61 @@ enum ControlMap {
     WALK_RIGHT = 'd',
     JUMP = ' ',
     SPRINT = 'Control',
+    CROUCH = 'Shift',
+}
+
+enum Modes {
+    NORMAL = 0,
+    FLY = 1,
+    GHOST = 2,
 }
 
 export default class PlayerController implements SceneObjectInterface {
     static SCENE_ID = 'player-controller';
     static DEFAULT_HEIGHT = 1.7;
     static DEFAULT_WIDTH = 0.6;
-    static DEFAULT_SPEED = 6;
-    static SPRINT_FACTOR = 1.6;
-    static JUMP_ACCELERATION = 0.3;
+    static DEFAULT_SPEED = 0.2;
+    static SPRINT_FACTOR = 1.4;
+    static JUMP_ACCELERATION = 0.165;
     static ROTATE_RATE_X = -120;
     static ROTATE_RATE_Y = -135;
 
-    private camera: CameraInterface;
-    private entity: Entity;
-    private world: World;
+    private readonly camera: CameraInterface;
+    private readonly entity: Entity;
+    private readonly rigidBody: RigidBody;
+    private readonly collisionShape: CollisionShape;
 
-    private keyDownMap: Map<string, null> = new Map();
-
-    private acc = new Vector3();
-    private vel = new Vector3();
-
+    private keyDownSet: Set<string> = new Set();
+    private mode: Modes = Modes.NORMAL;
     private speed: number = PlayerController.DEFAULT_SPEED;
-    private lastJump: number = 0
     private lastChunkId = '';
+
 
     constructor(camera: CameraInterface, entity: Entity, world: World) {
         this.camera = camera;
         this.entity = entity;
-        this.world = world;
 
         this.syncCameraPosition();
         this.registerEventListener();
 
-        const entityPosition = entity.getPosition(),
-              entityRotation = entity.getTransform().getRotation();
+        const transform = entity.getTransform(),
+            entityPosition = transform.getPosition(),
+            entityRotation = transform.getRotation();
+
+        this.collisionShape = new CollisionShape(
+            this.entity.getId(),
+            transform,
+            world,
+            0.6,
+            0.6,
+            1.7
+        );
+        this.rigidBody = new RigidBody(
+            this.entity.getTransform(),
+            this.collisionShape,
+            this.mode === Modes.NORMAL,
+            this.mode !== Modes.GHOST,
+        );
 
         this.camera.getTransform().setRotation(entityRotation.x, entityRotation.y, entityRotation.z);
         this.lastChunkId = Chunk.getFormattedId(entityPosition.x, entityPosition.z);
@@ -56,10 +77,6 @@ export default class PlayerController implements SceneObjectInterface {
 
     public getId() {
         return PlayerController.SCENE_ID;
-    }
-
-    public getShader() {
-        return null; // this.entity.getShader
     }
 
     public getRenderData() {
@@ -74,77 +91,62 @@ export default class PlayerController implements SceneObjectInterface {
         this.entity.setPosition(position);
     }
 
-    public update(delta: number): void {
+    public setMode(mode: Modes) {
+        this.mode = mode;
+    }
 
-        const { world, vel, acc, speed, keyDownMap } = this,
-              position = this.entity.getPosition(),
-              transform = this.camera.getTransform();
+    public update(): void {
+        const position = this.entity.getPosition(),
+            force = this.getMovementForce();
 
-        const keydownForward = keyDownMap.has(ControlMap.WALK_FORWARD),
-              keydownBackward = keyDownMap.has(ControlMap.WALK_BACKWARD),
-              keydownLeft = keyDownMap.has(ControlMap.WALK_LEFT),
-              keydownRight = keyDownMap.has(ControlMap.WALK_RIGHT),
-              keydownJump = keyDownMap.has(ControlMap.JUMP);
+        this.rigidBody.addForce(force.x, force.y, force.z);
+        this.rigidBody.update();
 
-        let xo = 0,
-            yo = 0,
-            zo = 0;
+        this.syncCameraPosition();
+        this.updateChunkPosition(position.x, position.z);
+        this.debugPosition();
+    }
+
+    private getMovementForce() {
+        const { speed, keyDownSet } = this,
+            transform = this.camera.getTransform(),
+            force = new Vector3();
+
+        const keydownForward = keyDownSet.has(ControlMap.WALK_FORWARD),
+            keydownBackward = keyDownSet.has(ControlMap.WALK_BACKWARD),
+            keydownLeft = keyDownSet.has(ControlMap.WALK_LEFT),
+            keydownRight = keyDownSet.has(ControlMap.WALK_RIGHT),
+            keydownJump = keyDownSet.has(ControlMap.JUMP),
+            keydownCrouch = keyDownSet.has(ControlMap.CROUCH);
 
         if (keydownForward || keydownBackward) {
             const dir = keydownBackward ? 1 : -1,
-                  v = delta * speed * dir,
-                  angle = Math.atan2(transform.forward[2], transform.forward[0]);
+                v = speed * dir,
+                angle = Math.atan2(transform.forward[2], transform.forward[0]);
 
-            xo += Math.cos(angle) * v;
-            zo += Math.sin(angle) * v;
+            force.x += Math.cos(angle) * v;
+            force.z += Math.sin(angle) * v;
         }
 
         if (keydownLeft || keydownRight) {
             const dir = keydownRight ? 1 : -1,
-                  v = delta * speed * dir;
+                v = speed * dir;
 
-            xo += transform.right[0] * v;
-            zo += transform.right[2] * v;
+            force.x += transform.right[0] * v;
+            force.z += transform.right[2] * v;
         }
 
         if (keydownJump && this.canJump()) {
-            acc.y = PlayerController.JUMP_ACCELERATION;
+            force.y = PlayerController.JUMP_ACCELERATION;
         }
 
-        vel.y += acc.y;
-        vel.y -= delta * 0.999;
-        yo = vel.y;
-
-        this.getSurroundingCoordinates().forEach(({ x, y, z, top }) => {
-            if (xo !== 0 && world.getBlockId(x + xo, y, z)) {
-                xo = 0;
+        if (keydownCrouch) {
+            if (this.mode === Modes.FLY || this.mode === Modes.GHOST) {
+                force.y = -PlayerController.JUMP_ACCELERATION;
             }
-
-            if (zo !== 0 && world.getBlockId(x + xo, y, z + zo)) {
-                zo = 0;
-            }
-
-            if (yo !== 0 && world.getBlockId(x + xo, y + yo, z + zo)) {
-                if (top || vel.y <= 0) {
-                    yo = 0;
-                    vel.y = 0;
-                }
-            }
-        });
-
-        position.add(xo, yo, zo);
-
-        this.syncCameraPosition();
-
-        acc.set(0, 0, 0);
-
-        if (position.y < -100) {
-            position.set(8, 100, 8);
         }
 
-        this.updateChunkPosition(position.x, position.z);
-
-        this.debugPosition();
+        return force;
     }
 
     private updateChunkPosition(x: number, z: number) {
@@ -175,7 +177,6 @@ export default class PlayerController implements SceneObjectInterface {
         addEventListener('keypress', this.onKeyPress);
         addEventListener('keydown', this.onKeyDown);
         addEventListener('keyup', this.onKeyUp);
-        addEventListener('click', this.onClick);
         addEventListener('mousemove', this.onMouseMove);
     }
 
@@ -183,7 +184,6 @@ export default class PlayerController implements SceneObjectInterface {
         removeEventListener('keypress', this.onKeyPress);
         removeEventListener('keydown', this.onKeyDown);
         removeEventListener('keyup', this.onKeyUp);
-        removeEventListener('click', this.onClick);
         removeEventListener('mousemove', this.onMouseMove);
     }
 
@@ -197,11 +197,11 @@ export default class PlayerController implements SceneObjectInterface {
         // @ts-ignore
         const { key } = event.detail;
 
-        if (this.keyDownMap.has(key)) {
+        if (this.keyDownSet.has(key)) {
             return;
         }
 
-        this.keyDownMap.set(key, null);
+        this.keyDownSet.add(key);
 
         if (key === ControlMap.SPRINT) {
             this.speed = PlayerController.DEFAULT_SPEED * PlayerController.SPRINT_FACTOR;
@@ -214,77 +214,23 @@ export default class PlayerController implements SceneObjectInterface {
         // @ts-ignore
         const { key } = event.detail;
 
-        if (!this.keyDownMap.has(key)) {
+        if (!this.keyDownSet.has(key)) {
             return;
         }
 
-        this.keyDownMap.delete(key);
+        this.keyDownSet.delete(key);
 
         if (key === ControlMap.SPRINT) {
             this.speed = PlayerController.DEFAULT_SPEED;
         }
     }
 
-    private onClick = (event: MouseEvent) => {
-        // @ts-ignore
-        const { button } = event.detail;
-
-        if (button === 0) {
-            onLeftClick.call(this, event);
-        } else if (button === 2) {
-            onRightClick.call(this, event);
-        }
-    }
-
-    public isBlocking(targetX: number, targetY: number, targetZ: number): boolean {
-        return this.getSurroundingCoordinates().some(({ x, y, z }) => {
-            return Math.floor(x) === targetX && Math.floor(y) === targetY && Math.floor(z) === targetZ;
-        });
-    }
-
-    private getSurroundingCoordinates() {
-        const { x, y, z } = this.entity.getPosition(),
-              radius = PlayerController.DEFAULT_WIDTH / 2;
-
-        const x0 = x - radius,
-              x1 = x + radius,
-              y0 = y + PlayerController.DEFAULT_HEIGHT / 2,
-              y1 = y + PlayerController.DEFAULT_HEIGHT,
-              z0 = z - radius,
-              z1 = z + radius;
-
-        return [
-            { x: x0, y, z: z0 },
-            { x: x1, y, z: z0 },
-            { x: x0, y, z: z1 },
-            { x: x1, y, z: z1 },
-            { x: x0, y: y0, z: z0 },
-            { x: x1, y: y0, z: z0 },
-            { x: x0, y: y0, z: z1 },
-            { x: x1, y: y0, z: z1 },
-            { x: x0, y: y1, z: z0, top: true },
-            { x: x1, y: y1, z: z0, top: true },
-            { x: x0, y: y1, z: z1, top: true },
-            { x: x1, y: y1, z: z1, top: true }
-        ];
+    public isBlocking(x: number, y: number, z: number): boolean {
+        return this.collisionShape.isBlocking(x, y, z);
     }
 
     private canJump(): boolean {
-        const position = this.entity.getPosition();
-
-        const aboveBlockId = this.world.getBlockId(position.x, position.y + 1, position.z),
-              lastJump = this.lastJump,
-              now = Date.now(),
-              delta = now - lastJump;
-
-
-        if (delta > 300 && this.vel.y === 0 && aboveBlockId < 1) {
-            this.lastJump = now;
-
-            return true;
-        } else {
-            return false;
-        }
+        return this.rigidBody.getForce().y === 0;
     }
 
     private onMouseMove = (event: MouseEvent): void => {

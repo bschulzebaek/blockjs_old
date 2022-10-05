@@ -1,4 +1,4 @@
-import ShaderAttributeInterface from './ShaderAttributeInterface';
+import ShaderAttributeInterface from '../ShaderAttributeInterface';
 
 export default function getShaderAttributes(context: WebGL2RenderingContext, program: WebGLProgram): Record<string, ShaderAttributeInterface> {
     return [...Array(context.getProgramParameter(program, context.ACTIVE_ATTRIBUTES))].map((_, i) => {
