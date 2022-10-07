@@ -3,6 +3,7 @@ import MissingContainerPropertyError from '../../shared/exceptions/MissingContai
 class RenderPipelineContainer {
     private renderPort?: MessagePort;
     private scenePort?: MessagePort;
+    private worldPort?: MessagePort;
 
     public setRenderPort(port: MessagePort) {
         this.renderPort = port;
@@ -26,6 +27,18 @@ class RenderPipelineContainer {
         }
 
         return this.scenePort!;
+    }
+
+    public setWorldPort(port: MessagePort) {
+        this.worldPort = port;
+    }
+
+    public getWorldPort() {
+        if (!this.worldPort) {
+            throw new MissingContainerPropertyError('RenderPipelineContainer', 'worldPort');
+        }
+
+        return this.worldPort!;
     }
 }
 

@@ -1,5 +1,5 @@
-const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const SEED_LENGTH = 16;
+const CHARACTERS = 'abcdef01234567890123456789';
+const SEED_LENGTH = 12;
 
 export default function generateSeed(): string {
     let seed = '';

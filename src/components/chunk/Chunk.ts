@@ -3,10 +3,13 @@ import BlockID from '../../data/block-id';
 import StoreClass from '../../shared/storage/StoreClass';
 import { ChunkFaces } from '../../data/chunk-faces';
 import { Vector3 } from '../../shared/math';
+import { CHUNK_HEIGHT } from '../world/world-generation/generation-v1/configuration';
+
+export type BlockMap = Map<string, BlockInterface>;
 
 export interface ChunkRawInterface {
     id: string;
-    blocks: Map<string, BlockInterface>;
+    blocks: BlockMap;
     worldX: number;
     worldZ: number;
 }
@@ -21,10 +24,10 @@ export default class Chunk extends StoreClass {
     ];
     static WIDTH = 16;
     static LENGTH = 16;
-    static HEIGHT = 64;
+    static HEIGHT = CHUNK_HEIGHT;
 
     private readonly id: string;
-    private readonly blocks: Map<string, BlockInterface>;
+    private readonly blocks: BlockMap;
     private readonly worldX: number;
     private readonly worldZ: number;
     private readonly changedBlockIDs: Set<BlockID> = new Set();
@@ -59,6 +62,10 @@ export default class Chunk extends StoreClass {
         return this.blocks;
     }
 
+    public getBlockIds() {
+        return Array.from(this.blocks.values()).map((block) => block.id);
+    }
+
     public getChanged() {
         return this.changed;
     }
@@ -67,6 +74,10 @@ export default class Chunk extends StoreClass {
         const block = this.blocks.get(Chunk.getBlockPosition(x, y, z));
 
         return block ? block.id : BlockID.AIR;
+    }
+
+    public getBlock(x: number, y: number, z: number) {
+        return this.blocks.get(Chunk.getBlockPosition(x, y, z));
     }
 
     public setBlockId(x: number, y: number, z: number, id: BlockID) {
@@ -130,7 +141,7 @@ export default class Chunk extends StoreClass {
         return `${chunkX}:${chunkZ}`;
     }
 
-    static getEmptyBlocks(): Map<string, BlockInterface> {
+    static getEmptyBlocks(): BlockMap {
         return new Map();
     }
 

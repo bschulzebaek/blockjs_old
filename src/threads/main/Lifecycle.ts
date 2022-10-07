@@ -9,7 +9,7 @@ import WorldConfigService from '../../components/world-config/WorldConfigService
 import ThreadManager, { ThreadNames } from './thread-manager/ThreadManager';
 import { BroadcastMessages, RenderMessages, SceneMessages } from '../../shared/messages/ThreadMessages';
 import Container from './Container';
-import createNewWorld from './helper/create-new-world';
+import setupInitialData from './helper/setup-initial-data';
 
 export default class Lifecycle {
     static async create(store: ApplicationStoreInterface, router: Router) {
@@ -35,7 +35,7 @@ export default class Lifecycle {
         Container.setConfig(worldConfig);
 
         if (worldConfig.getIsNew()) {
-            await createNewWorld(worldConfig);
+            await setupInitialData(worldConfig);
         }
 
         ThreadManager.createThreads();

@@ -6,7 +6,7 @@ function frac(dir: any, a: number) {
     return dir > 0 ? (1 - a % 1) : (a % 1);
 }
 
-export default function getBlockFromRay(world: WorldInterface, point: Vector3, direction: Vector3, maxDistances = 20): any {
+export default function getBlockFromRay(world: WorldInterface, point: Vector3, direction: Vector3, maxDistances = 10): any {
     const { x: px, y: py, z: pz } = point,
           { x: dirX, y: dirY, z: dirZ } = direction;
 

@@ -1,6 +1,6 @@
 <template>
     <div ref="game">
-        <canvas ref="canvas"></canvas>
+        <canvas ref="canvas" style="background-color: #87a5ff;"></canvas>
 
         <router-view
             v-if="$store.canvas"

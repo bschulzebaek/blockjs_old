@@ -30,3 +30,12 @@ export enum SceneMessages {
     READY = 'ready',
     CREATE = 'create',
 }
+
+export enum WorldMessages {
+    IN_CREATE_CHUNK = 'create-chunk',
+    IN_DISCARD_CHUNK = 'discard-chunk',
+    IN_UPDATE_CHUNK = 'update-chunk',
+    IN_UPDATE_CHUNKS = 'update-chunks',
+    OUT_CHUNK_READY = 'chunk-ready',
+    SUB_TERMINATED = 'sub-terminated',
+}

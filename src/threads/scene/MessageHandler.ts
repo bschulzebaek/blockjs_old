@@ -1,10 +1,15 @@
 import MessagePayloadInterface from '../../shared/messages/MessagePayloadInterface';
-import { BroadcastMessages, GeneralMessages, SceneMessages } from '../../shared/messages/ThreadMessages';
+import {
+    BroadcastMessages,
+    GeneralMessages,
+    SceneMessages, WorldMessages,
+} from '../../shared/messages/ThreadMessages';
 import SceneContainer from './SceneContainer';
 import UnhandledMessageError from '../../shared/exceptions/UnhandledMessageError';
 import createInstance from './lifecycle/create-instance';
 import Message from '../../shared/utility/Message';
 import discardInstance from './lifecycle/discard-instance';
+import onChunkReady from './world-helper/on-chunk-ready';
 
 export default class MessageHandler {
     static onMessage(event: MessageEvent<MessagePayloadInterface>) {
@@ -40,6 +45,10 @@ export default class MessageHandler {
             case 'render-pipeline':
                 SceneContainer.setRenderPipelinePort(event.ports[0]);
                 break;
+            case 'world':
+                SceneContainer.setWorldPort(event.ports[0]);
+                event.ports[0].onmessage = MessageHandler.onWorldPort;
+                break;
             default:
                 throw new UnhandledMessageError(event.data.action);
         }
@@ -50,6 +59,20 @@ export default class MessageHandler {
 
         dispatchEvent(new CustomEvent(detail.type, { detail }));
     }
+
+    static onWorldPort(event: MessageEvent<MessagePayloadInterface>) {
+        switch (event.data.action) {
+            case WorldMessages.OUT_CHUNK_READY:
+                onChunkReady(event.data.detail);
+                break;
+            case GeneralMessages.CONNECT:
+                event.ports[0].onmessage = MessageHandler.onWorldPort;
+                break;
+            default:
+                throw new UnhandledMessageError(event.data.action);
+        }
+    }
+
     static dispatchReady() {
         Message.send(SceneMessages.READY);
     }

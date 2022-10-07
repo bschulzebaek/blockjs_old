@@ -1,6 +1,6 @@
 import BlockID from '../../data/block-id';
-import BlockInterface from './BlockInterface';
 import Model3DInterface from '../../shared/model/Model3DInterface';
+import { BlockMap } from './Chunk';
 
 export default interface ChunkInterface {
     getSolidModel(): Model3DInterface;
@@ -10,6 +10,6 @@ export default interface ChunkInterface {
     getX(): number;
     getZ(): number;
     getBlockId(x: number, y: number, z: number): BlockID;
-    getBlocks(): Map<string, BlockInterface>;
+    getBlocks(): BlockMap;
     isOutOfBounds(x: number, y: number, z: number): boolean;
 }

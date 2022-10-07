@@ -5,10 +5,10 @@ import getChunkMap from '../../../components/world/utility/get-chunk-map';
 import { VIEW_DISTANCE } from '../../../data/settings';
 import SceneContainer from '../SceneContainer';
 import unloadChunks from '../world-helper/unload-chunks';
-import loadChunks from '../world-helper/load-chunks';
 import ChunkNotFoundError from '../../../shared/exceptions/ChunkNotFoundError';
-import syncWorld from '../world-helper/sync-world';
 import PlayerController from '../../../components/player/PlayerController';
+import loadChunks from '../world-helper/load-chunks';
+import updateChunkModel from '../world-helper/update-chunk-model';
 
 class WorldSubscriber {
     constructor() {
@@ -27,7 +27,7 @@ class WorldSubscriber {
         loadChunks(chunksToCreate);
     }
 
-    private onSetBlock = (event: SetBlockEvent) => {
+    private onSetBlock = async (event: SetBlockEvent) => {
         const { x, y, z } = event.getPosition(),
             id = event.getId(),
             world = SceneContainer.getWorld(),
@@ -45,9 +45,9 @@ class WorldSubscriber {
         }
 
         world.setBlockId(x, y, z, id);
+        await SceneContainer.getChunkRepository().write(chunk);
 
-        syncWorld([chunkId]);
-        SceneContainer.getChunkRepository().write(chunk);
+        updateChunkModel(chunkId);
     }
 }
 

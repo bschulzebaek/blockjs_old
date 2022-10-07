@@ -1,10 +1,10 @@
 import BlockUpdatedEvent from '../../../components/world/events/BlockUpdatedEvent';
 import PickupItemEvent from '../../../components/item-drop/events/PickupItemEvent';
-import BlockID from '../../../data/block-id';
 import SceneContainer from '../SceneContainer';
 import ItemDrop from '../../../components/item-drop/ItemDrop';
 import { SceneMessages } from '../../../shared/messages/ThreadMessages';
 import CollisionShapeRegistry from '../../../framework/physics/CollisionShapeRegistry';
+import BlockMeta from '../../../data/block-meta';
 
 class ItemDropSubscriber {
     constructor() {
@@ -13,14 +13,19 @@ class ItemDropSubscriber {
     }
 
     private onBlockUpdated = (event: BlockUpdatedEvent) => {
-        if (event.getOldId() === BlockID.AIR) {
+        const blockId = event.getOldId(),
+            meta = BlockMeta[blockId];
+
+        if (meta.drop === false) {
             return;
         }
 
         const { x, y, z } = event.getPosition();
 
+        const dropId = typeof meta.drop === 'number' ? meta.drop : blockId;
+
         SceneContainer.getScene().addSceneObject(
-            new ItemDrop(event.getOldId(), x, y, z, SceneContainer.getWorld()),
+            new ItemDrop(dropId, x, y, z, SceneContainer.getWorld()),
         );
     }
 

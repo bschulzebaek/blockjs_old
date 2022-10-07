@@ -7,6 +7,8 @@ import Message from '../../shared/utility/Message';
 import arrayEquals from '../../shared/utility/array-equals';
 
 class RenderPipelineService {
+    static CACHE_LIMIT = 1024;
+
     private upsertRegistry: Map<string, RawRenderObjectInterface> = new Map();
 
     public upsert(data: RenderObjectData) {
@@ -18,17 +20,30 @@ class RenderPipelineService {
             return;
         }
 
-        this.upsertRegistry.set(data.id, data.payload as RawRenderObjectInterface);
+        this.upsertRegistry.set(data.id, Object.assign({}, data.payload) as RawRenderObjectInterface);
+
+        const payload = data.payload as RawRenderObjectInterface;
 
         Message.send(
             RenderMessages.UPSERT_RENDER_OBJECT,
             data,
             RenderPipelineContainer.getRenderPort(),
+            [
+                payload.view.buffer,
+                payload.indices.buffer,
+                payload.vertices.buffer,
+                payload.normals.buffer,
+                payload.uvs.buffer,
+                payload.faces.buffer,
+                payload.arrayObj.buffer,
+            ]
         );
     }
 
     public delete(data: RenderObjectData) {
-        this.upsertRegistry.delete(data.id);
+        if (this.upsertRegistry.size > RenderPipelineService.CACHE_LIMIT) {
+            this.upsertRegistry.delete(data.id);
+        }
 
         Message.send(
             RenderMessages.DELETE_RENDER_OBJECT,

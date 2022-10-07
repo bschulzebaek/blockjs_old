@@ -23,12 +23,12 @@ class ThreadManager {
     public createThreads() {
         this.threads.set(ThreadNames.RENDER, new Worker(new URL(ThreadPaths.RENDER, import.meta.url), { type: 'module' }));
         this.threads.set(ThreadNames.RENDER_PIPELINE, new Worker(new URL(ThreadPaths.RENDER_PIPELINE, import.meta.url), { type: 'module' }));
-        this.threads.set(ThreadNames.SCENE,  new Worker(new URL(ThreadPaths.SCENE,  import.meta.url), { type: 'module' }));
-        // this.threads.set(ThreadNames.WORLD,  new Worker(new URL(ThreadPaths.WORLD,  import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.SCENE, new Worker(new URL(ThreadPaths.SCENE, import.meta.url), { type: 'module' }));
+        this.threads.set(ThreadNames.WORLD, new Worker(new URL(ThreadPaths.WORLD, import.meta.url), { type: 'module' }));
 
-        // this.connect(ThreadNames.RENDER, ThreadNames.WORLD);
-        // this.connect(ThreadNames.WORLD, ThreadNames.SCENE);
         this.connect(ThreadNames.SCENE, ThreadNames.RENDER_PIPELINE);
+        this.connect(ThreadNames.WORLD, ThreadNames.SCENE);
+        this.connect(ThreadNames.WORLD, ThreadNames.RENDER_PIPELINE);
         this.connect(ThreadNames.RENDER, ThreadNames.RENDER_PIPELINE);
 
         this.get(ThreadNames.SCENE).onmessage = MessageHandler.onScenePort;
@@ -54,7 +54,7 @@ class ThreadManager {
 
     public broadcast(action: BroadcastMessages, detail: any = null, transferable: any[] = []) {
         this.threads.forEach((thread) => {
-           thread.postMessage({ action, detail }, transferable);
+            thread.postMessage({ action, detail }, transferable);
         });
     }
 
@@ -65,8 +65,8 @@ class ThreadManager {
     public connect(nameA: ThreadNames, nameB: ThreadNames) {
         const channel = new MessageChannel();
 
-        this.send(nameA, GeneralMessages.CONNECT, { thread: nameB, port: channel.port1 }, [ channel.port1 ]);
-        this.send(nameB, GeneralMessages.CONNECT, { thread: nameA, port: channel.port2 }, [ channel.port2 ]);
+        this.send(nameA, GeneralMessages.CONNECT, { thread: nameB, port: channel.port1 }, [channel.port1]);
+        this.send(nameB, GeneralMessages.CONNECT, { thread: nameA, port: channel.port2 }, [channel.port2]);
 
         this.channel.set(`${nameA}-${nameB}`, channel);
     }

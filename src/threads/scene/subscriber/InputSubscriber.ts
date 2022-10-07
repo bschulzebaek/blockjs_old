@@ -29,7 +29,6 @@ class InputSubscriber {
             SceneContainer.getWorld(),
             camera.getTransform().getPosition(),
             camera.getRay().fromScreen().ray,
-            8,
         );
 
         if (block) {
@@ -44,7 +43,6 @@ class InputSubscriber {
             SceneContainer.getWorld(),
             camera.getTransform().getPosition(),
             camera.getRay().fromScreen().ray,
-            8,
         );
 
         if (!block) {

@@ -44,7 +44,6 @@ export default class PlayerController implements SceneObjectInterface {
     private speed: number = PlayerController.DEFAULT_SPEED;
     private lastChunkId = '';
 
-
     constructor(camera: CameraInterface, entity: Entity, world: World) {
         this.camera = camera;
         this.entity = entity;

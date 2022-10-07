@@ -15,6 +15,7 @@ enum StackSize {
 
 interface BlockMetaInterface {
     interactive?: boolean;
+    drop?: boolean|number;
     durability: BlockDurability;
     stack: StackSize;
 }
@@ -24,11 +25,13 @@ const BlockMeta: Record<BlockID, BlockMetaInterface> = {
         interactive: false,
         durability: BlockDurability.NONE,
         stack: StackSize.NONE,
+        drop: false,
     },
     [BlockID.AIR]: {
         interactive: false,
         durability: BlockDurability.NONE,
         stack: StackSize.NONE,
+        drop: false,
     },
     [BlockID.STONE]: {
         interactive: false,
@@ -64,26 +67,31 @@ const BlockMeta: Record<BlockID, BlockMetaInterface> = {
         interactive: false,
         durability: BlockDurability.INDESTRUCTIBLE,
         stack: StackSize._64_,
+        drop: false,
     },
     [BlockID.FLOWING_WATER]: {
         interactive: false,
         durability: 0,
         stack: StackSize.NONE,
+        drop: false,
     },
     [BlockID.WATER]: {
         interactive: false,
         durability: 0,
         stack: StackSize.NONE,
+        drop: false,
     },
     [BlockID.FLOWING_LAVA]: {
         interactive: false,
         durability: 0,
         stack: StackSize.NONE,
+        drop: false,
     },
     [BlockID.LAVA]: {
         interactive: false,
         durability: 0,
         stack: StackSize.NONE,
+        drop: false,
     },
     [BlockID.SAND]: {
         interactive: false,

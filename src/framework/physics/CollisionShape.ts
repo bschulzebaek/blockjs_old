@@ -1,6 +1,7 @@
 import { distance, Transform } from '../../shared/math';
 import type World from '../../components/world/World';
 import CollisionShapeRegistry from './CollisionShapeRegistry';
+import BlockID from '../../data/block-id';
 
 // ToDo: class CubeCollisionShape implements CollisionShapeInterface
 export default class CollisionShape {
@@ -50,17 +51,17 @@ export default class CollisionShape {
         };
 
         this.getCornerPoints().forEach(({ x, y, z, top }) => {
-            if (offsetX !== 0 && world.getBlockId(x + offsetX, y, z)) {
+            if (offsetX !== 0 && world.getBlockId(x + offsetX, y, z) !== BlockID.AIR) {
                 collision.x = true;
             }
 
-            if (offsetY !== 0 && world.getBlockId(x + offsetX, y + offsetY, z + offsetZ)) {
+            if (offsetY !== 0 && world.getBlockId(x + offsetX, y + offsetY, z + offsetZ) !== BlockID.AIR) {
                 if (top || offsetY <= 0) {
                     collision.y = true;
                 }
             }
 
-            if (offsetZ !== 0 && world.getBlockId(x, y, z + offsetZ)) {
+            if (offsetZ !== 0 && world.getBlockId(x, y, z + offsetZ) !== BlockID.AIR) {
                 collision.z = true;
             }
         });

@@ -50,7 +50,7 @@ export default class World implements WorldInterface {
         const chunk = this.getChunk(x, z);
 
         if (!chunk) {
-            return BlockID.AIR;
+            return BlockID.OUT_OF_CHUNK;
         }
 
         const blockX = Math.floor(x) - chunk.getX(),
@@ -58,6 +58,19 @@ export default class World implements WorldInterface {
               blockZ = Math.floor(z) - chunk.getZ();
 
         return chunk.getBlockId(blockX, blockY, blockZ);
+    }
+    public getBlock(x: number, y: number, z: number) {
+        const chunk = this.getChunk(x, z);
+
+        if (!chunk) {
+            return;
+        }
+
+        const blockX = Math.floor(x) - chunk.getX(),
+              blockY = Math.floor(y),
+              blockZ = Math.floor(z) - chunk.getZ();
+
+        return chunk.getBlock(blockX, blockY, blockZ);
     }
 
     public setBlockId(x: number, y: number, z: number, blockId: BlockID) {

@@ -1,12 +1,36 @@
-import syncWorld from './sync-world';
 import SceneContainer from '../SceneContainer';
+import syncRenderObject, { SyncAction } from '../helper/sync-render-object';
+import { WorldMessages } from '../../../shared/messages/ThreadMessages';
+import Message from '../../../shared/utility/Message';
 
-export default async function unloadChunks(ids: string[]) {
+enum ChunkSuffix {
+    GLASS = '-glass',
+    SOLID = '-solid',
+}
+
+export default function unloadChunks(ids: string[]) {
     const world = SceneContainer.getWorld();
+    const port = SceneContainer.getRenderPipelinePort();
+
+    Message.send(
+        WorldMessages.IN_DISCARD_CHUNK,
+        ids,
+        SceneContainer.getWorldPort(),
+    );
 
     ids.forEach((id) => {
         world.popChunk(id);
 
-        syncWorld([], [ id ]);
+        syncRenderObject(
+            port,
+            SyncAction.DELETE,
+            `${id}${ChunkSuffix.GLASS}`,
+        );
+
+        syncRenderObject(
+            port,
+            SyncAction.DELETE,
+            `${id}${ChunkSuffix.SOLID}`,
+        );
     });
 }

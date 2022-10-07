@@ -109,9 +109,13 @@ export default class Entity extends StoreClass {
         const world = this.getWorld(),
             position = this.getPosition();
 
+        const x = Math.round(position.x),
+            y = Math.round(position.y),
+            z = Math.round(position.z);
+
         return (
-            world.getBlockId(position.x, position.y, position.z) > 0 ||
-            world.getBlockId(position.x, position.y + 1, position.z) > 0
+            world.getBlockId(x, y, z) > 0 ||
+            world.getBlockId(x, y, z) > 0
         );
     }
 
@@ -119,7 +123,11 @@ export default class Entity extends StoreClass {
         const world = this.getWorld(),
             position = this.getPosition();
 
-        return (world.getBlockId(position.x, position.y - 1, position.z) <= 0);
+        const x = Math.round(position.x),
+            y = Math.round(position.y),
+            z = Math.round(position.z);
+
+        return (world.getBlockId(x, y - 1, z) <= 0);
     }
 
     public getRaw() {

@@ -1,6 +1,5 @@
 import Message from '../../../shared/utility/Message';
 import { RenderPipelineMessages } from '../../../shared/messages/ThreadMessages';
-import SceneContainer from '../SceneContainer';
 
 export enum SyncAction {
     UPSERT = 'UPSERT',
@@ -17,7 +16,7 @@ function getMessageType(action: SyncAction) {
     }
 }
 
-export default function syncRenderObject(action: SyncAction, id: string, data?: any, transferable?: Transferable[]) {
+export default function syncRenderObject(port: MessagePort, action: SyncAction, id: string, data?: any, transferable?: Transferable[]) {
     const messageType = getMessageType(action);
 
     Message.send(
@@ -26,7 +25,7 @@ export default function syncRenderObject(action: SyncAction, id: string, data?: 
             id,
             payload: data,
         },
-        SceneContainer.getRenderPipelinePort(),
+        port,
         transferable,
     );
 }

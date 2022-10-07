@@ -1,6 +1,7 @@
 import SceneObjectInterface from './SceneObjectInterface';
 import Loop from '../../../shared/utility/Loop';
 import syncRenderObject, { SyncAction } from '../helper/sync-render-object';
+import SceneContainer from '../SceneContainer';
 
 export default class Scene {
     private sceneObjects: Map<string, SceneObjectInterface> = new Map();
@@ -47,8 +48,11 @@ export default class Scene {
     }
 
     private consumeDeleteQueue() {
+        const port = SceneContainer.getRenderPipelinePort();
+
         this.deleteQueue.forEach((id) => {
             syncRenderObject(
+                port,
                 SyncAction.DELETE,
                 id,
             );
@@ -58,6 +62,8 @@ export default class Scene {
     }
 
     public update(delta: number): void {
+        const port = SceneContainer.getRenderPipelinePort();
+
         this.consumeDeleteQueue();
         this.sceneObjects.forEach((sceneObject) => {
             sceneObject.update(delta);
@@ -69,6 +75,7 @@ export default class Scene {
             }
 
             syncRenderObject(
+                port,
                 SyncAction.UPSERT,
                 sceneObject.getId(),
                 data,

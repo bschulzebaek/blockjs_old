@@ -1,12 +1,13 @@
 import { ShaderName } from '../../framework/shader/shader-names';
 import Model3D from '../../shared/model/Model3D';
-import WorldInterface from '../world/WorldInterface';
 import CameraInterface from '../camera/CameraInterface';
 import CubeModel from '../../shared/model/cube/CubeModel';
 import getBlockFromRay from '../../shared/utility/get-block-from-ray';
 import RawRenderObjectInterface from '../../framework/shader/RawRenderObjectInterface';
 import SceneObjectInterface from '../../threads/scene/scene/SceneObjectInterface';
 import syncRenderObject, { SyncAction } from '../../threads/scene/helper/sync-render-object';
+import type World from '../world/World';
+import SceneContainer from '../../threads/scene/SceneContainer';
 
 export default class Cursor implements SceneObjectInterface {
     static SCENE_ID = 'cursor';
@@ -14,10 +15,13 @@ export default class Cursor implements SceneObjectInterface {
     static OFFSET = 0.5;
 
     public model?: Model3D;
-    private world: WorldInterface;
+    private world: World;
     private camera: CameraInterface;
 
-    constructor(camera: CameraInterface, world: WorldInterface) {
+    // @ts-ignore
+    private verbose = self.__DEBUG__;
+
+    constructor(camera: CameraInterface, world: World) {
         this.camera = camera;
         this.world = world;
         this.createModel();
@@ -45,7 +49,6 @@ export default class Cursor implements SceneObjectInterface {
             world,
             camera.getTransform().getPosition(),
             camera.getRay().fromScreen().ray,
-            8,
         );
 
         if (!block || block.blockId < 1) {
@@ -62,6 +65,11 @@ export default class Cursor implements SceneObjectInterface {
     private updatePosition(block: any) {
         if (!this.isNewPosition(block)) {
             return;
+        }
+
+        if (this.verbose) {
+            console.debug(block.x, block.y, block.z)
+            console.debug(this.world.getBlock(block.x, block.y, block.z));
         }
 
         this.model?.position.set(block.x, block.y, block.z);
@@ -82,6 +90,7 @@ export default class Cursor implements SceneObjectInterface {
 
         // ToDo: Should be done using SceneEvents (tbi)
         syncRenderObject(
+            SceneContainer.getRenderPipelinePort(),
             SyncAction.DELETE,
             this.getId(),
         );

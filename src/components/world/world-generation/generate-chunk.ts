@@ -1,6 +1,5 @@
-import { createDebugChunk } from './debug-world';
+import gen1 from './generation-v1';
 
-// @ts-ignore
 export default function generateChunk(id: string, seed: string) {
-    return createDebugChunk(id);
+    return gen1(id, seed)!;
 }

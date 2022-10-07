@@ -14,6 +14,7 @@ import PlayerController from '../../components/player/PlayerController';
 class SceneContainer {
     private config?: WorldConfig;
     private renderPipelinePort?: MessagePort;
+    private worldPort?: MessagePort;
     private entityService?: EntityService;
     private inventoryService?: InventoryService;
     private world = new World();
@@ -57,6 +58,18 @@ class SceneContainer {
         }
 
         return this.renderPipelinePort;
+    }
+
+    public setWorldPort(port: MessagePort) {
+        this.worldPort = port;
+    }
+
+    public getWorldPort() {
+        if (!this.worldPort) {
+            throw new MissingContainerPropertyError('SceneContainer', 'worldPort');
+        }
+
+        return this.worldPort;
     }
 
     public getEntityService() {

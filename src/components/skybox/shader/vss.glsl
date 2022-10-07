@@ -11,6 +11,6 @@ out vec3 texCoord;
 
 void main() {
     texCoord = pos;
-    gl_PointSize = 10.0f;
+    gl_PointSize = 100.0f;
     gl_Position = proj * camera * view * vec4(pos, 1.0);
 }
