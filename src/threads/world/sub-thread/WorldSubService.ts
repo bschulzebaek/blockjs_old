@@ -45,7 +45,7 @@ export default class WorldSubService {
 
     public updateChunk = (id: string) => {
         this.modelRegistry.delete(id);
-
+        
         const has = this.deleted.indexOf(id);
 
         if (has >= 0) {

@@ -79,6 +79,7 @@ export default class WorldService {
             }
 
             if (newChunks.size) {
+                chunks.push(...newChunks);
                 this.moveBatchToExistingWorker(Array.from(newChunks.values()), worker);
             }
 

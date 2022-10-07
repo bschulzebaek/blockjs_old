@@ -2,15 +2,22 @@ import WorldContainer from '../WorldContainer';
 import { BroadcastMessages, GeneralMessages, WorldMessages } from '../../../shared/messages/ThreadMessages';
 import generateUUID from '../../../shared/utility/generate-uuid';
 import MessageHandler from '../MessageHandler';
-const WORKER_PATH = '../sub-thread/WorldSubThread.ts';
+
+// @ts-ignore
+import SubThread from '../sub-thread/WorldSubThread?worker';
+
+// const WORKER_PATH = '../sub-thread/WorldSubThread.ts';
 
 export default function spawnChild(batch: string[]) {
-    const name = generateUUID();
+    const name = generateUUID(),
+        worker = new SubThread();
 
-    const worker = new Worker(new URL(WORKER_PATH, import.meta.url), {
-        type: 'module',
-        name,
-    });
+    // ToDo: Should use the following approach to provide a Worker name! https://github.com/vitejs/vite/issues/9879
+
+    // const worker = new Worker(new URL(WORKER_PATH, import.meta.url), {
+    //     type: 'module',
+    //     name,
+    // });
 
     connectScene(worker);
     connectRenderPipeline(worker);

@@ -1,1 +1,1 @@
-export const VIEW_DISTANCE = 5;
+export const VIEW_DISTANCE = 7;

@@ -2,8 +2,10 @@ import { distance, Transform } from '../../shared/math';
 import type World from '../../components/world/World';
 import CollisionShapeRegistry from './CollisionShapeRegistry';
 import BlockID from '../../data/block-id';
+import Chunk from '../../components/chunk/Chunk';
 
 // ToDo: class CubeCollisionShape implements CollisionShapeInterface
+
 export default class CollisionShape {
     private readonly sceneId: string;
     private readonly transform: Transform;
@@ -41,6 +43,7 @@ export default class CollisionShape {
     }
 
     // ToDo ? Cache results per Chunk, invalidate on SetBlockEvent
+
     private getWorldCollision(offsetX: number, offsetY: number, offsetZ: number) {
         const { world } = this;
 
@@ -50,12 +53,18 @@ export default class CollisionShape {
             z: false,
         };
 
+        // ToDo: Use Math.round ?!
+
         this.getCornerPoints().forEach(({ x, y, z, top }) => {
             if (offsetX !== 0 && world.getBlockId(x + offsetX, y, z) !== BlockID.AIR) {
                 collision.x = true;
             }
 
-            if (offsetY !== 0 && world.getBlockId(x + offsetX, y + offsetY, z + offsetZ) !== BlockID.AIR) {
+            if (
+                offsetY !== 0 &&
+                y + offsetY < Chunk.HEIGHT &&
+                world.getBlockId(x + offsetX, y + offsetY, z + offsetZ) !== BlockID.AIR
+            ) {
                 if (top || offsetY <= 0) {
                     collision.y = true;
                 }
