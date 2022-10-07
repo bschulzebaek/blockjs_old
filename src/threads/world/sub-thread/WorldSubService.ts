@@ -44,8 +44,10 @@ export default class WorldSubService {
     }
 
     public updateChunk = (id: string) => {
+        this.refreshIdleTimeout();
+
         this.modelRegistry.delete(id);
-        
+
         const has = this.deleted.indexOf(id);
 
         if (has >= 0) {
@@ -61,6 +63,8 @@ export default class WorldSubService {
     }
 
     public discardChunks(ids: string[]) {
+        this.refreshIdleTimeout();
+        
         ids.forEach((id) => {
             const has = this.queue.indexOf(id);
 
@@ -79,6 +83,8 @@ export default class WorldSubService {
     }
 
     public createChunks(ids: string[]) {
+        this.refreshIdleTimeout();
+
         ids.forEach((id) => {
             const has = this.deleted.indexOf(id);
 
