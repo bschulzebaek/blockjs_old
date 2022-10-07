@@ -18,7 +18,7 @@ enum ControlMap {
     CROUCH = 'Shift',
 }
 
-enum Modes {
+export enum MovementMode {
     NORMAL = 0,
     FLY = 1,
     GHOST = 2,
@@ -40,7 +40,7 @@ export default class PlayerController implements SceneObjectInterface {
     private readonly collisionShape: CollisionShape;
 
     private keyDownSet: Set<string> = new Set();
-    private mode: Modes = Modes.NORMAL;
+    private mode: MovementMode = MovementMode.NORMAL;
     private speed: number = PlayerController.DEFAULT_SPEED;
     private lastChunkId = '';
 
@@ -66,12 +66,18 @@ export default class PlayerController implements SceneObjectInterface {
         this.rigidBody = new RigidBody(
             this.entity.getTransform(),
             this.collisionShape,
-            this.mode === Modes.NORMAL,
-            this.mode !== Modes.GHOST,
+            this.mode === MovementMode.NORMAL,
+            this.mode !== MovementMode.GHOST,
         );
 
         this.camera.getTransform().setRotation(entityRotation.x, entityRotation.y, entityRotation.z);
         this.lastChunkId = Chunk.getFormattedId(entityPosition.x, entityPosition.z);
+    }
+
+    public setMode(mode: MovementMode) {
+        this.mode = mode;
+        this.rigidBody.setCollision(this.mode === MovementMode.NORMAL);
+        this.rigidBody.setGravity(this.mode !== MovementMode.GHOST);
     }
 
     public getId() {
@@ -88,10 +94,6 @@ export default class PlayerController implements SceneObjectInterface {
 
     public setPosition(position: Vector3) {
         this.entity.setPosition(position);
-    }
-
-    public setMode(mode: Modes) {
-        this.mode = mode;
     }
 
     public update(): void {
@@ -140,7 +142,7 @@ export default class PlayerController implements SceneObjectInterface {
         }
 
         if (keydownCrouch) {
-            if (this.mode === Modes.FLY || this.mode === Modes.GHOST) {
+            if (this.mode === MovementMode.FLY || this.mode === MovementMode.GHOST) {
                 force.y = -PlayerController.JUMP_ACCELERATION;
             }
         }

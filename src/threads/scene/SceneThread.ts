@@ -1,4 +1,5 @@
 import './helper/set-globals';
+import './helper/global-commands';
 import './subscriber';
 import MessageHandler from './MessageHandler';
 import SceneContainer from './SceneContainer';
