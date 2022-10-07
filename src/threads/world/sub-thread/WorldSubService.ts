@@ -64,7 +64,7 @@ export default class WorldSubService {
 
     public discardChunks(ids: string[]) {
         this.refreshIdleTimeout();
-        
+
         ids.forEach((id) => {
             const has = this.queue.indexOf(id);
 
@@ -119,43 +119,41 @@ export default class WorldSubService {
             return;
         }
 
-        this.createChunkData(next);
+        await this.createChunkData(next);
         this.createNextChunk();
     }
 
-    private createChunkData = (id: string) => {
-        setTimeout(async () => {
-            if (this.deleted.includes(id)) {
-                return;
-            }
+    private createChunkData = async (id: string) => {
+        if (this.deleted.includes(id)) {
+            return;
+        }
 
-            let chunk = await this.repository.read(id);
+        let chunk = await this.repository.read(id);
 
-            if (this.deleted.includes(id)) {
-                return;
-            }
+        if (this.deleted.includes(id)) {
+            return;
+        }
 
-            if (!chunk) {
-                chunk = generateChunk(id, this.config.getSeed());
-            }
+        if (!chunk) {
+            chunk = generateChunk(id, this.config.getSeed());
+        }
 
-            pushToScene(chunk, WorldSubContainer.getScenePort());
+        pushToScene(chunk, WorldSubContainer.getScenePort());
 
-            let models = this.modelRegistry.get(id);
+        let models = this.modelRegistry.get(id);
 
-            if (!models) {
-                models = {
-                    solid: ChunkModel.create(chunk, ChunkModelType.SOLID).toRawRenderObject(),
-                    glass: ChunkModel.create(chunk, ChunkModelType.GLASS).toRawRenderObject(),
-                };
+        if (!models) {
+            models = {
+                solid: ChunkModel.create(chunk, ChunkModelType.SOLID).toRawRenderObject(),
+                glass: ChunkModel.create(chunk, ChunkModelType.GLASS).toRawRenderObject(),
+            };
 
-                this.modelRegistry.set(id, models);
-            }
+            this.modelRegistry.set(id, models);
+        }
 
-            pushToRenderPipeline(id, models.solid);
-            pushToRenderPipeline(id, models.glass);
+        pushToRenderPipeline(id, models.solid);
+        pushToRenderPipeline(id, models.glass);
 
-            this.refreshIdleTimeout();
-        });
+        this.refreshIdleTimeout();
     }
 }
