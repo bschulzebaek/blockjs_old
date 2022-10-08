@@ -15,7 +15,10 @@ export default class BlockUpdatedEvent extends Event {
         this.oldId = oldId;
         this.newId = newId;
 
-        console.debug(this);
+        // @ts-ignore
+        if (globalThis.__DEBUG__) {
+            console.debug(this);
+        }
     }
 
     public getPosition = () => {

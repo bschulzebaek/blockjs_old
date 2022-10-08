@@ -9,7 +9,7 @@
         "build": "tsc && vite build",
         "preview": "vite preview",
         "test:unit": "vitest run --coverage",
-        "test:unit-dev": "vitest"
+        "test:unit:watch": "vitest"
     },
     "devDependencies": {
         "@babel/types": "^7.17.0",

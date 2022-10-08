@@ -11,8 +11,8 @@ export type BlockMap = Map<string, BlockInterface>;
 export interface ChunkRawInterface {
     id: string;
     blocks: BlockMap;
-    worldX: number;
-    worldZ: number;
+    x: number;
+    z: number;
 }
 
 export default class Chunk extends StoreClass {
@@ -20,8 +20,8 @@ export default class Chunk extends StoreClass {
     static STORAGE_FIELDS = [
         'id',
         'blocks',
-        'worldX',
-        'worldZ',
+        'x',
+        'z',
     ];
     static WIDTH = 16;
     static LENGTH = 16;
@@ -29,30 +29,38 @@ export default class Chunk extends StoreClass {
 
     private readonly id: string;
     private readonly blocks: BlockMap;
-    private readonly worldX: number;
-    private readonly worldZ: number;
+    private readonly x: number;
+    private readonly z: number;
     private readonly changedBlockIDs: Set<BlockID> = new Set();
     private changed = false;
 
-    constructor(chunkX: number, chunkZ: number, blocks = Chunk.getEmptyBlocks()) {
+    constructor(x: number, z: number, blocks = Chunk.getEmptyBlocks()) {
         super(Chunk.STORAGE_IDENTIFIER, Chunk.STORAGE_FIELDS);
 
-        this.id = Chunk.getId(chunkX, chunkZ);
+        this.id = Chunk.getId(x, z);
         this.blocks = blocks;
-        this.worldX = chunkX * Chunk.WIDTH;
-        this.worldZ = chunkZ * Chunk.LENGTH;
+        this.x = x;
+        this.z = z;
     }
 
     public getChangedBlockIDs() {
         return this.changedBlockIDs;
     }
 
-    public getX() {
-        return this.worldX;
+    public getWorldX() {
+        return this.x;
     }
 
-    public getZ() {
-        return this.worldZ;
+    public getWorldZ() {
+        return this.z;
+    }
+
+    public getBlockX() {
+        return this.x * Chunk.WIDTH;
+    }
+
+    public getBlockZ() {
+        return this.z * Chunk.LENGTH;
     }
 
     public getId() {
@@ -116,8 +124,8 @@ export default class Chunk extends StoreClass {
     }
 
     static createFromRaw(raw: ChunkRawInterface) {
-        const chunkX = Math.floor(raw.worldX / Chunk.WIDTH),
-              chunkZ = Math.floor(raw.worldZ / Chunk.LENGTH);
+        const chunkX = raw.x,
+              chunkZ = raw.z;
 
         return new Chunk(chunkX, chunkZ, raw.blocks);
     }
@@ -125,8 +133,8 @@ export default class Chunk extends StoreClass {
     public getRaw(): ChunkRawInterface {
         return {
             id: this.id,
-            worldX: this.worldX,
-            worldZ: this.worldZ,
+            x: this.x,
+            z: this.z,
             blocks: this.blocks,
         }
     }
@@ -135,11 +143,12 @@ export default class Chunk extends StoreClass {
         return `${x}:${z}`;
     }
 
-    static getFormattedId(x: number, z: number): string {
-        const chunkX = Math.floor(x / Chunk.WIDTH),
-              chunkZ = Math.floor(z / Chunk.LENGTH);
+    static worldToId(x: number, z: number): string {
+        return `${x}:${z}`;
+    }
 
-        return `${chunkX}:${chunkZ}`;
+    static blockToId(x: number, z: number) {
+        return `${Math.floor(x / Chunk.WIDTH)}:${Math.floor(z / Chunk.LENGTH)}`;
     }
 
     static getEmptyBlocks(): BlockMap {
@@ -151,10 +160,17 @@ export default class Chunk extends StoreClass {
     }
 
     static convertToChunkPosition(position: Vector3) {
-        return new Vector3(Math.floor(position.x / Chunk.WIDTH), 0, Math.floor(position.z / Chunk.LENGTH));
+        const x = Math.floor(position.x / Chunk.WIDTH);
+        const z = Math.floor(position.z / Chunk.WIDTH);
+
+        return new Vector3(x, 0, z);
     }
 
     static generate(id: string, seed: string) {
         return generateChunk(id, seed);
+    }
+
+    public convertToAbsoluteBlockPosition(position: Vector3) {
+        return new Vector3(position.x + this.x * Chunk.WIDTH, position.y, position.z + this.z * Chunk.LENGTH);
     }
 }

@@ -71,7 +71,7 @@ export default class PlayerController implements SceneObjectInterface {
         );
 
         this.camera.getTransform().setRotation(entityRotation.x, entityRotation.y, entityRotation.z);
-        this.lastChunkId = Chunk.getFormattedId(entityPosition.x, entityPosition.z);
+        this.lastChunkId = Chunk.blockToId(entityPosition.x, entityPosition.z);
     }
 
     public setMode(mode: MovementMode) {
@@ -151,7 +151,7 @@ export default class PlayerController implements SceneObjectInterface {
     }
 
     private updateChunkPosition(x: number, z: number) {
-        const chunkId = Chunk.getFormattedId(x, z);
+        const chunkId = Chunk.blockToId(x, z);
 
         if (chunkId !== this.lastChunkId) {
             this.lastChunkId = chunkId;

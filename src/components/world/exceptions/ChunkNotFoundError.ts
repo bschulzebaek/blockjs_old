@@ -1,5 +1,5 @@
 export default class ChunkNotFoundError extends Error {
     constructor(id: string) {
-        super(`Chunk "${id}" not found!`);
+        super(`Chunk with id "${id}" does not exist!`);
     }
 }

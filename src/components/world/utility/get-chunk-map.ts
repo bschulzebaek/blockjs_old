@@ -7,13 +7,13 @@ import Chunk from '../../chunk/Chunk';
  * r = 1: [[0, 0]]
  * r = 3: [[0, 0], [0, 1], [1, 1], [1, 0], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
  */
- export default function getChunkMap(renderDistance: number, offsetX: number, offsetZ: number): Map<string, undefined|Chunk> {
+ export default function getChunkMap(renderDistance: number, offsetX: number, offsetZ: number, addChunks: boolean): Map<string, undefined|Chunk> {
     const map = new Map();
 
     if (renderDistance < 1) {
         throw new Error('Radius must be >= 1!');
     } else if (renderDistance === 1) {
-        map.set(Chunk.getId(0, 0), undefined);
+        map.set(Chunk.getId(0, 0), addChunks ? new Chunk(0, 0) : undefined);
 
         return map;
     }
@@ -24,7 +24,10 @@ import Chunk from '../../chunk/Chunk';
             const hypotenuse = Math.sqrt(x * x + z * z);
 
             if (renderDistance < 8 || hypotenuse <= renderDistance) {
-                map.set(Chunk.getId(x + offsetX, z + offsetZ), undefined)
+                const chunk = addChunks ? new Chunk(x + offsetX, z + offsetZ) : undefined;
+                const id = chunk ? chunk.getId() : Chunk.getId(x + offsetX, z + offsetZ);
+
+                map.set(id, chunk);
             }
 
         }

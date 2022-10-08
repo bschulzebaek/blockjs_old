@@ -4,11 +4,11 @@ import Chunk from '../../../components/chunk/Chunk';
 import { VIEW_DISTANCE } from '../../../data/settings';
 import SceneContainer from '../SceneContainer';
 import unloadChunks from '../world-helper/unload-chunks';
-import ChunkNotFoundError from '../../../shared/exceptions/ChunkNotFoundError';
 import PlayerController from '../../../components/player/PlayerController';
 import loadChunks from '../world-helper/load-chunks';
 import updateChunkModel from '../world-helper/update-chunk-model';
 import World from '../../../components/world/World';
+import ChunkNotFoundError from '../../../components/world/exceptions/ChunkNotFoundError';
 
 class WorldSubscriber {
     constructor() {
@@ -31,7 +31,7 @@ class WorldSubscriber {
         const { x, y, z } = event.getPosition(),
             id = event.getId(),
             world = SceneContainer.getWorld(),
-            chunkId = Chunk.getFormattedId(x, z),
+            chunkId = Chunk.blockToId(x, z),
             chunk = world.getChunkById(chunkId);
 
         if (!chunk) {

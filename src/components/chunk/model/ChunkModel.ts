@@ -33,7 +33,7 @@ export default class ChunkModel {
         );
 
         // @ts-ignore
-        model.position.set(chunk.getX(), 0, chunk.getZ());
+        model.position.set(chunk.getBlockX(), 0, chunk.getBlockZ());
 
         model.update();
 
