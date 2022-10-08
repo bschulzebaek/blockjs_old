@@ -1,6 +1,6 @@
 <template>
     <div ref="game">
-        <canvas ref="canvas" style="background-color: #87a5ff;"></canvas>
+        <canvas ref="canvas" style="background-color: #5773e8;"></canvas>
 
         <router-view
             v-if="$store.canvas"
@@ -10,13 +10,20 @@
 </template>
 
 <script lang="ts">
+import toggleWireframe from '../../helper/toggle-wireframe';
+
 export default {
     inject: ['$store'],
     mounted() {
         this.$store.canvas = this.$refs.canvas;
 
         this.$router.push({ name: 'game-setup' });
+
+        window.addEventListener('keyup', toggleWireframe);
     },
+    beforeUnmount() {
+        window.removeEventListener('keyup', toggleWireframe);
+    }
 }
 </script>
 

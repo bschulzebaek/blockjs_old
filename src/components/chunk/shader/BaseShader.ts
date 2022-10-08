@@ -1,6 +1,7 @@
 import Shader from '../../../framework/shader/Shader';
 import createTexture from '../../../framework/shader/utility/create-texture';
 import RenderObject from '../../../framework/shader/RenderObject';
+import RenderContainer from '../../../threads/render/RenderContainer';
 
 export default class BaseShader extends Shader {
     static TEXTURE = 'textures.png';
@@ -27,11 +28,12 @@ export default class BaseShader extends Shader {
 
     protected drawBatch(batch: RenderObject[]): void {
         const { context } = this;
+        const drawMode = RenderContainer.getDrawMode();
 
         batch.forEach((ro) => {
             context.uniformMatrix4fv(this.uniforms.view.loc, false, ro.view);
             context.bindVertexArray(ro.vao);
-            context.drawElements(context.TRIANGLES, ro.indexCount, context.UNSIGNED_SHORT, 0);
+            context.drawElements(drawMode, ro.indexCount, context.UNSIGNED_SHORT, 0);
         });
     }
 

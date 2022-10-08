@@ -14,8 +14,8 @@ enum ControlMap {
     WALK_LEFT = 'a',
     WALK_RIGHT = 'd',
     JUMP = ' ',
-    SPRINT = 'Control',
-    CROUCH = 'Shift',
+    SPRINT = 'control',
+    CROUCH = 'shift',
 }
 
 export enum MovementMode {
@@ -30,6 +30,7 @@ export default class PlayerController implements SceneObjectInterface {
     static DEFAULT_WIDTH = 0.6;
     static DEFAULT_SPEED = 0.2;
     static SPRINT_FACTOR = 1.4;
+    static FLYING_FACTOR = 3;
     static JUMP_ACCELERATION = 0.165;
     static ROTATE_RATE_X = -120;
     static ROTATE_RATE_Y = -135;
@@ -145,6 +146,12 @@ export default class PlayerController implements SceneObjectInterface {
             if (this.mode === MovementMode.FLY || this.mode === MovementMode.GHOST) {
                 force.y = -PlayerController.JUMP_ACCELERATION;
             }
+        }
+
+        if (this.mode === MovementMode.FLY || this.mode === MovementMode.GHOST) {
+            force.x *= PlayerController.FLYING_FACTOR;
+            force.y *= PlayerController.FLYING_FACTOR;
+            force.z *= PlayerController.FLYING_FACTOR;
         }
 
         return force;

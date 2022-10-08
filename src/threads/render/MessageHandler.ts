@@ -24,6 +24,9 @@ export default class MessageHandler {
                 case BroadcastMessages.DISCARD:
                     MessageHandler.onClose();
                     break;
+                case RenderMessages.SET_DRAW_MODE:
+                    RenderContainer.toggleWireframe();
+                    break;
                 default:
                     throw new UnhandledMessageError(event.data.action);
             }

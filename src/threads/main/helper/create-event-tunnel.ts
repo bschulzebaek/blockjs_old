@@ -32,7 +32,7 @@ function passKeyboardEvent(event: KeyboardEvent) {
 
     sendInputEvent({
         type,
-        key,
+        key: key.toLowerCase(),
         shiftKey,
     });
 }

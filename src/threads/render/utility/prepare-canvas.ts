@@ -1,3 +1,5 @@
+import RenderContainer from '../RenderContainer';
+
 export default function prepareCanvas(canvas: OffscreenCanvas) {
     const context = canvas.getContext('webgl2')!;
 

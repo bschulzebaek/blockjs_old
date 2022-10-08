@@ -16,6 +16,7 @@ export enum RenderMessages {
 
     SYNC_CAMERA = 'sync-camera',
     SET_CANVAS = 'set-canvas',
+    SET_DRAW_MODE = 'set-draw-mode',
 }
 
 export enum RenderPipelineMessages {
