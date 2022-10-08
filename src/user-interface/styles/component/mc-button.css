@@ -30,6 +30,7 @@
     vertical-align: middle;
 }
 
+.mc-button:not([disabled]):focus > div,
 .mc-button:not([disabled]):active > div,
 .mc-button:not([disabled]):hover > div {
     background-color: rgba(100, 100, 255, .45);

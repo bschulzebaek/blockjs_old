@@ -32,6 +32,7 @@
                     <a
                         href="https://github.com/bschulzebaek/blockjs"
                         target="_blank"
+                        tabindex="-1"
                     >
                         <mc-button>About</mc-button>
                     </a>

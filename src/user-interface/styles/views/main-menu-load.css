@@ -20,10 +20,6 @@
     width: 1.25rem;
 }
 
-.main-menu-load .game-delete:hover {
-
-}
-
 .main-menu-load .game-load {
     border: 1px solid #fff;
     border-radius: 2px;
@@ -34,7 +30,10 @@
     transition: all .15s ease;
 }
 
+.main-menu-load .game-load:focus,
 .main-menu-load .game-load:hover,
+.main-menu-load .game-delete:focus,
 .main-menu-load .game-delete:hover {
     background-color: rgba(0, 0, 0, .5);
+    outline: none;
 }

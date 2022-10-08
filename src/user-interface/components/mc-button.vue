@@ -1,7 +1,6 @@
 <template>
     <button
         class="mc-button"
-        tabindex="-1"
         @click="onClick"
     >
         <div>
