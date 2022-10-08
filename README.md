@@ -2,6 +2,10 @@
   <img src="src/assets/logo.png" alt="BlockJS Logo"/>
 </p>
 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/bschulzebaek/blockjs?color=%233498db&style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bschulzebaek/blockjs/Build%20and%20Deploy%20-%20Master?style=flat-square)
+![Codecov](https://img.shields.io/codecov/c/github/bschulzebaek/blockjs?style=flat-square)
+
 # Placeholder
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
