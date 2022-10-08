@@ -10,7 +10,7 @@ describe('World', () => {
     });
 
     it('takes a chunkMap as argument', () => {
-        const map = World.createChunkMap(Math.round(Math.random() * 10));
+        const map = World.createChunkMap(Math.ceil(Math.random() * 10));
         const world = new World(map);
 
         expect(world.map).toBeDefined();
