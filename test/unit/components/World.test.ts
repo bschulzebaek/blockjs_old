@@ -17,7 +17,7 @@ function getRandomChunkFromMap(map: Map<string, Chunk>) {
 
 function getRandomBlockPositionInChunk() {
     const x = Math.floor(Math.random() * (Chunk.WIDTH - 1));
-    const y = Chunk.HEIGHT - 1
+    const y = Math.floor(Math.random() * (Chunk.HEIGHT - 1));
     const z = Math.floor(Math.random() * (Chunk.LENGTH - 1));
 
     return new Vector3(x, y, z);
@@ -156,6 +156,7 @@ describe('World', () => {
 
         expect(spy).toBeCalled();
 
+        // @ts-ignore
         const event = spy.calls[0][0] as BlockUpdatedEvent;
 
         const eventPosition = event.getPosition();

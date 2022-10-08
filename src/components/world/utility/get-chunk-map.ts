@@ -13,7 +13,7 @@ import Chunk from '../../chunk/Chunk';
     if (renderDistance < 1) {
         throw new Error('Radius must be >= 1!');
     } else if (renderDistance === 1) {
-        map.set(Chunk.getId(0, 0), addChunks ? new Chunk(0, 0) : undefined);
+        map.set(Chunk.worldToId(0, 0), addChunks ? new Chunk(0, 0) : undefined);
 
         return map;
     }
@@ -25,7 +25,7 @@ import Chunk from '../../chunk/Chunk';
 
             if (renderDistance < 8 || hypotenuse <= renderDistance) {
                 const chunk = addChunks ? new Chunk(x + offsetX, z + offsetZ) : undefined;
-                const id = chunk ? chunk.getId() : Chunk.getId(x + offsetX, z + offsetZ);
+                const id = chunk ? chunk.getId() : Chunk.worldToId(x + offsetX, z + offsetZ);
 
                 map.set(id, chunk);
             }

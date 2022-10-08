@@ -30,7 +30,7 @@ export default class ChunkRepository extends Repository {
         await super.write(chunk);
     }
 
-    public async writeList(objs: Chunk[]) {
-        await super.writeList(objs);
+    public async writeList(chunks: Chunk[]) {
+        await super.writeList(chunks);
     }
 }

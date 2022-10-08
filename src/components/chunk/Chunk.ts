@@ -5,6 +5,7 @@ import { ChunkFaces } from '../../data/chunk-faces';
 import { Vector3 } from '../../shared/math';
 import { CHUNK_HEIGHT } from '../world/world-generation/generation-v1/configuration';
 import generateChunk from '../world/world-generation/generate-chunk';
+import OutOfChunkError from './exceptions/OutOfChunkError';
 
 export type BlockMap = Map<string, BlockInterface>;
 
@@ -31,20 +32,15 @@ export default class Chunk extends StoreClass {
     private readonly blocks: BlockMap;
     private readonly x: number;
     private readonly z: number;
-    private readonly changedBlockIDs: Set<BlockID> = new Set();
     private changed = false;
 
     constructor(x: number, z: number, blocks = Chunk.getEmptyBlocks()) {
         super(Chunk.STORAGE_IDENTIFIER, Chunk.STORAGE_FIELDS);
 
-        this.id = Chunk.getId(x, z);
+        this.id = Chunk.worldToId(x, z);
         this.blocks = blocks;
         this.x = x;
         this.z = z;
-    }
-
-    public getChangedBlockIDs() {
-        return this.changedBlockIDs;
     }
 
     public getWorldX() {
@@ -94,18 +90,19 @@ export default class Chunk extends StoreClass {
 
         this.blocks.set(position, { id });
 
-        this.changedBlockIDs.add(id);
         this.changed = true;
     }
 
-    public getFacingBlockId(x: number, y: number, z: number, dir: number = -1): BlockID {
-        if (dir !== -1) {
-            const n = ChunkFaces[dir].n;
-
-            x += n[0];
-            y += n[1];
-            z += n[2];
+    public getFacingBlockId(x: number, y: number, z: number, dir: number): BlockID {
+        if (dir < 0 || dir > ChunkFaces.length) {
+            throw new Error(`Invalid value for parameter dir! ${dir} given, expected value in range of 0 and ${ChunkFaces.length}.`);
         }
+
+        const [offsetX, offsetY, offsetZ] = ChunkFaces[dir].n;
+
+        x += offsetX;
+        y += offsetY;
+        z += offsetZ;
 
         return this.getBlockId(x, y, z);
     }
@@ -139,10 +136,6 @@ export default class Chunk extends StoreClass {
         }
     }
 
-    static getId(x: number, z: number): string {
-        return `${x}:${z}`;
-    }
-
     static worldToId(x: number, z: number): string {
         return `${x}:${z}`;
     }
@@ -155,11 +148,19 @@ export default class Chunk extends StoreClass {
         return new Map();
     }
 
-    static getBlockPosition(x: number, y: number, z: number) {
+    static getBlockPosition(x: number, y: number, z: number, strict = false) {
+        if (strict && (
+            x < 0 || x >= Chunk.WIDTH ||
+            y < 0 || y >= Chunk.HEIGHT ||
+            z < 0 || z >= Chunk.LENGTH
+        )) {
+            throw new OutOfChunkError(x, y, z);
+        }
+
         return `${x}:${y}:${z}`;
     }
 
-    static convertToChunkPosition(position: Vector3) {
+    static blockToChunkPosition(position: Vector3) {
         const x = Math.floor(position.x / Chunk.WIDTH);
         const z = Math.floor(position.z / Chunk.WIDTH);
 

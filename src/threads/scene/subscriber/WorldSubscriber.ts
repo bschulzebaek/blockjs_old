@@ -17,7 +17,7 @@ class WorldSubscriber {
     }
 
     private onUpdateGrid = async (event: UpdateGridEvent) => {
-        const chunkPos = Chunk.convertToChunkPosition(event.getPosition()),
+        const chunkPos = Chunk.blockToChunkPosition(event.getPosition()),
             newMap = World.createChunkMap(VIEW_DISTANCE, chunkPos.x, chunkPos.z),
             oldMap = SceneContainer.getWorld().getMap(),
             chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
