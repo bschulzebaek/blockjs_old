@@ -1,4 +1,4 @@
-name: Unit
+name: Coverage
 on:
   push:
 
