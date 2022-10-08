@@ -22,5 +22,9 @@ export default defineConfig({
     },
     test: {
         include: ['test/unit/**'],
+        coverage: {
+            all: true,
+            skipFull: true,
+        },
     },
 })
