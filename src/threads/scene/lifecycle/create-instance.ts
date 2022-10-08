@@ -4,11 +4,11 @@ import Camera from '../../../components/camera/Camera';
 import { Vector3 } from '../../../shared/math';
 import PlayerController from '../../../components/player/PlayerController';
 import getPlayerOffset from '../world-helper/get-player-offset';
-import getChunkMap from '../../../components/world/utility/get-chunk-map';
 import loadChunks from '../world-helper/load-chunks';
 import { VIEW_DISTANCE } from '../../../data/settings';
 import Cursor from '../../../components/cursor/Cursor';
 import sortChunksByDistance from '../helper/sort-chunks-by-distance';
+import World from '../../../components/world/World';
 
 export default async function createInstance() {
     await loadWorld();
@@ -46,7 +46,7 @@ async function loadScene() {
 
 async function loadWorld() {
     const position = await getPlayerOffset(),
-        chunkMap = getChunkMap(VIEW_DISTANCE, position.x, position.z),
+        chunkMap = World.createChunkMap(VIEW_DISTANCE, position.x, position.z),
         chunkIds = Array.from(chunkMap.keys());
 
     loadChunks(sortChunksByDistance(chunkIds, position));

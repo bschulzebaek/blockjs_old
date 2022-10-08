@@ -1,7 +1,6 @@
 import UpdateGridEvent from '../../../components/world/events/UpdateGridEvent';
 import SetBlockEvent from '../../../components/world/events/SetBlockEvent';
 import Chunk from '../../../components/chunk/Chunk';
-import getChunkMap from '../../../components/world/utility/get-chunk-map';
 import { VIEW_DISTANCE } from '../../../data/settings';
 import SceneContainer from '../SceneContainer';
 import unloadChunks from '../world-helper/unload-chunks';
@@ -9,6 +8,7 @@ import ChunkNotFoundError from '../../../shared/exceptions/ChunkNotFoundError';
 import PlayerController from '../../../components/player/PlayerController';
 import loadChunks from '../world-helper/load-chunks';
 import updateChunkModel from '../world-helper/update-chunk-model';
+import World from '../../../components/world/World';
 
 class WorldSubscriber {
     constructor() {
@@ -18,7 +18,7 @@ class WorldSubscriber {
 
     private onUpdateGrid = async (event: UpdateGridEvent) => {
         const chunkPos = Chunk.convertToChunkPosition(event.getPosition()),
-            newMap = getChunkMap(VIEW_DISTANCE, chunkPos.x, chunkPos.z),
+            newMap = World.createChunkMap(VIEW_DISTANCE, chunkPos.x, chunkPos.z),
             oldMap = SceneContainer.getWorld().getMap(),
             chunksToCreate = Array.from(newMap.keys()).filter((key) => !oldMap.has(key)),
             chunksToRemove = Array.from(oldMap.keys()).filter((key) => !newMap.has(key));

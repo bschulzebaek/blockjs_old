@@ -1,12 +1,12 @@
 import ChunkRepository from '../../../components/chunk/ChunkRepository';
 import WorldConfig from '../../../components/world-config/WorldConfig';
 import RawRenderObjectInterface from '../../../framework/shader/RawRenderObjectInterface';
-import generateChunk from '../../../components/world/world-generation/generate-chunk';
 import WorldSubContainer from './WorldSubContainer';
 import ChunkModel, { ChunkModelType } from '../../../components/chunk/model/ChunkModel';
 import pushToScene from '../helper/push-to-scene';
 import { WorldMessages } from '../../../shared/messages/ThreadMessages';
 import pushToRenderPipeline from '../helper/push-to-render-pipeline';
+import Chunk from '../../../components/chunk/Chunk';
 
 export type ChunkModelMap = Map<string, {
     glass: RawRenderObjectInterface;
@@ -35,7 +35,7 @@ export default class WorldSubService {
     private refreshIdleTimeout() {
         clearTimeout(this.idleTimeout);
 
-        this.idleTimeout = setTimeout(this.onIdle, WorldSubService.IDLE_MS);
+        this.idleTimeout = self.setTimeout(this.onIdle, WorldSubService.IDLE_MS);
     }
 
     private onIdle() {
@@ -135,7 +135,7 @@ export default class WorldSubService {
         }
 
         if (!chunk) {
-            chunk = generateChunk(id, this.config.getSeed());
+            chunk = Chunk.generate(id, this.config.getSeed());
         }
 
         pushToScene(chunk, WorldSubContainer.getScenePort());

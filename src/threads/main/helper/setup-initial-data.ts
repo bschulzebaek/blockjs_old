@@ -5,7 +5,6 @@ import InventoryRepository from '../../../components/inventory/InventoryReposito
 import Entity from '../../../components/entity/Entity';
 import Inventory from '../../../components/inventory/Inventory';
 import fillDebugInventory from './fill-debug-inventory';
-import generateChunk from '../../../components/world/world-generation/generate-chunk';
 import Chunk from '../../../components/chunk/Chunk';
 import World from '../../../components/world/World';
 import { Vector3 } from '../../../shared/math';
@@ -37,7 +36,7 @@ async function getInitialChunk(config: WorldConfigInterface) {
         seed = config.getSeed();
 
     chunkIds.forEach((id) => {
-        chunkMap.set(id, generateChunk(id, seed));
+        chunkMap.set(id, Chunk.generate(id, seed));
     });
 
     return new World(chunkMap as Map<string, Chunk>);

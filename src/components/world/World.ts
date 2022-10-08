@@ -2,6 +2,7 @@ import BlockID from '../../data/block-id';
 import Chunk from '../chunk/Chunk';
 import WorldInterface from './WorldInterface';
 import BlockUpdatedEvent from './events/BlockUpdatedEvent';
+import getChunkMap from './utility/get-chunk-map';
 
 export default class World implements WorldInterface {
     private readonly map: Map<string, Chunk>;
@@ -89,5 +90,9 @@ export default class World implements WorldInterface {
         chunk.setBlockId(blockX, blockY, blockZ, blockId);
 
         dispatchEvent(new BlockUpdatedEvent(x, y, z, oldBlockId, blockId));
+    }
+
+    static createChunkMap(renderDistance: number, offsetX: number = 0, offsetZ: number = 0): Map<string, undefined|Chunk> {
+        return getChunkMap(renderDistance, offsetX, offsetZ);
     }
 }

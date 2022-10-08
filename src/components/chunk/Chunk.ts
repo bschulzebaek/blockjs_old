@@ -4,6 +4,7 @@ import StoreClass from '../../shared/storage/StoreClass';
 import { ChunkFaces } from '../../data/chunk-faces';
 import { Vector3 } from '../../shared/math';
 import { CHUNK_HEIGHT } from '../world/world-generation/generation-v1/configuration';
+import generateChunk from '../world/world-generation/generate-chunk';
 
 export type BlockMap = Map<string, BlockInterface>;
 
@@ -151,5 +152,9 @@ export default class Chunk extends StoreClass {
 
     static convertToChunkPosition(position: Vector3) {
         return new Vector3(Math.floor(position.x / Chunk.WIDTH), 0, Math.floor(position.z / Chunk.LENGTH));
+    }
+
+    static generate(id: string, seed: string) {
+        return generateChunk(id, seed);
     }
 }

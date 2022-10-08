@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite';
+/// <reference types="vitest" />
+import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
@@ -11,12 +12,15 @@ export default defineConfig({
         extensions: ['.ts', '.vue'],
         alias: {
             '@': path.resolve(__dirname, './src'),
-        }
+        },
     },
     build: {
         outDir: 'dist',
     },
     worker: {
-        format: 'es'
-    }
+        format: 'es',
+    },
+    test: {
+        include: ['test/unit/**'],
+    },
 })

@@ -7,7 +7,7 @@ import Chunk from '../../chunk/Chunk';
  * r = 1: [[0, 0]]
  * r = 3: [[0, 0], [0, 1], [1, 1], [1, 0], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
  */
- export default function getChunkMap(renderDistance: number, offsetX: number = 0, offsetZ: number = 0): Map<string, undefined|Chunk> {
+ export default function getChunkMap(renderDistance: number, offsetX: number, offsetZ: number): Map<string, undefined|Chunk> {
     const map = new Map();
 
     if (renderDistance < 1) {
