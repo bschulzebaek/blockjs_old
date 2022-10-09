@@ -40,14 +40,14 @@ export default class MessageHandler {
 
     static onScenePort(event: MessageEvent<MessagePayloadInterface>) {
         switch (event.data.action) {
-            case WorldMessages.IN_CREATE_CHUNK:
+            case WorldMessages.IN_CREATE_CHUNKS:
                 WorldContainer.getWorldService().createChunks(event.data.detail);
                 break;
-            case WorldMessages.IN_DISCARD_CHUNK:
-                WorldContainer.getWorldService().broadcastDiscard(event.data.detail);
+            case WorldMessages.IN_DISCARD_CHUNKS:
+                WorldContainer.getWorldService().discardChunks(event.data.detail);
                 break;
             case WorldMessages.IN_UPDATE_CHUNK:
-                WorldContainer.getWorldService().broadcastUpdate(event.data.detail);
+                WorldContainer.getWorldService().updateChunk(event.data.detail);
                 break;
             default:
                 throw new UnhandledMessageError(event.data.action);

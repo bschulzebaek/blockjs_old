@@ -10,6 +10,6 @@ export default function pushToScene(chunk: Chunk, port: MessagePort) {
     Message.send(WorldMessages.OUT_CHUNK_READY, {
         x,
         z,
-        blockIds: new Uint8Array(chunk.getBlockIds()),
+        blockIds,
     }, port, [ blockIds.buffer ]);
 }

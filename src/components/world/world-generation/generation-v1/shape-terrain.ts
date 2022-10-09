@@ -3,65 +3,23 @@ import { iterateChunk3D } from '../../utility/iterate-chunk-coords';
 import Chunk, { BlockMap } from '../../../chunk/Chunk';
 import BlockID from '../../../../data/block-id';
 import Alea from 'alea';
-import { BASE_SURFACE_HEIGHT, BEDROCK_LEVEL, NOISE_FACTOR } from './configuration';
+import { BASE_SURFACE_HEIGHT, BEDROCK_LEVEL, NOISE_FACTOR, SPLINE_POINTS } from './configuration';
+
+import Spline from './Spline';
+
+const spContinentalness = new Spline(SPLINE_POINTS.CONTINENTALNESS.x, SPLINE_POINTS.CONTINENTALNESS.y);
+const spErosion = new Spline(SPLINE_POINTS.EROSION.x, SPLINE_POINTS.EROSION.y);
+// const spPeaksValleys = new Spline(SPLINE_POINTS.PEAKS_VALLEYS.x, SPLINE_POINTS.PEAKS_VALLEYS.y);
 
 // @ts-ignore
 function getTerrainHeight(continentalness: number, erosion: number, peaksValleys: number) {
-    return Math.floor(
-        applyPeaksValleys(
-            // applyErosion(
-                applyContinentalness(
-                    BASE_SURFACE_HEIGHT,
-                    continentalness
-                ),
-            //     erosion
-            // ),
-            peaksValleys,
-        ),
-    );
-}
+    let th = BASE_SURFACE_HEIGHT;
 
-function applyContinentalness(height: number, value: number) {
-    if (value > 0.7) {
-        return height + value * 11;
-    } else if (value > 0.3) {
-        return height + value * 5
-    } else if (value < -0.85) {
-        return height + value * 11;
-    } else {
-        return height + value * 2
-    }
-}
+    th += Math.floor(th * spContinentalness.at(continentalness));
+    th = Math.floor(th * spErosion.at(erosion));
+    // th += Math.floor(th * spPeaksValleys.at(peaksValleys));
 
-// @ts-ignore
-function applyErosion(height: number, value: number) {
-    if (value < -0.7) {
-        return height / (value + 1);
-    } else if (value < -0.3) {
-        return height / (value + 0.7);
-    } else if (value < -0.2) {
-        return height / (value / 2 + 1);
-    } else if (value >= -0.2 && value < 0.1) {
-        return height * (value + 0.2);
-    } else if (value < 0.4) {
-        return height * (value - 0.05);
-    } else if (value < 0.6) {
-        return height * (value - 0.1);
-    } else if (value < 0.65) {
-        return height * (value + 0.3);
-    } else if (value < 0.75) {
-        return height * (value + 1.0);
-    } else if (value < 0.8) {
-        return height * (value - 0.7);
-    } else if (value < 0.95) {
-        return height * (value - 1.0);
-    } else {
-        return 0;
-    }
-}
-
-function applyPeaksValleys(height: number, value: number) {
-    return height * (value + 2) / 2;
+    return Math.floor(th);
 }
 
 function getBlockForY(y: number, surfaceY: number) {
@@ -92,9 +50,9 @@ export default function shapeTerrain(seed: string, chunkX: number, chunkZ: numbe
         const blockX = (absoluteX + x) * NOISE_FACTOR,
             blockZ = (absoluteZ + z) * NOISE_FACTOR,
             noise2d = blockNoise(blockX, blockZ),
-            continentalness = Math.round(noise2dContinentalness(blockX, blockZ) * 100) / 100,
-            erosion = Math.round(noise2dErosion(blockX, blockZ) * 100) / 100,
-            peaksValleys = Math.round(noise2dPeaksValleys(blockX, blockZ) * 100) / 100;
+            continentalness = (noise2dContinentalness(blockX, blockZ) + 1) / 2,
+            erosion = noise2dErosion(blockX, blockZ),
+            peaksValleys =noise2dPeaksValleys(blockX, blockZ);
 
         const terrainHeight = getTerrainHeight(
             continentalness,

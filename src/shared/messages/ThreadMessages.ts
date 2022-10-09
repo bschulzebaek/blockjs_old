@@ -33,8 +33,8 @@ export enum SceneMessages {
 }
 
 export enum WorldMessages {
-    IN_CREATE_CHUNK = 'create-chunk',
-    IN_DISCARD_CHUNK = 'discard-chunk',
+    IN_CREATE_CHUNKS = 'create-chunks',
+    IN_DISCARD_CHUNKS = 'discard-chunks',
     IN_UPDATE_CHUNK = 'update-chunk',
     IN_UPDATE_CHUNKS = 'update-chunks',
     OUT_CHUNK_READY = 'chunk-ready',

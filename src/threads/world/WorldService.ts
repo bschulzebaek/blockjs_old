@@ -9,7 +9,7 @@ export default class WorldService {
         WorldContainer.getWorker().delete(name);
     }
 
-    public broadcastUpdate(id: string) {
+    public updateChunk(id: string) {
         let found = false;
 
         Array.from(WorldContainer.getWorker().values()).forEach(({ chunks, worker }) => {
@@ -32,7 +32,7 @@ export default class WorldService {
         }
     }
 
-    public broadcastDiscard(ids: string[]) {
+    public discardChunks(ids: string[]) {
         Array.from(WorldContainer.getWorker().values()).forEach(({ chunks, worker }) => {
             const intersection = ids.filter(value => chunks.includes(value));
 
@@ -40,8 +40,12 @@ export default class WorldService {
                 return;
             }
 
+            intersection.forEach((chunkId) => {
+                chunks.splice(chunks.indexOf(chunkId), 1);
+            });
+
             worker.postMessage({
-                action: WorldMessages.IN_DISCARD_CHUNK,
+                action: WorldMessages.IN_DISCARD_CHUNKS,
                 detail: intersection,
             });
         });
@@ -112,7 +116,7 @@ export default class WorldService {
 
     private moveBatchToExistingWorker(batch: string[], worker: Worker) {
         worker.postMessage({
-            action: WorldMessages.IN_CREATE_CHUNK,
+            action: WorldMessages.IN_CREATE_CHUNKS,
             detail: batch,
         });
     }

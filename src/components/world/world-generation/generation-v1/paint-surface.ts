@@ -7,17 +7,18 @@ import BlockInterface from '../../../chunk/BlockInterface';
 function getBlockId(block: BlockInterface) {
     const { continentalness, humidity, temperature } = block;
 
+    // e.g.
     // +humidity && +temperature = Jungle
     // +humidity && -temperature = Swamp
     // -humidity && +temperature = Desert
     // -humidity && -temperature = Snowy plains
 
     if (continentalness! > 0.76) {
-        return humidity! < -0.5 ? BlockID.SANDSTONE : BlockID.STONE;
+        // return humidity! < -0.5 ? BlockID.SANDSTONE : BlockID.STONE;
     }
 
     if (humidity! < -0.5 && temperature! > 0.5) {
-        return BlockID.SAND;
+        // return BlockID.SAND;
     }
 
     return BlockID.GRASS;
@@ -28,16 +29,18 @@ export default function paintSurface(blocks: BlockMap) {
         let currentY = Chunk.HEIGHT - 1;
         let block = blocks.get(`${x}:${currentY}:${z}`)!;
 
-        while (block.id !== BlockID.STONE && currentY >= SEA_LEVEL) {
+        do {
             block = blocks.get(`${x}:${currentY}:${z}`)!;
 
             currentY--;
-        }
+        } while (block.id === BlockID.AIR && currentY >= SEA_LEVEL)
 
         if (block.id === BlockID.WATER) {
             return;
         }
 
         block.id = getBlockId(block);
+
+        // ToDo: Randomly change adjacent blocks to proper biome ground block
     });
 }

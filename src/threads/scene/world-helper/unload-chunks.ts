@@ -13,7 +13,7 @@ export default function unloadChunks(ids: string[]) {
     const port = SceneContainer.getRenderPipelinePort();
 
     Message.send(
-        WorldMessages.IN_DISCARD_CHUNK,
+        WorldMessages.IN_DISCARD_CHUNKS,
         ids,
         SceneContainer.getWorldPort(),
     );

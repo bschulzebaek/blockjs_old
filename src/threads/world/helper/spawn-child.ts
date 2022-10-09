@@ -28,7 +28,7 @@ export default function spawnChild(batch: string[]) {
     });
 
     worker.postMessage({
-        action: WorldMessages.IN_CREATE_CHUNK,
+        action: WorldMessages.IN_CREATE_CHUNKS,
         detail: batch,
     });
 

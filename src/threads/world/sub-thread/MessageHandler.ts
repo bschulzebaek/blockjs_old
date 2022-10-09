@@ -12,10 +12,10 @@ export default class MessageHandler {
             case BroadcastMessages.SETUP_CONTAINER:
                 WorldSubContainer.setConfig(event.data.detail);
                 break;
-            case WorldMessages.IN_CREATE_CHUNK:
+            case WorldMessages.IN_CREATE_CHUNKS:
                 WorldSubContainer.getWorldSubService().createChunks(event.data.detail);
                 break;
-            case WorldMessages.IN_DISCARD_CHUNK:
+            case WorldMessages.IN_DISCARD_CHUNKS:
                 WorldSubContainer.getWorldSubService().discardChunks(event.data.detail);
                 break;
             case WorldMessages.IN_UPDATE_CHUNK:

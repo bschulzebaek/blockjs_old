@@ -1,4 +1,5 @@
 import BlockID from '../../data/block-id';
+import LightLevel from '../../framework/light/LightLevel';
 
 export default interface BlockInterface {
     id: BlockID;
@@ -8,4 +9,5 @@ export default interface BlockInterface {
     peaksValleys?: number;
     humidity?: number;
     temperature?: number;
+    lightLevel?: LightLevel;
 }
