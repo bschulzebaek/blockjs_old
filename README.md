@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/assets/logo.png" alt="BlockJS Logo"/>
+  <img src="src/scenes/__public/assets/logo.png" alt="BlockJS Logo"/>
 </p>
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/bschulzebaek/blockjs?color=%233498db&style=flat-square)
