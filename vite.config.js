@@ -3,6 +3,8 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
+const ROOT_DIR = process.env.VITEST ? path.resolve(__dirname) : path.resolve(__dirname, './src/scenes');
+
 export default defineConfig({
     server: {
         port: 3000,
@@ -14,7 +16,7 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
-    root: './src/scenes',
+    root: ROOT_DIR,
     publicDir: path.resolve(__dirname, './src/scenes/__public'),
     build: {
         emptyOutDir: true,
@@ -31,7 +33,9 @@ export default defineConfig({
         format: 'es',
     },
     test: {
-        include: ['test/unit/**'],
+        include: [
+            'test/unit/**',
+        ],
         coverage: {
             all: true,
             skipFull: true,
