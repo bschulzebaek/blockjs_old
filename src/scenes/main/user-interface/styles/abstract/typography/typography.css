@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'Minecraft';
+    src: url('/assets/font/Minecraft.ttf') format('ttf'),
+         url('/assets/font/Minecraft.woff2') format('woff2'),
+         url('/assets/font/Minecraft.woff') format('woff');
+}
+
+body {
+    font-family: 'Minecraft', Fallback, sans-serif;
+    font-size: 1.5em;
+    letter-spacing: 2px;
+    font-weight: normal;
+    font-style: normal;
+    user-select: none;
+}

@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
@@ -15,6 +15,13 @@ export default defineConfig({
         },
     },
     build: {
+        rollupOptions: {
+            input: {
+                index: path.resolve(__dirname, './index.html'),
+                main: path.resolve(__dirname, './scenes/main/index.html'),
+                worldGeneration: path.resolve(__dirname, './scenes/world-generation/index.html'),
+            }
+        },
         outDir: 'dist',
     },
     worker: {

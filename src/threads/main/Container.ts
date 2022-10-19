@@ -1,5 +1,5 @@
 import { type Router } from 'vue-router';
-import { ApplicationStoreInterface } from '../../user-interface/store';
+import { ApplicationStoreInterface } from '../../scenes/main/user-interface/store';
 import InventoryService from '../../components/inventory/InventoryService';
 import type WorldConfig from '../../components/world-config/WorldConfig';
 import MissingContainerPropertyError from '../../shared/exceptions/MissingContainerPropertyError';

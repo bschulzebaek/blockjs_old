@@ -1,7 +1,7 @@
 import Fullscreen from './helper/Fullscreen';
 import { discardSceneEventTunnel } from './helper/create-event-tunnel';
 import { Views } from '../../data/views';
-import { ApplicationStoreInterface } from '../../user-interface/store';
+import { ApplicationStoreInterface } from '../../scenes/main/user-interface/store';
 import { Router } from 'vue-router';
 import CanvasNotFoundError from '../../shared/exceptions/CanvasNotFoundError';
 import ConfigNotFoundError from '../../shared/exceptions/ConfigNotFoundError';

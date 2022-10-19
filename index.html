@@ -1,15 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" href="favicon.ico" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
-        <meta name="description" content="BlockJS is yet another Minecraft clone built with JavaScript. See the About link for more details about this project." />
+<head>
+    <meta charset="UTF-8">
+    <title>Pages | BlockJS</title>
 
-        <title>BlockJS</title>
-    </head>
-    <body>
-        <div id="app"></div>
-        <script type="module" src="/src/main.ts"></script>
-    </body>
+    <style>
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('/assets/font/Minecraft.ttf') format('ttf'),
+            url('/assets/font/Minecraft.woff2') format('woff2'),
+            url('/assets/font/Minecraft.woff') format('woff');
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            padding: 0;
+            margin: 0;
+            font-family: 'Minecraft', Fallback, sans-serif;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+            font-weight: normal;
+            font-style: normal;
+            user-select: none;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(5px);
+            opacity: 0.7;
+            z-index: -1;
+            background: #999 url('/assets/main_menu_background.jpg') center / cover;
+        }
+
+        .menu {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: grid;
+            width: 432px;
+            max-width: 100%;
+        }
+
+        .menu > * {
+            margin: 0.5rem 0;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        a:visited {
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="menu">
+        <h2>Available Scenes</h2>
+        <a href="/scenes/main/index.html">Main Game</a>
+        <a href="/scenes/world-generation/index.html">World Generation</a>
+    </div>
+</body>
 </html>
