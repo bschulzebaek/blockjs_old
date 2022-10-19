@@ -17,13 +17,14 @@ export default defineConfig({
         },
     },
     root: ROOT_DIR,
+    
     publicDir: path.resolve(__dirname, './src/scenes/__public'),
     build: {
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                'index': path.resolve(__dirname, './src/scenes/index.html'),
-                'main.html': path.resolve(__dirname, './src/scenes/main.html'),
+                'index.html': path.resolve(__dirname, './src/scenes/index.html'),
+                'pages.html': path.resolve(__dirname, './src/scenes/pages.html'),
                 'world-generation.html': path.resolve(__dirname, './src/scenes/world-generation.html'),
             },
         },
