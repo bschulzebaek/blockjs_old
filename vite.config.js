@@ -14,15 +14,18 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
+    root: './src/scenes',
+    publicDir: path.resolve(__dirname, './src/scenes/__public'),
     build: {
+        emptyOutDir: true,
         rollupOptions: {
             input: {
-                index: path.resolve(__dirname, './index.html'),
-                main: path.resolve(__dirname, './scenes/main/index.html'),
-                worldGeneration: path.resolve(__dirname, './scenes/world-generation/index.html'),
-            }
+                'index': path.resolve(__dirname, './src/scenes/index.html'),
+                'main.html': path.resolve(__dirname, './src/scenes/main.html'),
+                'world-generation.html': path.resolve(__dirname, './src/scenes/world-generation.html'),
+            },
         },
-        outDir: 'dist',
+        outDir: path.resolve(__dirname, './dist'),
     },
     worker: {
         format: 'es',
