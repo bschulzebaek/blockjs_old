@@ -151,8 +151,7 @@ export default class WorldSubService {
             this.modelRegistry.set(id, models);
         }
 
-        pushToRenderPipeline(id, models.solid);
-        pushToRenderPipeline(id, models.glass);
+        pushToRenderPipeline(id, models);
 
         this.refreshIdleTimeout();
     }

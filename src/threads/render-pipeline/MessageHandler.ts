@@ -29,9 +29,6 @@ export default class MessageHandler {
                 RenderPipelineContainer.setScenePort(event.ports[0]);
                 event.ports[0].onmessage = MessageHandler.onScenePort;
                 break;
-            case 'world':
-                event.ports[0].onmessage = MessageHandler.onWorldPort;
-                break;
             default:
                 throw new UnhandledMessageError(event.data.action);
         }
@@ -44,19 +41,6 @@ export default class MessageHandler {
                 break;
             case RenderMessages.UPSERT_RENDER_OBJECT:
                 RenderPipelineService.upsert(event.data.detail);
-                break;
-            default:
-                throw new UnhandledMessageError(event.data.action);
-        }
-    }
-
-    static onWorldPort(event: MessageEvent<MessagePayloadInterface>) {
-        switch (event.data.action) {
-            case RenderMessages.UPSERT_RENDER_OBJECT:
-                RenderPipelineService.upsert(event.data.detail);
-                break;
-            case GeneralMessages.CONNECT:
-                event.ports[0].onmessage = MessageHandler.onWorldPort;
                 break;
             default:
                 throw new UnhandledMessageError(event.data.action);

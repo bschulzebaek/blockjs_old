@@ -4,8 +4,8 @@ import WorldService from './WorldService';
 
 class WorldContainer {
     private config?: WorldConfig;
-    private renderPipelinePort?: MessagePort;
     private scenePort?: MessagePort;
+    private renderPort?: MessagePort;
 
     private worldService?: WorldService;
     private subWorker: Map<string, { worker: Worker, chunks: string[] }> = new Map();
@@ -52,16 +52,16 @@ class WorldContainer {
         return this.scenePort!;
     }
 
-    public setRenderPipelinePort(port: MessagePort) {
-        this.renderPipelinePort = port;
+    public setRenderPort(port: MessagePort) {
+        this.renderPort = port;
     }
 
-    public getRenderPipelinePort() {
-        if (!this.renderPipelinePort) {
-            throw new MissingContainerPropertyError('WorldContainer', 'renderPipelinePort');
+    public getRenderPort() {
+        if (!this.renderPort) {
+            throw new MissingContainerPropertyError('WorldContainer', 'renderPort');
         }
 
-        return this.renderPipelinePort;
+        return this.renderPort;
     }
 }
 

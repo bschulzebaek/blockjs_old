@@ -22,6 +22,14 @@ export default class RenderService {
         this.createRONonBlocking(data.payload as RawRenderObjectInterface);
     }
 
+    public upsertChunk(data: RenderObjectData) {
+        if (!data.payload) {
+            throw new Error('RenderObject payload is undefined!');
+        }
+
+        this.createRONonBlocking(data.payload as RawRenderObjectInterface);
+    }
+
     public delete(data: RenderObjectData) {
         RenderContainer.getRenderer().renderObjects.delete(data.id);
     }

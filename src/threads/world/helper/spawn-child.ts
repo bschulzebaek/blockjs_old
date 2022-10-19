@@ -60,7 +60,8 @@ function connectScene(worker: Worker) {
 function connectRenderPipeline(worker: Worker) {
     const renderPipelineChannel = new MessageChannel();
 
-    WorldContainer.getRenderPipelinePort().postMessage({
+    // WorldContainer.getRenderPipelinePort().postMessage({
+    WorldContainer.getRenderPort().postMessage({
         action: GeneralMessages.CONNECT,
         detail: {
             thread: 'world-helper',

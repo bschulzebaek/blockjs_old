@@ -26,8 +26,8 @@ export default class MessageHandler {
 
     static onConnect(event: MessageEvent<MessagePayloadInterface>) {
         switch (event.data.detail.thread) {
-            case 'render-pipeline':
-                WorldContainer.setRenderPipelinePort(event.ports[0]);
+            case 'render':
+                WorldContainer.setRenderPort(event.ports[0]);
                 break;
             case 'scene':
                 WorldContainer.setScenePort(event.ports[0]);

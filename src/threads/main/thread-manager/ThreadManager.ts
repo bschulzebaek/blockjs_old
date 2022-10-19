@@ -28,7 +28,7 @@ class ThreadManager {
 
         this.connect(ThreadNames.SCENE, ThreadNames.RENDER_PIPELINE);
         this.connect(ThreadNames.WORLD, ThreadNames.SCENE);
-        this.connect(ThreadNames.WORLD, ThreadNames.RENDER_PIPELINE);
+        this.connect(ThreadNames.WORLD, ThreadNames.RENDER);
         this.connect(ThreadNames.RENDER, ThreadNames.RENDER_PIPELINE);
 
         this.get(ThreadNames.SCENE).onmessage = MessageHandler.onScenePort;

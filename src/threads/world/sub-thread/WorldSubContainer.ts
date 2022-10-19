@@ -6,7 +6,7 @@ import WorldSubService from './WorldSubService';
 
 class WorldSubContainer {
     private config?: WorldConfig;
-    private renderPipelinePort?: MessagePort;
+    private renderPort?: MessagePort;
     private scenePort?: MessagePort;
 
     private worldSubService?: WorldSubService;
@@ -39,16 +39,16 @@ class WorldSubContainer {
         return this.scenePort!;
     }
 
-    public setRenderPipelinePort(port: MessagePort) {
-        this.renderPipelinePort = port;
+    public setRenderPort(port: MessagePort) {
+        this.renderPort = port;
     }
 
-    public getRenderPipelinePort() {
-        if (!this.renderPipelinePort) {
-            throw new MissingContainerPropertyError('WorldSubContainer', 'renderPipelinePort');
+    public getRenderPort() {
+        if (!this.renderPort) {
+            throw new MissingContainerPropertyError('WorldSubContainer', 'renderPort');
         }
 
-        return this.renderPipelinePort;
+        return this.renderPort;
     }
 }
 

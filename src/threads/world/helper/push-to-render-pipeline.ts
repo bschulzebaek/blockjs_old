@@ -3,9 +3,21 @@ import WorldSubContainer from '../sub-thread/WorldSubContainer';
 import RawRenderObjectInterface from '../../../framework/shader/RawRenderObjectInterface';
 import { RenderPipelineMessages } from '../../../shared/messages/ThreadMessages';
 
-export default function pushToRenderPipeline(id: string, model: RawRenderObjectInterface) {
-    const port = WorldSubContainer.getRenderPipelinePort();
+interface ChunkModels {
+    glass: RawRenderObjectInterface;
+    solid: RawRenderObjectInterface;
+}
 
+export default function pushToRenderPipeline(id: string, models: ChunkModels) {
+    const port = WorldSubContainer.getRenderPort();
+
+    const { glass, solid } = models;
+
+    pushChunkModel(port, id, glass);
+    pushChunkModel(port, id, solid);
+}
+
+function pushChunkModel(port: MessagePort, id: string, model: RawRenderObjectInterface) {
     const transferablePayload = {
         id: model.id,
         shader: model.shader,
