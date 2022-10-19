@@ -33,6 +33,7 @@ export default defineConfig({
         format: 'es',
     },
     test: {
+        environment: 'jsdom',
         include: [
             'test/unit/**',
         ],
